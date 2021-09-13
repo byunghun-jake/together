@@ -3,6 +3,8 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import ContentsLayout from '@/layouts/ContentsLayout.vue'
 import PartyLayout from '@/layouts/PartyLayout.vue'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
+import ProfileMain from '@/views/ProfileMain.vue'
+import ProfileParty from '@/views/ProfileParty.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -31,6 +33,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/profile',
     name: 'ProfileLayout',
     component: ProfileLayout,
+    children: [
+      {
+        path: '',
+        name: 'ProfileMain',
+        component: ProfileMain,
+      },
+      {
+        path: 'party',
+        name: 'ProfileParty',
+        component: ProfileParty,
+      },
+    ],
   },
 ]
 
