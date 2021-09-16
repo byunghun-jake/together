@@ -1,0 +1,142 @@
+{
+  "contents": [
+    {
+      "id": 1,
+      "title": "DP",
+      "posterPath": "https://images.justwatch.com/poster/249686340/s332/d-p.webp",
+      "simRate": 98,
+      "providers": ["넷플릭스", "웨이브", "왓챠"],
+      "firstAirYear": 2017,
+      "rated": "청불",
+      "seasons": 5,
+      "overview": "1명의 천재, 8명의 공범, 철저히 준비한 세기의 강도. 스페인 조폐국에서 인질극까지 벌인 이들은 과연 포위 경찰을 따돌리고 거액의 돈과 함께 달아날 수 있을까?"
+    },
+    {
+      "id": 2,
+      "title": "종이의 집",
+      "posterPath": "https://images.justwatch.com/poster/235094884/s276/la-casa-de-papel-el-fenomeno.webp",
+      "simRate": 98,
+      "providers": ["넷플릭스", "웨이브", "왓챠"],
+      "firstAirYear": 2017,
+      "rated": "청불",
+      "seasons": 5,
+      "overview": "1명의 천재, 8명의 공범, 철저히 준비한 세기의 강도. 스페인 조폐국에서 인질극까지 벌인 이들은 과연 포위 경찰을 따돌리고 거액의 돈과 함께 달아날 수 있을까?"
+    },
+    {
+      "id": 3,
+      "title": "하트시그널",
+      "posterPath": "https://images.justwatch.com/poster/192234916/s276/hateusigeuneol.webp",
+      "simRate": 98,
+      "providers": ["넷플릭스", "웨이브", "왓챠"],
+      "firstAirYear": 2017,
+      "rated": "청불",
+      "seasons": 5,
+      "overview": "1명의 천재, 8명의 공범, 철저히 준비한 세기의 강도. 스페인 조폐국에서 인질극까지 벌인 이들은 과연 포위 경찰을 따돌리고 거액의 돈과 함께 달아날 수 있을까?"
+    },
+    {
+      "id": 4,
+      "title": "킹덤",
+      "posterPath": "https://images.justwatch.com/poster/247794970/s276/kingdom-ashin-of-the-north.webp",
+      "simRate": 98,
+      "providers": ["넷플릭스", "웨이브", "왓챠"],
+      "firstAirYear": 2017,
+      "rated": "청불",
+      "seasons": 5,
+      "overview": "1명의 천재, 8명의 공범, 철저히 준비한 세기의 강도. 스페인 조폐국에서 인질극까지 벌인 이들은 과연 포위 경찰을 따돌리고 거액의 돈과 함께 달아날 수 있을까?"
+    },
+    {
+      "id": 5,
+      "title": "설국열차",
+      "posterPath": "https://images.justwatch.com/poster/176335430/s276/snowpiercer.webp",
+      "simRate": 98,
+      "providers": ["넷플릭스", "웨이브", "왓챠"],
+      "firstAirYear": 2017,
+      "rated": "청불",
+      "seasons": 5,
+      "overview": "1명의 천재, 8명의 공범, 철저히 준비한 세기의 강도. 스페인 조폐국에서 인질극까지 벌인 이들은 과연 포위 경찰을 따돌리고 거액의 돈과 함께 달아날 수 있을까?"
+    },
+    {
+      "id": 6,
+      "title": "부산행",
+      "posterPath": "https://images.justwatch.com/poster/187605738/s592/busanhaeng.webp",
+      "simRate": 98,
+      "providers": ["넷플릭스", "웨이브", "왓챠"],
+      "firstAirYear": 2017,
+      "rated": "청불",
+      "seasons": 5,
+      "overview": "1명의 천재, 8명의 공범, 철저히 준비한 세기의 강도. 스페인 조폐국에서 인질극까지 벌인 이들은 과연 포위 경찰을 따돌리고 거액의 돈과 함께 달아날 수 있을까?"
+    }
+  ],
+  "parties": [
+    {
+      "id": 1,
+      "provider": "넷플릭스",
+      "title": "[로얄넷플릭스] 💩5000000건이상공유💩",
+      "logoUrl": "",
+      "member": {
+        "totalCount": 5,
+        "joinCount": 4
+      },
+      "endDate": "2021-12-25",
+      "restDays": 109,
+      "originalPricePerDay": 300,
+      "pricePerDay": 85
+    },
+    {
+      "id": 2,
+      "provider": "넷플릭스",
+      "title": "[로얄넷플릭스] 💩5000000건이상공유💩",
+      "logoUrl": "",
+      "member": {
+        "totalCount": 4,
+        "joinCount": 2
+      },
+      "endDate": "2021-12-25",
+      "restDays": 109,
+      "originalPricePerDay": 300,
+      "pricePerDay": 85
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "user": {
+        "nickName": "넷플조아",
+        "profileImg": "https://cdn-icons-png.flaticon.com/512/1864/1864513.png"
+      },
+      "comment": "종이로 집을 지으면 전부 타버릴거야!",
+      "like": 10,
+      "rating": 4
+    },
+    {
+      "id": 2,
+      "user": {
+        "nickName": "넷플조아",
+        "profileImg": "https://cdn-icons-png.flaticon.com/512/1864/1864513.png"
+      },
+      "comment": "종이로 집을 지으면 전부 타버릴거야!",
+      "like": 10,
+      "rating": 4
+    },
+    {
+      "id": 3,
+      "user": {
+        "nickName": "넷플조아",
+        "profileImg": "https://cdn-icons-png.flaticon.com/512/1864/1864513.png"
+      },
+      "comment": "종이로 집을 지으면 전부 타버릴거야!",
+      "like": 10,
+      "rating": 4
+    },
+    {
+      "id": 4,
+      "user": {
+        "nickName": "넷플조아",
+        "profileImg": "https://cdn-icons-png.flaticon.com/512/1864/1864513.png"
+      },
+      "comment": "종이로 집을 지으면 전부 타버릴거야!",
+      "like": 10,
+      "rating": 4
+    }
+  ]
+}

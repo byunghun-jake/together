@@ -6,7 +6,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ContentsLayout',
+  name: 'ContentLayout',
   setup() {
     return {}
   },

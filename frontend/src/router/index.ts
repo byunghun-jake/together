@@ -1,14 +1,29 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import ContentsLayout from '@/layouts/ContentsLayout.vue'
+import ContentLayout from '@/layouts/ContentLayout.vue'
 import PartyLayout from '@/layouts/PartyLayout.vue'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
+import ContentList from '@/views/ContentList.vue'
+import ContentDetail from '@/views/ContentDetail.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'ContentsLayout',
-    component: ContentsLayout,
+    name: 'ContentLayout',
+    component: ContentLayout,
+    children: [
+      {
+        path: '/',
+        name: 'ContentList',
+        component: ContentList,
+      },
+      {
+        path: '/:contentId',
+        name: 'ContentDetail',
+        component: ContentDetail,
+        props: true,
+      },
+    ],
     // children: [
     //   {
     //     path: '/',
