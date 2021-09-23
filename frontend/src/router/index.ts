@@ -11,6 +11,7 @@ import ProfileParty from '@/views/ProfileParty.vue'
 import ProfilePartyMine from '@/views/ProfilePartyMine.vue'
 import ContentList from '@/views/ContentList.vue'
 import ContentDetail from '@/views/ContentDetail.vue'
+import PartyList from '@/views/PartyList.vue'
 
 import Login from '@/views/Login.vue'
 import ResetPassword from '@/views/ResetPassword.vue'
@@ -22,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     component: ContentLayout,
     children: [
       {
-        path: '/',
+        path: '',
         name: 'ContentList',
         component: ContentList,
       },
@@ -33,18 +34,18 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
       },
     ],
-    // children: [
-    //   {
-    //     path: '/',
-    //     name: 'ContentsList',
-    //     component: ContentsList
-    //   }
-    // ]
   },
   {
     path: '/party',
     name: 'PartyLayout',
     component: PartyLayout,
+    children: [
+      {
+        path: '',
+        name: 'PartyList',
+        component: PartyList,
+      },
+    ],
   },
   {
     path: '/auth',

@@ -27,13 +27,12 @@
       </ul>
     </section>
   </div>
-  <div class="py-40"></div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import axios from 'axios'
+import { useStore } from 'vuex'
 
-type Content = {
+interface Content {
   id: number
   title: string
   posterPath: string
@@ -42,10 +41,20 @@ type Content = {
 export default defineComponent({
   name: 'ContentList',
   setup() {
+    const store = useStore()
     const contents = ref<Content[]>()
+
     onMounted(async () => {
-      const res = await axios.get('http://localhost:3000/contents')
-      contents.value = res.data
+      // Axios 에러인 상황과 알 수 없는 에러인 상황을 함께 다루려면?
+      // 에러를 핸들링하는 부분이 컴포넌트쪽으로 올 필요가 있을까?
+      try {
+        const res: Content[] = await store.dispatch(
+          'content/getRecommendContent'
+        )
+        contents.value = res
+      } catch (error) {
+        alert(error)
+      }
     })
     return {
       contents,
@@ -53,6 +62,7 @@ export default defineComponent({
   },
 })
 </script>
+
 <style lang="scss" scoped>
 .banner-section {
   @apply h-44 md:h-80 bg-gray-200;

@@ -35,35 +35,11 @@
       <section class="party-section">
         <header class="section-header">파티에 참여하세요!</header>
         <ul class="party-list">
-          <li class="party-item" v-for="party in parties" :key="party.id">
-            <div class="party">
-              <div class="infos">
-                <div class="text">
-                  <h3>{{ party.provider }} 프리미엄</h3>
-                  <p>{{ party.title }}</p>
-                </div>
-                <div class="logo-wrapper">로고</div>
-              </div>
-              <div class="members">
-                <span class="material-icons" v-for="i in 5" :key="i">star</span>
-              </div>
-              <div class="details">
-                <div>
-                  <p class="date">
-                    {{ party.endDate }}까지 ({{ party.restDays }}일)
-                  </p>
-                </div>
-                <div class="price-wrapper">
-                  <p class="original-price">
-                    {{ toCurrency(party.originalPricePerDay * party.restDays) }}
-                  </p>
-                  <p class="price">
-                    {{ toCurrency(party.pricePerDay * party.restDays) }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </li>
+          <PartyListItem
+            v-for="party in parties"
+            :key="party.id"
+            :party="party"
+          />
         </ul>
         <div class="flex">
           <router-link class="more-link" :to="{ name: 'ContentList' }">
@@ -110,6 +86,8 @@
 import axios from 'axios'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import ContentDetailInfoSection from '@/components/ContentDetailInfoSection.vue'
+import PartyListItem from '@/components/PartyListItem.vue'
+import { useStore } from 'vuex'
 
 interface Content {
   id: number
@@ -176,8 +154,9 @@ export default defineComponent({
       type: [String, Number],
     },
   },
-  components: { ContentDetailInfoSection },
+  components: { ContentDetailInfoSection, PartyListItem },
   setup(props) {
+    const store = useStore()
     const loading = ref<boolean>(true)
     const content = ref<Content>()
     const youtubeReviews = ref<Youtube[]>()
@@ -195,10 +174,6 @@ export default defineComponent({
       return youtubeReviews.value?.slice(0, isMobile.value ? 3 : 12)
     })
 
-    const toCurrency = (price: number): string => {
-      return `${String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`
-    }
-
     addEventListener('resize', (e) => {
       const w = e.target as Window
       innerWidth.value = w.innerWidth
@@ -206,11 +181,11 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/contents/${props.contentId}`
-        )
-        console.log(res)
-        content.value = res.data
+        // const res = await axios.get(
+        //   `http://localhost:3000/contents/${props.contentId}`
+        // )
+        const res = await store.dispatch('content/getContent', props.contentId)
+        content.value = res
       } catch (error) {
         console.log(error)
         // 에러가 발생하는 경우 목록 페이지로 이동
@@ -259,7 +234,6 @@ export default defineComponent({
       displayedReviews,
       parties,
       comments,
-      toCurrency,
     }
   },
 })
@@ -317,51 +291,6 @@ export default defineComponent({
 
   .party-list {
     @apply grid gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mb-1;
-
-    .party {
-      @apply grid gap-4 p-4 border rounded-md border-gray-100;
-
-      .infos {
-        @apply flex justify-between;
-
-        .text {
-          h3 {
-            @apply font-bold mb-1;
-          }
-          p {
-            @apply text-xs;
-          }
-        }
-      }
-
-      .members {
-        @apply flex gap-2;
-
-        .material-icons {
-          font-size: 2rem;
-        }
-      }
-
-      .details {
-        @apply flex justify-between;
-
-        .date {
-          @apply text-xs;
-        }
-
-        .price-wrapper {
-          @apply text-right;
-
-          .original-price {
-            @apply text-red-600 text-sm font-bold line-through;
-          }
-
-          .price {
-            @apply font-bold text-gray-700;
-          }
-        }
-      }
-    }
   }
 
   .more-link {

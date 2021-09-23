@@ -67,6 +67,104 @@ export default defineComponent({
   })
   ```
 
-  
 
-  
+
+### TailwindCSS
+
+#### .container라는 클래스에 속성 지정하기
+
+[Tailwind `.container` the right way!](https://dev.to/bourhaouta/tailwind-container-the-right-way-5g77)
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  plugins: [
+    ({ addComponents }) => {
+      addComponents({
+        ".container": {
+          "@apply px-4 mx-auto": {},
+        },
+      });
+    },
+  ],
+};
+```
+
+
+
+### Axios
+
+#### Error Type Handling
+
+[참고링크](https://github.com/axios/axios/issues/3612#issuecomment-770224236)
+
+```typescript
+axios()
+	.then()
+    .catch((err: Error | AxiosError) {
+    	if (axios.isAxiosError(error))  {
+        	// Access to config, request, and response
+        } else {
+            // Just a stock error
+        }
+    })
+```
+
+
+
+### Vuex
+
+#### Module
+
+```typescript
+// index.ts
+
+import { createStore } from 'vuex'
+import { content } from '@/store/modules/content'
+
+export interface RootState {
+  data: string
+}
+
+export default createStore<RootState>({
+  modules: { content },
+})
+```
+
+
+
+```typescript
+// Module
+import axios from 'axios'
+import { Module } from 'vuex'
+import { RootState } from '@/store/index'
+
+interface ProfileState {
+  data: string
+}
+
+interface Content {
+  id: number
+  title: string
+  posterPath: string
+  simRate: number
+  providers: string[]
+  firstAirYear: number
+  rated: string
+  seasons: number
+  overview: string
+}
+
+const apiAxios = axios.create({
+  baseURL: 'http://localhost:3000',
+})
+
+export const content: Module<ProfileState, RootState> = {
+    namespaced: true,
+    state: {},
+    mutations: {},
+    actions: {},
+    getters: {},
+}
+```
+
