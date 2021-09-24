@@ -5,6 +5,7 @@
       <div class="profile-edit__box__form">
         <p class="text-xs text-gray-400">닉네임</p>
         <input class="text-sm" value="누클리어 런치 디텍티드" />
+        <!-- <Textinput /> -->
       </div>
       <div class="profile-edit__box__form">
         <p class="text-xs text-gray-400">이름</p>
@@ -38,8 +39,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+// import Textinput from '@/components/TextInput.vue'
 
 export default defineComponent({
+  name: 'ProfileEdit',
+  components: {
+    // Textinput,
+  },
   setup() {
     return {}
   },

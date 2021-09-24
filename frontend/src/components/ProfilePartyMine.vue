@@ -1,11 +1,11 @@
 <template>
-  <div class="profile-party__box border-red-500">
+  <div class="profile-party__box" :class="provider">
     <div class="profile-party__box__text--array">
-      <p class="font-semibold">넷플릭스 프리미엄</p>
+      <p class="font-semibold">{{ party.provider }}</p>
       <img
-        src="@/assets/images/Netflix.png"
+        :src="require(`@/assets/images/${provider}.png`)"
         class="profile-party__box__image--size"
-        alt="넷플릭스"
+        alt="이미지"
       />
     </div>
     <div class="profile-party__box__text--array2">
@@ -37,30 +37,66 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
+
+interface Party {
+  id: number
+  provider: string
+  title: string
+  logoUrl: string
+  member: {
+    totalCount: number
+    joinCount: number
+  }
+  endDate: string
+  restDays: number
+  pricePerDay: number
+}
 
 export default defineComponent({
-  setup() {
-    return {}
+  name: 'ProfilePartyMine',
+  props: {
+    party: {
+      type: Object as PropType<Party>,
+      required: true,
+    },
+  },
+  setup(prop) {
+    const provider = ref<string>('netflix')
+
+    switch (prop.party.provider) {
+      case '넷플릭스': {
+        provider.value = 'netflix'
+        break
+      }
+      case '왓챠': {
+        provider.value = 'watcha'
+        break
+      }
+      case '웨이브': {
+        provider.value = 'wavve'
+        break
+      }
+    }
+
+    return {
+      provider,
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-@media (min-width: 768px) {
-  .profile-party__box--array {
-    @apply grid grid-flow-row grid-cols-2;
-  }
-
-  .profile-party__box {
-  }
-}
-.profile-party__text--array {
-  @apply mt-6 mb-4 ml-4  text-2xl font-bold;
-}
-
 .profile-party__box {
-  @apply mx-4 mb-2 px-4 py-4 border rounded-md;
+  &.netflix {
+    @apply border-red-500;
+  }
+  &.watcha {
+    @apply border-pink-500;
+  }
+  &.wavve {
+    @apply border-blue-500;
+  }
 
   .profile-party__box__text--array {
     @apply flex justify-between mb-8;
@@ -81,9 +117,5 @@ export default defineComponent({
   .profile-party__box__text--array4 {
     @apply flex justify-between my-2 mx-0;
   }
-}
-
-details summary {
-  cursor: pointer;
 }
 </style>
