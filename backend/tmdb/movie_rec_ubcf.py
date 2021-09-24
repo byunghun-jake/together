@@ -1,7 +1,9 @@
 import numpy as np 
 import pandas as pd
 import json
+import time
 
+start = time.time()  # 시작 시간 저장
 # -------- Load Dataset -----------
 
 # movie json을 dataframe으로 만들기
@@ -94,3 +96,4 @@ recommend_result = recommend('The Suicide Squad', matrix, 10, similar_genre=True
 result = pd.DataFrame(recommend_result, columns = ['Title', 'Correlation', 'Genre'])
 
 print(result)
+print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

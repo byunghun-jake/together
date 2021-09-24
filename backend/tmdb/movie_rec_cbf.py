@@ -4,12 +4,14 @@ import json
 import numpy as np
 import re
 import pandas as pd
+import time
 
+start = time.time()  # 시작 시간 저장
 # 영화의 Overview(개요)의 연관성을 통해 영화를 추천해 준다.
 # -------- Load Dataset -----------
 
 # movie json을 dataframe으로 만들기
-with open('./movies.json', 'r') as f:
+with open('./movies_kr.json', 'r') as f:
     data = json.loads(f.read())
 df_nested_list = pd.json_normalize(data)
 
@@ -38,7 +40,7 @@ similar_index = np.argsort(-plot_similarity) # 유사도 높은 순서대로 ind
 # print("### 유사도 기준 index 정렬 ###")
 # print(similar_index)
 
-input_movie = "Black Widow"  # data에 있는 영화의 제목 입력
+input_movie = "Iron Man"  # data에 있는 영화의 제목 입력
 
 movie_index = movies[movies["original_title"] == input_movie].index.values # input_movie에 해당하는 index 값 가져오기
 similar_movies = similar_index[movie_index, :100]    # 유사도 상위 100개 index 가져오기
@@ -49,3 +51,4 @@ movies = movies.iloc[similar_movies_index]
 # 1000개 미만 평가를 받은 영화는 제외한다.
 movies = movies[movies["vote_count"] >= 1000] 
 print(movies.head(10))  # 유사도 상위 10개 영화 가져오기
+print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

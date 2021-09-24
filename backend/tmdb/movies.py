@@ -3,7 +3,7 @@ import os
 import requests
 from tmdb import URLMaker
 from dotenv import load_dotenv
-
+import time
 
 # Hide API KEY
 # verbose: .env 파일 누락 등의 경고 메시지 출력 옵션
@@ -49,15 +49,19 @@ def create_movie_data():
     movie_data = []
     print('-- 영화 데이터 작업 시작 --')
 
-    for page in range(1, 1000):
+    for page in range(0, 500):
         raw_data = requests.get(url.get_movie_url(page=page))
         json_data = raw_data.json()
         movies = json_data.get('results')
 
-        if(count > 5700):
-            print(f'Currently, {count} have been saved.')
-            break
+        # if(count > 5700):
+        #    print(f'Currently, {count} have been saved.')
+        #    break
         
+        if movies is None:
+            print(f"find error point is : {count}")
+            continue
+
         for movie in movies:
             fields = {}
             fields['poster_path'] = movie.get('poster_path')
@@ -94,13 +98,15 @@ def create_movie_data():
             count += 1
             if(count % 100 == 0):
                 print(f'Currently, {count} have been saved.')
-            
-
-    with open('movies.json', 'w') as f:
+    
+    # movies.json에 저장
+    with open('movies_kr.json', 'w') as f:
         json.dump(movie_data, f, indent=4)
     print(f'Total number of movies is {count}')
     print('-- 영화 데이터 작업 완료 --')
 
 if __name__ == '__main__':
+    start = time.time()  # 시작 시간 저장
     create_movie_genre_data()
     create_movie_data()
+    print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

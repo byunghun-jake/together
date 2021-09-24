@@ -14,7 +14,7 @@ class URLMaker:
 
     def get_movie_url(self, category='movie', feature='popular', page='1'):
         url = f'{self.url}/{category}/{feature}'
-        url += f'?api_key={self.key}&language=en-US&page={str(page)}'
+        url += f'?api_key={self.key}&language=ko-KR&page={str(page)}'
         return url
 
     def get_program_genre_url(self):
@@ -23,12 +23,12 @@ class URLMaker:
 
     def get_program_url(self, category='tv', feature='popular', page='1'):
         url = f'{self.url}/{category}/{feature}'
-        url += f'?api_key={self.key}&language=en-US&page={str(page)}'
+        url += f'?api_key={self.key}&language=ko-KR&page={str(page)}'
         return url
 
     def get_program_detail_url(self, program_id):
         url = f'{self.url}/tv/{program_id}'
-        url += f'?api_key={self.key}&language=en-US'
+        url += f'?api_key={self.key}&language=ko-KR'
         return url
 
     def get_provider_url(self, program_id, provider):
@@ -42,7 +42,7 @@ class URLMaker:
 
     def get_movie_review_url(self, movie_id, page='1'):
         url = f'{self.url}/movie/{movie_id}/reviews'
-        url += f'?api_key={self.key}&language=en-US&page={str(page)}'
+        url += f'?api_key={self.key}&language=ko-KR&page={str(page)}'
         return url
         
 
