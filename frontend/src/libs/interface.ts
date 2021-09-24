@@ -27,3 +27,19 @@ export interface ValidateData {
   status: boolean
   message?: string
 }
+
+export interface Party {
+  id: number
+  provider: string
+  title: string
+  desc: string
+  logoUrl: string
+  member: {
+    totalCount: number
+    joinCount: number
+  }
+  endDate: string
+  restDays: number
+  pricePerDay: number
+  totalCount: number
+}

@@ -1,10 +1,10 @@
 <template>
   <nav>
-    <router-link to="/" class="nav-link">
+    <router-link :to="{ name: 'ContentList' }" class="nav-link">
       <span class="material-icons">home</span>
       <span class="label">홈</span>
     </router-link>
-    <router-link to="/" class="nav-link">
+    <router-link :to="{ name: 'PartyList' }" class="nav-link">
       <span class="material-icons">accessibility_new</span>
       <span class="label">파티</span>
     </router-link>

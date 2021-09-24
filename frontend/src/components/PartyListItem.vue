@@ -1,13 +1,18 @@
 <template>
   <li class="party-list-item">
-    <router-link to="#">
+    <router-link :to="{ name: 'PartyDetail', params: { partyId: party.id } }">
       <div class="party">
         <div class="infos">
           <div class="text">
             <h3>{{ party.provider }} 프리미엄</h3>
             <p>{{ party.title }}</p>
           </div>
-          <div class="logo-wrapper">로고</div>
+          <div class="logo-wrapper">
+            <img
+              :src="require(`@/assets/images/${provider}.png`)"
+              :alt="`${party.provider} 로고`"
+            />
+          </div>
         </div>
         <div class="members">
           <span class="material-icons" v-for="i in 5" :key="i">star</span>
@@ -50,13 +55,31 @@ interface Party {
 export default defineComponent({
   name: 'PartyListItem',
   props: {
-    party: Object as PropType<Party>,
+    party: {
+      type: Object as PropType<Party>,
+      required: true,
+    },
   },
-  setup() {
+  setup(props) {
+    let provider = ''
+    switch (props.party.provider) {
+      case '넷플릭스': {
+        provider = 'Netflix'
+        break
+      }
+      case '왓챠': {
+        provider = 'Watcha'
+        break
+      }
+      case '웨이브': {
+        provider = 'Wavve'
+        break
+      }
+    }
     const toCurrency = (price: number): string => {
       return `${String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`
     }
-    return { toCurrency }
+    return { toCurrency, provider }
   },
 })
 </script>
@@ -70,10 +93,18 @@ export default defineComponent({
 
     .text {
       h3 {
-        @apply font-bold mb-1;
+        @apply md:text-lg font-bold mb-1;
       }
       p {
-        @apply text-xs;
+        @apply text-xs md:text-sm;
+      }
+    }
+
+    .logo-wrapper {
+      @apply w-8 h-8 md:w-10 md:h-10 rounded overflow-hidden;
+
+      img {
+        @apply w-full h-full object-fill;
       }
     }
   }
@@ -90,18 +121,18 @@ export default defineComponent({
     @apply flex justify-between;
 
     .date {
-      @apply text-xs;
+      @apply text-xs md:text-sm;
     }
 
     .price-wrapper {
       @apply text-right;
 
       .original-price {
-        @apply text-red-600 text-sm font-bold line-through;
+        @apply text-red-600 text-sm md:text-base font-bold line-through;
       }
 
       .price {
-        @apply font-bold text-gray-700;
+        @apply md:text-lg font-bold text-gray-700;
       }
     }
   }

@@ -4,7 +4,7 @@
       <div class="profile-main__info__top--array">
         <div class="text-2xl font-bold">내 정보</div>
         <div class="text-gray-400">
-          <router-link :to="{ name: 'ProfileEdit'}">수정</router-link>
+          <router-link :to="{ name: 'ProfileEdit' }">수정</router-link>
         </div>
       </div>
       <div class="profile-main__info--array">

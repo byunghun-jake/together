@@ -1,7 +1,8 @@
 <template>
   <section class="banner-section"></section>
   <div class="container">
-    <section class="party-section">
+    <section class="loading-section" v-if="loading">로딩중이다!</section>
+    <section class="party-section" v-else>
       <header class="section-header">파티에 참여하세요!</header>
       <ul class="party-list">
         <PartyListItem
@@ -15,12 +16,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import PartyListItem from '@/components/PartyListItem.vue'
+import { useStore } from 'vuex'
+import { Party } from '@/libs/interface'
 
 export default defineComponent({
   name: 'PartyList',
   components: { PartyListItem },
+  setup() {
+    const store = useStore()
+    const loading = ref(true)
+    const parties = ref<Party[]>([])
+
+    onMounted(async () => {
+      parties.value = await store.dispatch('party/getAllParties')
+      loading.value = false
+    })
+    return { loading, parties }
+  },
 })
 </script>
 
@@ -33,7 +47,11 @@ export default defineComponent({
   @apply py-6 px-4;
 
   .section-header {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-bold mb-4;
+  }
+
+  .party-list {
+    @apply grid gap-4 md:grid-cols-2 xl:grid-cols-3;
   }
 }
 </style>

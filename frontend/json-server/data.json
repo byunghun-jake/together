@@ -72,7 +72,8 @@
       "id": 1,
       "provider": "넷플릭스",
       "title": "[로얄넷플릭스] 💩5000000건이상공유💩",
-      "logoUrl": "",
+      "desc": "⭐ 안녕하세요. 야플릭스 입니다! 2020년 11월부터 운영하기 시작하여 누적 5,000건 이상 판매했으며, 재구매율 90% 이상의 만족도를 유지하고 있습니다. 365일 24시간 카톡 문의 가능하니 언제든 편하게 말씀 주세요. 앞으로도 안정적이고 저렴한 서비스를 제공해 드리기 위해 최선의 노력을 다하겠습니다. 많이 구매해주세요!",
+      "logoUrl": "@/assets/images/Netflix.png",
       "member": {
         "totalCount": 5,
         "joinCount": 4
@@ -80,13 +81,16 @@
       "endDate": "2021-12-25",
       "restDays": 109,
       "originalPricePerDay": 300,
-      "pricePerDay": 85
+      "pricePerDay": 85,
+      "totalCount": 5,
+      "rules": ["19세 이상", "계정양도 불가", "공유 금지", "환불 불가"]
     },
     {
       "id": 2,
       "provider": "넷플릭스",
       "title": "[로얄넷플릭스] 💩5000000건이상공유💩",
-      "logoUrl": "",
+      "desc": "⭐ 안녕하세요. 야플릭스 입니다! 2020년 11월부터 운영하기 시작하여 누적 5,000건 이상 판매했으며, 재구매율 90% 이상의 만족도를 유지하고 있습니다. 365일 24시간 카톡 문의 가능하니 언제든 편하게 말씀 주세요. 앞으로도 안정적이고 저렴한 서비스를 제공해 드리기 위해 최선의 노력을 다하겠습니다. 많이 구매해주세요!",
+      "logoUrl": "@/assets/images/Netflix.png",
       "member": {
         "totalCount": 4,
         "joinCount": 2
@@ -94,7 +98,43 @@
       "endDate": "2021-12-25",
       "restDays": 109,
       "originalPricePerDay": 300,
-      "pricePerDay": 85
+      "pricePerDay": 85,
+      "totalCount": 5,
+      "rules": ["19세 이상", "계정양도 불가", "공유 금지", "환불 불가"]
+    },
+    {
+      "id": 3,
+      "provider": "넷플릭스",
+      "title": "[로얄넷플릭스] 💩5000000건이상공유💩",
+      "desc": "⭐ 안녕하세요. 야플릭스 입니다! 2020년 11월부터 운영하기 시작하여 누적 5,000건 이상 판매했으며, 재구매율 90% 이상의 만족도를 유지하고 있습니다. 365일 24시간 카톡 문의 가능하니 언제든 편하게 말씀 주세요. 앞으로도 안정적이고 저렴한 서비스를 제공해 드리기 위해 최선의 노력을 다하겠습니다. 많이 구매해주세요!",
+      "logoUrl": "@/assets/images/Netflix.png",
+      "member": {
+        "totalCount": 4,
+        "joinCount": 2
+      },
+      "endDate": "2021-12-25",
+      "restDays": 109,
+      "originalPricePerDay": 300,
+      "pricePerDay": 85,
+      "totalCount": 5,
+      "rules": ["19세 이상", "계정양도 불가", "공유 금지", "환불 불가"]
+    },
+    {
+      "id": 4,
+      "provider": "넷플릭스",
+      "title": "[로얄넷플릭스] 💩5000000건이상공유💩",
+      "desc": "⭐ 안녕하세요. 야플릭스 입니다! 2020년 11월부터 운영하기 시작하여 누적 5,000건 이상 판매했으며, 재구매율 90% 이상의 만족도를 유지하고 있습니다. 365일 24시간 카톡 문의 가능하니 언제든 편하게 말씀 주세요. 앞으로도 안정적이고 저렴한 서비스를 제공해 드리기 위해 최선의 노력을 다하겠습니다. 많이 구매해주세요!",
+      "logoUrl": "@/assets/images/Netflix.png",
+      "member": {
+        "totalCount": 4,
+        "joinCount": 2
+      },
+      "endDate": "2021-12-25",
+      "restDays": 109,
+      "originalPricePerDay": 300,
+      "pricePerDay": 85,
+      "totalCount": 5,
+      "rules": ["19세 이상", "계정양도 불가", "공유 금지", "환불 불가"]
     }
   ],
   "comments": [
