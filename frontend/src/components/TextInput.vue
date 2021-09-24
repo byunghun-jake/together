@@ -36,7 +36,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
-import { FormDataListItem, ValidateParam, ValidateData } from '@/libs/interface'
+import {
+  FormDataList,
+  FormDataListItem,
+  ValidateParam,
+  ValidateData,
+} from '@/libs/interface'
 
 export default defineComponent({
   name: 'TextInput',
@@ -50,6 +55,9 @@ export default defineComponent({
     name: {
       type: String,
     },
+    formData: {
+      type: Object as PropType<FormDataList>,
+    },
   },
   emits: ['update:modelValue', 'update:validate'],
   setup(props, { emit }) {
@@ -60,13 +68,17 @@ export default defineComponent({
     const validate = (text: string) => {
       const name = props.name
       const validator = props.field?.validator
-      if (validator && name) {
+      const formData = props.formData
+      if (validator && name && formData) {
         const validateParam: ValidateParam = {
           key: name,
           value: text,
           form: props.field,
         }
-        const res: ValidateData = validator(validateParam)
+        const res: ValidateData = validator(
+          validateParam,
+          formData['password'].value
+        )
         emit('update:validate', res)
       }
     }

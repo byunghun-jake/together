@@ -10,7 +10,7 @@ export interface FormDataListItem {
   errors: {
     [key: string]: string
   }
-  validator?: (param: ValidateParam) => ValidateData
+  validator?: (param: ValidateParam, password?: string) => ValidateData
   message?: string
 }
 

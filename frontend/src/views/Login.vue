@@ -5,8 +5,8 @@
         <!-- temporary element -->
         <img src="@/images/temp_auth_logo.png" alt="OTT_logo" />
       </div>
-      <div class="login-container">
-        <div class="login-container__input-list">
+      <div class="input-container">
+        <div class="input-container__input-list">
           <Textinput
             v-for="(field, key) in formData"
             v-model="field.value"
@@ -14,11 +14,11 @@
             :name="key"
             :field="field"
             :formData="formData"
-            @submit="login"
+            @submit="submit"
             @update:validate="handleUpdateValidate($event)"
           />
         </div>
-        <div class="login-container__sub-option">
+        <div class="input-container__sub-option">
           <div>
             <input
               class="mr-1 bg-indigo-800"
@@ -39,10 +39,10 @@
           </router-link>
         </div>
         <button
-          class="login-container__login-btn"
+          class="input-container__submit-btn"
           :class="{ disabled: !isValidFormData }"
           :disabled="!isValidFormData"
-          @click="login"
+          @click="submit"
         >
           <!-- TODO: 로딩 상태 분기해서 로딩스피너와 교체할 것 -->
           로그인
@@ -54,13 +54,13 @@
         </router-link>
         <!-- Social Login area -->
         <hr class="my-4" />
-        <button class="login-container__social-btn kakao">
+        <button class="input-container__social-btn kakao">
           카카오로 시작하기
         </button>
-        <button class="login-container__social-btn google">
+        <button class="input-container__social-btn google">
           구글로 시작하기
         </button>
-        <button class="login-container__social-btn naver">
+        <button class="input-container__social-btn naver">
           네이버로 시작하기
         </button>
       </div>
@@ -73,7 +73,6 @@ import { computed, defineComponent, ref } from 'vue'
 import Textinput from '@/components/TextInput.vue'
 import { emailValidator } from '@/libs/validator'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
 import { FormDataList, ValidateData } from '@/libs/interface'
 
 export default defineComponent({
@@ -83,7 +82,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const router = useRouter()
+    const innerWidth = ref<number>(window.innerWidth)
 
     const isSaveEmail = ref<boolean>(
       localStorage.getItem('email') ? true : false
@@ -125,7 +124,7 @@ export default defineComponent({
       }
     }
 
-    const login = async () => {
+    const submit = async () => {
       // validate check
       // if isSaveEmail, save to localStorage
       const keys = Object.keys(formData.value)
@@ -134,12 +133,12 @@ export default defineComponent({
 
     return {
       store,
-      router,
+      innerWidth,
       isSaveEmail,
       isValidFormData,
       formData,
       handleUpdateValidate,
-      login,
+      submit,
     }
   },
 })
@@ -152,13 +151,13 @@ export default defineComponent({
   .logo {
     @apply mb-4;
   }
-  .login-container {
-    @apply grid gap-2 px-8 w-full;
+  .input-container {
+    @apply grid gap-2 px-8 w-full sm:w-96;
 
     &__input-list {
       @apply grid gap-3 w-full;
     }
-    &__login-btn {
+    &__submit-btn {
       @apply w-full rounded-lg py-3 text-sm text-white font-bold bg-indigo-900;
 
       &.disabled {

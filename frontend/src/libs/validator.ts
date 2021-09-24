@@ -22,7 +22,7 @@ export const passwordSecurityValidator = (
 ): ValidateData => {
   const key = param.key
   if (
-    !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/.test(
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/.test(
       param.value
     )
   ) {
@@ -36,14 +36,23 @@ export const passwordSecurityValidator = (
     key,
     type: 'weekPassword',
     status: false,
-    message: '총 8자 이상, 영문/숫자/특수문자 중 2가지 이상 입력해주세요.',
+    message: '총 8자 이상, 영문자/숫자/특수문자 조합을 입력해주세요.',
   }
 }
 
 export const passwordConfirmValidator = (
-  param: ValidateParam
+  param: ValidateParam,
+  password: string | undefined
 ): ValidateData => {
   const key = param.key
+  if (password !== param.value) {
+    return {
+      key,
+      type: 'passwordConfirmFailed',
+      status: false,
+      message: '비밀번호가 일치하지 않습니다.',
+    }
+  }
   return {
     key,
     type: 'passwordConfirmFailed',
