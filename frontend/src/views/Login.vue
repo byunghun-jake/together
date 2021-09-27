@@ -82,7 +82,6 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const innerWidth = ref<number>(window.innerWidth)
 
     const isSaveEmail = ref<boolean>(
       localStorage.getItem('email') ? true : false
@@ -125,15 +124,22 @@ export default defineComponent({
     }
 
     const submit = async () => {
-      // validate check
-      // if isSaveEmail, save to localStorage
-      const keys = Object.keys(formData.value)
-      return
+      if (isSaveEmail.value) {
+        localStorage.setItem('email', formData.value['email'].value)
+      }
+      if (isValidFormData.value) {
+        const userEmail = formData.value['email'].value
+        const password = formData.value['password'].value
+        // TODO: Add loading spinner
+        const response = await store.dispatch('auth/login', {
+          userEmail,
+          password,
+        })
+      }
     }
 
     return {
       store,
-      innerWidth,
       isSaveEmail,
       isValidFormData,
       formData,
@@ -146,7 +152,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .body {
-  @apply flex flex-col justify-center items-center w-full h-screen -mt-4 mb-4;
+  @apply flex flex-col justify-center items-center w-full h-screen sm:-mt-16 sm:-mb-20 -mt-6 -mb-12;
 
   .logo {
     @apply mb-4;

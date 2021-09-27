@@ -2,7 +2,9 @@
   <div class="container">
     <div class="body">
       <div class="input-container">
-        <div class="input-container__input-lable">이메일 / 비밀번호</div>
+        <div class="input-container__input-label primary">
+          이메일 / 비밀번호
+        </div>
         <div class="input-container__input-list">
           <Textinput
             v-for="(field, key) in formData"
@@ -15,7 +17,7 @@
             @update:validate="handleUpdateValidate($event)"
           />
         </div>
-        <div class="input-container__input-lable">내 정보</div>
+        <div class="input-container__input-label default">내 정보</div>
         <div class="input-container__input-list">
           <Textinput
             v-for="(field, key) in infoData"
@@ -53,16 +55,18 @@ import {
   passwordConfirmValidator,
 } from '@/libs/validator'
 import { FormDataList, ValidateData } from '@/libs/interface'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'Register',
   components: { Textinput },
   setup() {
+    const store = useStore()
     const formData = ref<FormDataList>({
       email: {
         label: '이메일',
         type: 'email',
-        value: localStorage.getItem('email') || '',
+        value: '',
         placeholder: '이메일',
         validator: emailValidator,
         errors: {},
@@ -134,10 +138,27 @@ export default defineComponent({
       }
     }
 
-    const submit = () => {
-      console.log('회원가입!!!')
+    const submit = async () => {
+      if (isValidFormData.value && isValidInfoData.value) {
+        const userEmail = formData.value['email'].value
+        const password = formData.value['password'].value
+        const passwordConfirm = formData.value['passwordConfirm'].value
+        const nickName = infoData.value['nickName'].value
+        const name = infoData.value['name'].value
+        const phoneNumber = infoData.value['phoneNumber'].value
+        // TODO: Add loading spinner
+        const response = await store.dispatch('auth/register', {
+          name,
+          password,
+          userEmail,
+          passwordConfirm,
+          phoneNumber,
+          nickName,
+        })
+      }
     }
     return {
+      store,
       isValidFormData,
       formData,
       isValidInfoData,
@@ -151,13 +172,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .body {
-  @apply flex flex-col justify-center items-center w-full h-screen -mt-4 -mb-4;
+  @apply flex flex-col justify-center items-center w-full h-screen -mt-16 -mb-20;
 
   .input-container {
     @apply grid gap-2 px-8 w-full sm:w-96;
 
     &__input-label {
-      @apply text-lg font-bold;
+      @apply text-sm font-bold mb-1;
 
       &.primary {
         @apply text-indigo-900;
