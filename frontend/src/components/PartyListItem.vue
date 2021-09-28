@@ -64,15 +64,15 @@ export default defineComponent({
     let provider = ''
     switch (props.party.provider) {
       case '넷플릭스': {
-        provider = 'Netflix'
+        provider = 'netflix'
         break
       }
       case '왓챠': {
-        provider = 'Watcha'
+        provider = 'watcha'
         break
       }
       case '웨이브': {
-        provider = 'Wavve'
+        provider = 'wavve'
         break
       }
     }

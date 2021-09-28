@@ -4,7 +4,7 @@
     <section class="party-detail-section" v-else>
       <div class="party-info-container">
         <div class="logo-wrapper">
-          <img src="@/assets/images/Netflix.png" alt="로고" />
+          <img src="@/assets/images/netflix.png" alt="로고" />
         </div>
         <h1 class="title">{{ party.title }}</h1>
         <div class="infos">
@@ -98,6 +98,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.container {
+  @apply max-w-3xl;
+}
+
 .party-detail-section {
   @apply grid gap-8 py-6 px-4;
 

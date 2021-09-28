@@ -1,14 +1,18 @@
 <template>
   <nav class="profile-main__navbar__button">
-    <router-link :to="{ name: 'ProfileMain' }" :class="{ active: !partyactive }"
-      >프로필</router-link
+    <router-link
+      :to="{ name: 'ProfileMain', params: { userId: 1 } }"
+      :class="{ active: !partyactive }"
     >
+      <span>프로필</span>
+    </router-link>
     <router-link
       :to="{ name: 'ProfileParty' }"
       :class="{ active: partyactive }"
       class="profile-main__navbar__button--space"
-      >파티 관리</router-link
     >
+      <span>파티 관리</span>
+    </router-link>
   </nav>
 </template>
 
@@ -37,10 +41,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .profile-main__navbar__button {
-  @apply flex justify-center items-center h-14 border border-gray-300;
+  @apply flex justify-center items-center gap-6 h-14 border border-gray-300;
 
   a {
-    @apply font-semibold text-gray-300;
+    @apply font-semibold text-gray-300 h-full flex items-center justify-center;
+
+    &:hover:not(.active) {
+      @apply text-indigo-500;
+    }
   }
 
   .active {
@@ -49,6 +57,5 @@ export default defineComponent({
 }
 
 .profile-main__navbar__button--space {
-  @apply ml-6;
 }
 </style>

@@ -3,7 +3,10 @@
   <div class="container">
     <section class="loading-section" v-if="loading">로딩중이다!</section>
     <section class="party-section" v-else>
-      <header class="section-header">파티에 참여하세요!</header>
+      <header class="section-header">
+        <h1>파티에 참여하세요!</h1>
+        <router-link :to="{ name: 'PartyCreate' }">파티 만들기</router-link>
+      </header>
       <ul class="party-list">
         <PartyListItem
           v-for="party in parties"
@@ -47,7 +50,15 @@ export default defineComponent({
   @apply py-6 px-4;
 
   .section-header {
-    @apply text-2xl font-bold mb-4;
+    @apply mb-4 flex items-center justify-between;
+
+    h1 {
+      @apply text-2xl font-bold;
+    }
+
+    a {
+      @apply inline-block py-2 px-4 text-sm text-white font-bold rounded-full bg-indigo-900;
+    }
   }
 
   .party-list {

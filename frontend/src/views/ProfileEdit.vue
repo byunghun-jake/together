@@ -1,79 +1,194 @@
 <template>
-  <div class="container max-w-screen-md">
-    <div class="profile-edit__main__section">
-      <p class="text-2xl font-bold mt-2 mb-2">내 정보</p>
-      <div class="profile-edit__box__form">
-        <p class="text-xs text-gray-400">닉네임</p>
-        <input class="text-sm" value="누클리어 런치 디텍티드" />
-      </div>
-      <div class="profile-edit__box__form">
-        <p class="text-xs text-gray-400">이름</p>
-        <input class="text-sm" value="김정은" />
-      </div>
-      <div class="profile-edit__box__form">
-        <p class="text-xs text-gray-400">휴대폰 번호</p>
-        <input class="text-sm" value="010-1717-1602" />
-      </div>
-      <p class="text-sm text-gray-700">
-        휴대폰 번호를 변경하려면 새로운 번호 인증을 해야 합니다.
-      </p>
-      <button class="profile-edit__cert__box__form">
-        <p>휴대폰 본인인증</p>
-      </button>
-      <div class="profile-edit__button__box--array">
-        <router-link
-          :to="{ name: 'ProfileMain' }"
-          class="profile-edit__checkbox--form"
-          >확인</router-link
-        >
-        <router-link
-          :to="{ name: 'ProfileChangePassword' }"
-          class="profile-edit__changepw--array"
-          >비밀번호 변경</router-link
-        >
-      </div>
-    </div>
+  <div class="container max-w-lg">
+    <section class="form-section">
+      <header>
+        <h3>내 정보</h3>
+      </header>
+      <form @submit="handleSubmit">
+        <div class="fields">
+          <Textinput
+            v-for="(field, key) in formData"
+            :key="key"
+            :formData="formData"
+            :field="field"
+            :name="key"
+            v-model="field.value"
+            @update:validate="handleUpdateValidate"
+          />
+        </div>
+        <div class="buttons">
+          <button :class="{ valid: formIsValid }" :disabled="!formIsValid">
+            확인
+          </button>
+          <router-link :to="{ name: 'ProfileChangePassword' }">
+            비밀번호 변경
+          </router-link>
+        </div>
+      </form>
+    </section>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import axios from 'axios'
+import { computed, defineComponent, onMounted, ref } from 'vue'
+import Textinput from '@/components/Common/TextInput.vue'
+import { ValidateData, Validator } from '@/libs/interface'
+import { requiredValidator } from '@/libs/validator'
+import { useRouter } from 'vue-router'
+
+interface FormField {
+  label: string
+  type: 'text' | 'number' | 'date'
+  value: string | number
+  placeholder?: string
+  errors: {
+    [key: string]: string
+  }
+  validators?: Validator[]
+  message?: string
+}
+
+interface FormData {
+  [key: string]: FormField
+}
 
 export default defineComponent({
-  setup() {
-    return {}
+  name: 'ProfileEdit',
+  components: {
+    Textinput,
+  },
+  props: {
+    userId: {
+      type: [String, Number],
+    },
+  },
+  setup(props) {
+    const router = useRouter()
+    const loading = ref<boolean>(true)
+    const formData = ref<FormData>({
+      nickName: {
+        label: '닉네임',
+        value: '',
+        type: 'text',
+        errors: {},
+        placeholder: '닉네임을 입력하세요',
+        validators: [requiredValidator],
+      },
+      name: {
+        label: '이름',
+        value: '',
+        type: 'text',
+        errors: {},
+        placeholder: '이름을 입력하세요',
+        validators: [requiredValidator],
+      },
+      phoneNumber: {
+        label: '휴대폰 번호',
+        value: '',
+        type: 'text',
+        errors: {},
+        placeholder: '휴대폰 번호는 "-"를 포함하여 입력하세요',
+        validators: [requiredValidator],
+      },
+    })
+
+    const formIsValid = computed(() => {
+      return Object.keys(formData.value).every((key) => {
+        return Object.keys(formData.value[key].errors).length === 0
+      })
+    })
+
+    const handleSubmit = async (event: Event) => {
+      event.preventDefault()
+      console.log('submit')
+      try {
+        const name = formData.value.name.value
+        const nickName = formData.value.nickName.value
+        const phoneNumber = formData.value.phoneNumber.value
+
+        const res = await axios.put(
+          `http://localhost:3000/account/${props.userId}`,
+          {
+            name,
+            nickName,
+            phoneNumber,
+          }
+        )
+        console.log(res)
+      } catch (error) {
+        console.log(error)
+      }
+      router.push({ name: 'ProfileMain' })
+    }
+
+    const handleUpdateValidate = (validateRes: ValidateData) => {
+      const { key, type, status } = validateRes
+
+      if (status) {
+        delete formData.value[key].errors[type]
+      } else if (validateRes.message) {
+        formData.value[key].errors[type] = validateRes.message
+      } else {
+        throw new Error('망했어요')
+      }
+    }
+
+    onMounted(async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/account/${props.userId}`
+        )
+        const { nickName, name, phoneNumber } = res.data
+        formData.value.nickName.value = nickName
+        formData.value.name.value = name
+        formData.value.phoneNumber.value = phoneNumber
+      } catch (error) {
+        console.log(error)
+      }
+      loading.value = false
+    })
+
+    return {
+      loading,
+      formData,
+      formIsValid,
+      handleSubmit,
+      handleUpdateValidate,
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.profile-edit__main__section {
-  @apply py-4 px-4 grid gap-2;
+.form-section {
+  @apply grid gap-6 py-10 px-4;
 
-  .profile-edit__box__form {
-    @apply flex flex-col justify-center items-start px-4 border border-gray-300 rounded-md;
-    height: 60px;
+  header h3 {
+    @apply text-xl font-bold;
   }
 
-  .profile-edit__cert__box__form {
-    @apply flex justify-center items-center border rounded-full text-white text-sm;
-    width: 126px;
-    height: 36px;
-    background-color: #312e81;
-  }
+  form {
+    @apply grid gap-10;
 
-  .profile-edit__button__box--array {
-    @apply flex flex-col justify-center items-center;
-  }
+    .fields {
+      @apply grid gap-4;
+    }
 
-  .profile-edit__checkbox--form {
-    @apply flex justify-center items-center mt-8 mx-auto mb-2 h-14 border rounded-xl text-white;
-    width: 382px;
-    background-color: #312e81;
-  }
+    .buttons {
+      @apply grid gap-2;
 
-  .profile-edit__changepw--array {
-    @apply mx-auto my-0;
+      button {
+        @apply py-4 max-w-xs w-full mx-auto bg-gray-100 text-gray-400 font-bold rounded-xl;
+
+        &.valid {
+          @apply bg-indigo-900 text-white;
+        }
+      }
+      a {
+        @apply mx-auto;
+      }
+    }
   }
 }
 </style>

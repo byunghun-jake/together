@@ -8,7 +8,11 @@
       <span class="material-icons">accessibility_new</span>
       <span class="label">파티</span>
     </router-link>
-    <router-link to="/" class="nav-link">
+    <router-link :to="{ name: 'Login' }" class="nav-link" v-if="true">
+      <span class="material-icons">supervised_user_circle</span>
+      <span class="label">로그인</span>
+    </router-link>
+    <router-link :to="{ name: 'ProfileMain' }" class="nav-link" v-else>
       <span class="material-icons">supervised_user_circle</span>
       <span class="label">내 정보</span>
     </router-link>

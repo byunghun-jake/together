@@ -2,47 +2,98 @@
   <section class="banner-section">배너</section>
   <div class="container">
     <section class="filter-section">
-      <ul class="filter-list">
-        <li class="filter-item">넷</li>
-        <li class="filter-item">웨</li>
-        <li class="filter-item">왓</li>
-        <li class="filter-item">네</li>
-      </ul>
+      <div class="filter-list">
+        <button
+          class="filter-button img-wrapper"
+          :class="{ active: provider.active }"
+          v-for="(provider, key) in providers"
+          :key="key"
+          @click="handleFilterClick(provider.name)"
+        >
+          <img
+            :src="require(`@/assets/images/${provider.name}.png`)"
+            :alt="provider.name"
+          />
+        </button>
+      </div>
     </section>
     <section class="contents-section">
       <header class="section-header">추천 컨텐츠</header>
       <ul class="contents-list">
-        <li class="contents-item" v-for="content in contents" :key="content.id">
-          <router-link
-            :to="{ name: 'ContentDetail', params: { contentId: content.id } }"
+        <transition-group name="contents">
+          <li
+            class="contents-item"
+            v-for="content in displayedContentList"
+            :key="content.id"
           >
-            <div class="poster-wrapper">
-              <img
-                :src="content.posterPath"
-                :alt="`${content.title}의 포스터`"
-              />
-            </div>
-          </router-link>
-        </li>
+            <!-- <router-link
+              :to="{ name: 'ContentDetail', params: { contentId: content.id } }"
+            >
+              <div class="poster-wrapper">
+                <img
+                  :src="content.posterPath"
+                  :alt="`${content.title}의 포스터`"
+                />
+              </div>
+            </router-link> -->
+            <ContentPosterLink :content="content" />
+          </li>
+        </transition-group>
       </ul>
     </section>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import { Content } from '@/libs/interface'
+import ContentPosterLink from '@/components/ContentPosterLink.vue'
 
-interface Content {
-  id: number
-  title: string
-  posterPath: string
+type Provider = 'netflix' | 'wavve' | 'watcha'
+
+interface Providers {
+  [key: string]: {
+    name: Provider
+    active: boolean
+  }
 }
 
 export default defineComponent({
   name: 'ContentList',
+  components: { ContentPosterLink },
   setup() {
     const store = useStore()
-    const contents = ref<Content[]>()
+    const contents = ref<Content[]>([])
+
+    const providers = ref<Providers>({
+      netflix: {
+        name: 'netflix',
+        active: true,
+      },
+      wavve: {
+        name: 'wavve',
+        active: true,
+      },
+      watcha: {
+        name: 'watcha',
+        active: true,
+      },
+    })
+
+    const displayedContentList = computed(() => {
+      return contents.value.filter((content) => {
+        return content.providers.some(
+          (provider) => providers.value[provider].active
+        )
+      })
+    })
+
+    const handleFilterClick = (providerName: Provider) => {
+      providers.value[providerName].active =
+        !providers.value[providerName].active
+
+      console.log(providers.value)
+    }
 
     onMounted(async () => {
       // Axios 에러인 상황과 알 수 없는 에러인 상황을 함께 다루려면?
@@ -58,6 +109,9 @@ export default defineComponent({
     })
     return {
       contents,
+      displayedContentList,
+      providers,
+      handleFilterClick,
     }
   },
 })
@@ -73,8 +127,16 @@ export default defineComponent({
   .filter-list {
     @apply flex gap-6;
 
-    .filter-item {
-      @apply w-8 h-8 md:w-10 md:h-10 bg-pink-300;
+    .filter-button {
+      @apply w-8 h-8 md:w-10 md:h-10 opacity-30;
+
+      &.active {
+        @apply opacity-100;
+      }
+
+      img {
+        @apply object-contain object-center;
+      }
     }
   }
 }
@@ -98,5 +160,10 @@ export default defineComponent({
       }
     }
   }
+}
+
+/* Transition */
+.contents-move {
+  @apply transition-all;
 }
 </style>

@@ -1,23 +1,17 @@
 <template>
-  <!-- <nav class="profile-main__navbar__button">
-    <router-link to="/profile">프로필</router-link>
-    <router-link
-      to="/profile/myparty"
-      class="profile-main__navbar__button--space"
-      >파티 관리</router-link
-    >
-  </nav> -->
   <ProfileHeader />
   <router-view />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ProfileHeader from '@/components/Common/ProfileHeader.vue'
+import ProfileHeader from '@/components/ProfileHeader.vue'
 
 export default defineComponent({
   name: 'ProfileLayout',
-  components: { ProfileHeader },
+  components: {
+    ProfileHeader,
+  },
   setup() {
     return {}
   },

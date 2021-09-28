@@ -11,15 +11,17 @@
           </div>
           <div class="info">
             <span class="label">파티 이름</span>
-            <span class="value">ㄹㄹ</span>
+            <span class="value">{{ party.title }}</span>
           </div>
           <div class="info">
             <span class="label">파티장</span>
-            <span class="value">향긋하다</span>
+            <span class="value">{{ party.host }}</span>
           </div>
           <div class="info">
-            <span class="label">파티 기간</span>
-            <span class="value">2021. 09. 09 ~ 2021. 12. 25 (109일)</span>
+            <span class="label">파티 종료일</span>
+            <span class="value">
+              {{ party.endDate }} ({{ party.restDays }}일)
+            </span>
           </div>
           <div class="info">
             <span class="label">참가비</span>
@@ -32,18 +34,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { Party } from '@/libs/interface'
+import { defineComponent, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'PartyJoin',
-  setup() {
-    const loading = ref(false)
-    return { loading }
+  props: {
+    partyId: {
+      type: [String, Number],
+      required: true,
+    },
+  },
+  setup(props) {
+    const store = useStore()
+    const loading = ref(true)
+    const party = ref<Party>()
+    onMounted(async () => {
+      try {
+        const _party: Party = await store.dispatch(
+          'party/getParty',
+          props.partyId
+        )
+        party.value = _party
+      } catch (error) {
+        console.log(error)
+      }
+      loading.value = false
+    })
+
+    return { loading, party }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.container {
+  @apply max-w-3xl;
+}
+
 h3 {
   @apply text-xl font-bold mb-4;
 }

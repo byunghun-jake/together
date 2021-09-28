@@ -1,7 +1,3 @@
-export interface FormDataList {
-  [key: string]: FormDataListItem
-}
-
 export interface FormDataListItem {
   label: string
   type: string
@@ -12,6 +8,10 @@ export interface FormDataListItem {
   }
   validator?: (param: ValidateParam, password?: string) => ValidateData
   message?: string
+}
+
+export interface FormDataList {
+  [key: string]: FormDataListItem
 }
 
 export interface ValidateParam {
@@ -28,6 +28,18 @@ export interface ValidateData {
   message?: string
 }
 
+export interface Content {
+  id: number
+  title: string
+  posterPath: string
+  simRate: number
+  providers: string[]
+  firstAirYear: number
+  rated: string
+  seasons: number
+  overview: string
+}
+
 export interface Party {
   id: number
   provider: string
@@ -42,4 +54,28 @@ export interface Party {
   restDays: number
   pricePerDay: number
   totalCount: number
+}
+
+export type Provider = '넷플릭스' | '왓챠' | '웨이브' | ''
+type Rule = '19세 이상' | '계정양도 불가' | '공유 금지' | '환불 불가'
+export type Validator = (key: string, value: string | number) => ValidateData
+
+export interface PartyFormField {
+  label: string
+  type: 'text' | 'number' | 'date'
+  value: string | number
+  placeholder?: string
+  errors: {
+    [key: string]: string
+  }
+  validators?: Validator[]
+  message?: string
+}
+export interface PartyForm {
+  [key: string]: PartyFormField
+}
+
+export interface InputEvent<T = Element> {
+  relatedTarget: EventTarget | null
+  target: EventTarget & T
 }

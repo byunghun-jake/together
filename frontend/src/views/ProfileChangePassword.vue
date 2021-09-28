@@ -1,71 +1,165 @@
 <template>
-  <div class="container max-w-screen-md">
-    <p class="profile-changepassword__top--array">비밀번호 변경</p>
-    <div class="profile-changepassword__box__form">
-      <input
-        class="profile-changepassword__box__form__text--array"
-        type="password"
-        value=""
-        placeholder="현재 비밀번호"
-      />
-      <input
-        class="profile-changepassword__box__form__text--array"
-        type="password"
-        value=""
-        placeholder="새 비밀번호"
-      />
-      <input
-        class="profile-changepassword__box__form__text--array"
-        type="password"
-        value=""
-        placeholder="새 비밀번호 확인"
-      />
-    </div>
-    <div class="profile-changepassword__button__box--array">
-      <button class="profile-changepassword__checkbox--form">확인</button>
-      <router-link
-        :to="{ name: 'ProfileEdit' }"
-        class="profile-changepassword__back--array"
-        >돌아가기</router-link
-      >
-    </div>
+  <div class="container max-w-sm">
+    <section class="form-section">
+      <header>
+        <h3>비밀번호 변경</h3>
+      </header>
+      <form @submit="handleSubmit">
+        <div class="fields">
+          <TextInput
+            v-for="(field, key) in formData"
+            :key="key"
+            :field="field"
+            :formData="formData"
+            :name="key"
+            v-model="field.value"
+            @update:validate="handleUpdateValidate"
+          />
+        </div>
+        <div class="buttons">
+          <button :class="{ valid: formIsValid }" :disabled="!formIsValid">
+            확인
+          </button>
+          <router-link to="/">돌아가기</router-link>
+        </div>
+      </form>
+    </section>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ValidateData, Validator } from '@/libs/interface'
+import { requiredValidator } from '@/libs/validator'
+import { computed, defineComponent, ref } from 'vue'
+import TextInput from '@/components/Common/TextInput.vue'
+
+interface FormField {
+  label: string
+  type: 'text' | 'number' | 'date' | 'password'
+  value: string | number
+  placeholder?: string
+  errors: {
+    [key: string]: string
+  }
+  validators?: Validator[]
+  message?: string
+}
+
+interface FormData {
+  [key: string]: FormField
+}
 
 export default defineComponent({
+  components: { TextInput },
   setup() {
-    return {}
+    const formData = ref<FormData>({
+      currentPassword: {
+        label: '현재 비밀번호',
+        type: 'password',
+        value: '',
+        placeholder: '현재 비밀번호를 입력하세요',
+        errors: {},
+        validators: [requiredValidator],
+      },
+      newPassword: {
+        label: '새 비밀번호',
+        type: 'password',
+        value: '',
+        placeholder: '새 비밀번호를 입력하세요',
+        errors: {},
+        validators: [requiredValidator],
+      },
+      confirmNewPassword: {
+        label: '새 비밀번호 확인',
+        type: 'password',
+        value: '',
+        placeholder: '새 비밀번호를 입력하세요',
+        errors: {},
+        validators: [requiredValidator],
+      },
+    })
+
+    const newPasswordCheck = computed(() => {
+      return (
+        formData.value.newPassword.value ===
+        formData.value.confirmNewPassword.value
+      )
+    })
+
+    const formErrorCheck = computed(() => {
+      return Object.keys(formData.value).every((key) => {
+        return (
+          Object.keys(formData.value[key].errors).length === 0 &&
+          formData.value[key].value
+        )
+      })
+    })
+
+    const formIsValid = computed(() => {
+      return newPasswordCheck.value && formErrorCheck.value
+    })
+
+    const handleSubmit = async (event: Event) => {
+      event.preventDefault()
+      // try {
+      //   const res = await axios.put(``)
+      // } catch (error) {
+      //   console.log(error)
+      // }
+    }
+
+    const handleUpdateValidate = (validateRes: ValidateData) => {
+      const { key, type, status } = validateRes
+
+      if (status) {
+        delete formData.value[key].errors[type]
+      } else if (validateRes.message) {
+        formData.value[key].errors[type] = validateRes.message
+      } else {
+        throw new Error('망했어요')
+      }
+    }
+
+    return {
+      formData,
+      formIsValid,
+      handleSubmit,
+      handleUpdateValidate,
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.profile-changepassword__top--array {
-  @apply px-4 pt-6 pb-4 text-2xl font-bold;
-}
+.form-section {
+  @apply py-6 px-4 grid gap-6;
 
-.profile-changepassword__box__form {
-  @apply grid gap-2 mx-4;
-
-  .profile-changepassword__box__form__text--array {
-    @apply pt-4 pr-0 pb-4 pl-4 border border-gray-300 rounded-md;
-  }
-}
-
-.profile-changepassword__button__box--array {
-  @apply flex flex-col justify-center items-center pt-10;
-
-  .profile-changepassword__checkbox--form {
-    @apply flex justify-center items-center mx-auto mb-2 h-14 border rounded-xl text-white;
-    width: 382px;
-    background-color: #312e81;
+  header h3 {
+    @apply text-xl font-bold;
   }
 
-  .profile-changepassword__back--array {
-    @apply mx-auto my-0;
+  form {
+    @apply grid gap-10;
+
+    .fields {
+      @apply grid gap-4;
+    }
+
+    .buttons {
+      @apply grid gap-2;
+
+      button {
+        @apply mx-auto w-full max-w-sm py-4 bg-gray-100 text-gray-400 font-bold rounded-xl;
+
+        &.valid {
+          @apply bg-indigo-900 text-white;
+        }
+      }
+
+      a {
+        @apply mx-auto;
+      }
+    }
   }
 }
 </style>
