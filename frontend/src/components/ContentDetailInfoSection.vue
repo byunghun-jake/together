@@ -21,16 +21,23 @@
     <div class="overview">
       {{ content.overview }}
     </div>
-    <div class="rating-wrapper">
-      <button class="rating-btn" v-for="i in 5" :key="i">
-        <span class="material-icons star">star</span>
-      </button>
-    </div>
+    <fieldset class="rating-wrapper" @change="handleChange">
+      <template v-for="i in 5" :key="i">
+        <input
+          type="radio"
+          v-model="rating"
+          :id="`rating${6 - i}`"
+          name="rating"
+          :value="6 - i"
+        />
+        <label class="material-icons star" :for="`rating${6 - i}`">star</label>
+      </template>
+    </fieldset>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 type Content = {
   id: number
@@ -52,7 +59,21 @@ export default defineComponent({
     },
   },
   setup() {
-    return {}
+    const rating = ref<number | null>(null)
+
+    const handleChange = () => {
+      const ok = confirm(`내가 매긴 점수: ${rating.value}점`)
+      if (ok) {
+        console.log(rating.value)
+      } else {
+        rating.value = null
+      }
+    }
+
+    return {
+      rating,
+      handleChange,
+    }
   },
 })
 </script>
@@ -87,14 +108,26 @@ export default defineComponent({
   }
 
   .rating-wrapper {
-    @apply p-2 border border-gray-200 rounded mr-auto flex gap-1;
+    @apply p-2 border border-gray-200 rounded mr-auto flex flex-row-reverse gap-1;
 
-    .rating-btn {
-      @apply flex;
+    input {
+      @apply hidden;
+    }
+    .star {
+      @apply text-gray-200;
+    }
 
-      .star {
-        @apply text-gray-200;
-      }
+    input:checked ~ label, /* show gold star when clicked */
+    &:not(:checked) > label:hover, /* hover current star */
+    &:not(:checked) > label:hover ~ label {
+      @apply text-yellow-400;
+    }
+
+    input:checked + label:hover, /* hover current star when changing rating */
+    input:checked ~ label:hover,
+    label:hover ~ input:checked ~ label, /* lighten current selection */
+    input:checked ~ label:hover ~ label {
+      @apply text-yellow-300;
     }
   }
 }

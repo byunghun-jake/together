@@ -26,16 +26,6 @@
             v-for="content in displayedContentList"
             :key="content.id"
           >
-            <!-- <router-link
-              :to="{ name: 'ContentDetail', params: { contentId: content.id } }"
-            >
-              <div class="poster-wrapper">
-                <img
-                  :src="content.posterPath"
-                  :alt="`${content.title}의 포스터`"
-                />
-              </div>
-            </router-link> -->
             <ContentPosterLink :content="content" />
           </li>
         </transition-group>
@@ -91,8 +81,6 @@ export default defineComponent({
     const handleFilterClick = (providerName: Provider) => {
       providers.value[providerName].active =
         !providers.value[providerName].active
-
-      console.log(providers.value)
     }
 
     onMounted(async () => {
