@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # CORS
-    'corsheaders',
 
+    'corsheaders',
+    
+    
     'drf_yasg',  # drf_yasg(swagger)
     # user authentioation basic module
     'django.contrib.sites',
@@ -55,6 +56,8 @@ INSTALLED_APPS = [
 
     # app
     'sign.apps.SignConfig',
+    'party.apps.PartyConfig',
+    'billing',
     'rec_movie.apps.RecConfig',
 
     # DRF
@@ -93,11 +96,12 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 
 REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_COOKIE = 'access_token'
+JWT_AUTH_REFRESH_COOKIE = 'refresh_token'
 
 
 JWT_AUTH = {
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_ALGORITHM': 'HS256',
     'JWT_ALLOW_REFRESH': True,
@@ -109,6 +113,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES':[
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
@@ -118,8 +123,15 @@ REST_FRAMEWORK = {
 
 # SNS 로그인
 SOCIALACCOUNT_FORMS = {
-    'signup': 'allauth.socialaccount.forms.SignupForm',
+    'signup': 'allauth.socialaccount.forms.SignupForm', 
 }
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'joenjoy202@gmail.com'
+EMAIL_HOST_PASSWORD ='test1234!'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 MIDDLEWARE = [
@@ -128,13 +140,27 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS  = [
+    'http://localhost:8080',
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -209,7 +235,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -223,4 +249,5 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
+IAMPORT_KEY = '8672455937141527'
+IAMPORT_SECRET = '26b8725faf7263d68de19b5f96ee979ab01e3160083f3bc6ba66464918c5957997081d55abd0c8ca'
