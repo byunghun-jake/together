@@ -3,7 +3,7 @@ import { RootState } from '@/store/index'
 import axios from 'axios'
 import { Party } from '@/libs/interface'
 
-const APIAxios = axios.create({
+const http = axios.create({
   baseURL: 'http://localhost:3000',
 })
 
@@ -20,7 +20,7 @@ export const party: Module<PartyModule, RootState> = {
   actions: {
     getAllParties: async (): Promise<Party[] | undefined> => {
       try {
-        const res = await APIAxios.get('/parties')
+        const res = await http.get('/parties')
         return res.data
       } catch (error) {
         console.log(error)
@@ -32,10 +32,19 @@ export const party: Module<PartyModule, RootState> = {
       partyId: number | string
     ): Promise<Party | undefined> => {
       try {
-        const res = await APIAxios.get(`/parties/${partyId}`)
+        const res = await http.get(`/parties/${partyId}`)
         return res.data
       } catch (error) {
         console.log(error)
+      }
+    },
+    async postParty(context, data) {
+      try {
+        console.log(data)
+        const res = await http.post(`/parties`, data)
+        console.log(res)
+      } catch (error: any) {
+        console.log(error.response)
       }
     },
   },

@@ -4,13 +4,13 @@
       <div class="party">
         <div class="infos">
           <div class="text">
-            <h3>{{ party.provider }} 프리미엄</h3>
+            <h3>{{ party.providerName }} 프리미엄</h3>
             <p>{{ party.title }}</p>
           </div>
           <div class="logo-wrapper">
             <img
               :src="require(`@/assets/images/${provider}.png`)"
-              :alt="`${party.provider} 로고`"
+              :alt="`${party.providerName} 로고`"
             />
           </div>
         </div>
@@ -19,14 +19,14 @@
         </div>
         <div class="details">
           <div>
-            <p class="date">{{ party.endDate }}까지 ({{ party.restDays }}일)</p>
+            <p class="date">{{ party.endDate }}까지 ({{ restDays }}일)</p>
           </div>
           <div class="price-wrapper">
             <p class="original-price">
-              {{ toCurrency(party.originalPricePerDay * party.restDays) }}
+              {{ toCurrency(party.providerPricePerDay * restDays) }}
             </p>
             <p class="price">
-              {{ toCurrency(party.pricePerDay * party.restDays) }}
+              {{ toCurrency(party.pricePerDay * restDays) }}
             </p>
           </div>
         </div>
@@ -36,21 +36,9 @@
 </template>
 
 <script lang="ts">
+import { Party } from '@/libs/interface'
+import { getRestDays, toCurrency } from '@/libs/func'
 import { defineComponent, PropType } from 'vue'
-
-interface Party {
-  id: number
-  provider: string
-  title: string
-  logoUrl: string
-  member: {
-    totalCount: number
-    joinCount: number
-  }
-  endDate: string
-  restDays: number
-  pricePerDay: number
-}
 
 export default defineComponent({
   name: 'PartyListItem',
@@ -62,7 +50,7 @@ export default defineComponent({
   },
   setup(props) {
     let provider = ''
-    switch (props.party.provider) {
+    switch (props.party.providerName) {
       case '넷플릭스': {
         provider = 'netflix'
         break
@@ -76,10 +64,9 @@ export default defineComponent({
         break
       }
     }
-    const toCurrency = (price: number): string => {
-      return `${String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`
-    }
-    return { toCurrency, provider }
+
+    const restDays: number = getRestDays(props.party.endDate)
+    return { toCurrency, provider, restDays }
   },
 })
 </script>

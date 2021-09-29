@@ -13,6 +13,7 @@ import ContentDetail from '@/views/ContentDetail.vue'
 import PartyList from '@/views/PartyList.vue'
 import PartyDetail from '@/views/PartyDetail.vue'
 import PartyJoin from '@/views/PartyJoin.vue'
+import PartyJoinConfirm from '@/views/PartyJoinConfirm.vue'
 import PartyCreate from '@/views/PartyCreate.vue'
 
 import Login from '@/views/Login.vue'
@@ -64,6 +65,12 @@ const routes: Array<RouteRecordRaw> = [
         path: ':partyId/join',
         name: 'PartyJoin',
         component: PartyJoin,
+        props: true,
+      },
+      {
+        path: ':partyId/join/confirm',
+        name: 'PartyJoinConfirm',
+        component: PartyJoinConfirm,
         props: true,
       },
     ],

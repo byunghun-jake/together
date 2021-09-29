@@ -70,7 +70,7 @@
             :formData="inputForm"
             @update:validate="handleUpdateValidate($event)"
           />
-          <textarea placeholder="상세 정보"></textarea>
+          <textarea v-model="desc" placeholder="상세 정보"></textarea>
         </form>
       </template>
     </section>
@@ -93,12 +93,14 @@ import TextInput from '@/components/Common/TextInput.vue'
 import { requiredValidator } from '@/libs/validator'
 import { PartyForm, Provider, ValidateData } from '@/libs/interface'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'PartyCreate',
   components: { TextInput },
   setup() {
     const router = useRouter()
+    const store = useStore()
     const provider = ref<Provider>('')
     const inputForm = ref<PartyForm>({
       title: {
@@ -125,7 +127,7 @@ export default defineComponent({
         errors: {},
         validators: [],
       },
-      memberCount: {
+      memberLimit: {
         label: '모집인원',
         type: 'number',
         value: 0,
@@ -147,13 +149,23 @@ export default defineComponent({
         errors: {},
       },
     })
-    const formIsValid = computed(() => {
+    const desc = ref<string>('')
+
+    const checkErrorFromInputForm = computed(() => {
       return Object.keys(inputForm.value).every((fieldKey) => {
         return (
           inputForm.value[fieldKey].value &&
           Object.keys(inputForm.value[fieldKey].errors).length === 0
         )
       })
+    })
+
+    const formIsValid = computed(() => {
+      return (
+        checkErrorFromInputForm.value &&
+        provider.value.length !== 0 &&
+        desc.value.length !== 0
+      )
     })
 
     const handleUpdateValidate = (data: ValidateData) => {
@@ -173,21 +185,29 @@ export default defineComponent({
       provider.value = ''
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       const data: { [key: string]: Provider | string | number } = {
-        provider: provider.value,
+        desc: desc.value,
+        // 하드코딩
+        providerName: provider.value,
+        providerLogoUrl: '@/assets/images/netflix.png',
+        providerPricePerDay: 300,
+        hostName: '김병훈',
+        membersCount: 3,
       }
       Object.keys(inputForm.value).forEach((fieldKey) => {
+        console.log(fieldKey, typeof inputForm.value[fieldKey].value)
         data[fieldKey] = inputForm.value[fieldKey].value
       })
       const ok = confirm('생성하시겠습니까?')
       if (ok) {
         console.log(data)
-        router.push({ name: 'PartyList' })
+        await store.dispatch('party/postParty', data)
       }
     }
 
     return {
+      desc,
       provider,
       inputForm,
       formIsValid,

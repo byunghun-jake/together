@@ -9,11 +9,15 @@
         <h1 class="title">{{ party.title }}</h1>
         <div class="infos">
           <p class="host">파티장: 향긋하다</p>
-          <p class="endDate">{{ party.endDate }} 까지</p>
+          <p class="endDate">{{ party.endDate }} 까지 ({{ restDays }}일)</p>
           <div class="price-wrapper">
-            <p class="original-price">58,647원</p>
+            <p class="original-price">
+              {{ toCurrency(party.providerPricePerDay * restDays) }}
+            </p>
             <div class="price_per-day">
-              <span class="price">9,265원</span>
+              <span class="price">{{
+                toCurrency(party.pricePerDay * restDays)
+              }}</span>
             </div>
           </div>
         </div>
@@ -21,7 +25,7 @@
       <div class="remain-container">
         <h3>남은 자리</h3>
         <ul class="member-list">
-          <li v-for="i in 2" :key="i">
+          <li v-for="i in party.memberLimit - party.membersCount" :key="i">
             <div class="image-wrapper">
               <img
                 class="member-icon"
@@ -35,7 +39,7 @@
       <div class="members-container">
         <h3>파티원</h3>
         <ul class="member-list">
-          <li v-for="i in 3" :key="i">
+          <li v-for="i in party.membersCount" :key="i">
             <div class="image-wrapper">
               <img
                 class="member-icon"
@@ -43,14 +47,6 @@
                 alt="파티원"
               />
             </div>
-          </li>
-        </ul>
-      </div>
-      <div class="rule-container">
-        <h3>규칙</h3>
-        <ul class="rule-list">
-          <li class="rule-item" v-for="rule in party.rules" :key="rule">
-            {{ rule }}
           </li>
         </ul>
       </div>
@@ -73,6 +69,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { Party } from '@/libs/interface'
 import { useStore } from 'vuex'
+import { getRestDays, toCurrency } from '@/libs/func'
 
 export default defineComponent({
   name: 'PartyDetail',
@@ -86,13 +83,23 @@ export default defineComponent({
     const store = useStore()
     const loading = ref(true)
     const party = ref<Party>()
+    const restDays = ref<number>(0)
 
     onMounted(async () => {
-      party.value = await store.dispatch('party/getParty', props.partyId)
+      try {
+        const _party: Party = await store.dispatch(
+          'party/getParty',
+          props.partyId
+        )
+        party.value = _party
+        restDays.value = getRestDays(_party.endDate)
+      } catch (error) {
+        console.log(error.response)
+      }
       loading.value = false
     })
 
-    return { loading, party }
+    return { loading, party, restDays, toCurrency }
   },
 })
 </script>
@@ -151,16 +158,6 @@ export default defineComponent({
       @apply flex flex-wrap gap-10;
       .image-wrapper {
         @apply w-20 h-20 overflow-hidden;
-      }
-    }
-  }
-
-  .rule-container {
-    .rule-list {
-      @apply flex flex-wrap gap-4;
-
-      .rule-item {
-        @apply py-2 px-4 rounded-full bg-gray-100 text-sm;
       }
     }
   }

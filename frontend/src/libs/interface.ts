@@ -40,24 +40,21 @@ export interface Content {
   overview: string
 }
 
+export type Provider = '넷플릭스' | '왓챠' | '웨이브' | ''
 export interface Party {
   id: number
-  provider: string
   title: string
   desc: string
-  logoUrl: string
-  member: {
-    totalCount: number
-    joinCount: number
-  }
+  memberLimit: number
   endDate: string
-  restDays: number
   pricePerDay: number
-  totalCount: number
+  providerName: Provider
+  providerLogoUrl: string
+  providerPricePerDay: number
+  hostName: string
+  membersCount: number
 }
 
-export type Provider = '넷플릭스' | '왓챠' | '웨이브' | ''
-type Rule = '19세 이상' | '계정양도 불가' | '공유 금지' | '환불 불가'
 export type Validator = (key: string, value: string | number) => ValidateData
 
 export interface PartyFormField {
@@ -78,4 +75,17 @@ export interface PartyForm {
 export interface InputEvent<T = Element> {
   relatedTarget: EventTarget | null
   target: EventTarget & T
+}
+
+// User
+type SNSProvider = 'Google' | 'Naver' | null
+export interface User {
+  id: number
+  name: string
+  nickName: string
+  phoneNumber: string
+  email: string
+  password: string
+  snsProvider: SNSProvider
+  snsId: string | null
 }

@@ -15,20 +15,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import axios from 'axios'
 import ProfilePartyMine from '@/components/ProfilePartyMine.vue'
-
-interface Party {
-  id: number
-  provider: string
-  title: string
-  logoUrl: string
-  member: {
-    totalCount: number
-    joinCount: number
-  }
-  endDate: string
-  restDays: number
-  pricePerDay: number
-}
+import { Party } from '@/libs/interface'
 
 export default defineComponent({
   name: 'ProfileParty',

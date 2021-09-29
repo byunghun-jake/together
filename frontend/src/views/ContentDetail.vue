@@ -88,6 +88,7 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import ContentDetailInfoSection from '@/components/ContentDetailInfoSection.vue'
 import PartyListItem from '@/components/PartyListItem.vue'
 import { useStore } from 'vuex'
+import { Party } from '@/libs/interface'
 
 interface Content {
   id: number
@@ -117,20 +118,6 @@ interface Youtube {
       }
     }
   }
-}
-
-interface Party {
-  id: number
-  provider: string
-  title: string
-  logoUrl: string
-  member: {
-    totalCount: number
-    joinCount: number
-  }
-  endDate: string
-  restDays: number
-  pricePerDay: number
 }
 
 interface Comment {

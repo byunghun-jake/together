@@ -96,9 +96,11 @@ export default defineComponent({
 
     const handleInput = (event: InputEvent<HTMLInputElement>) => {
       // modelValue를 먼저 업데이트 해 줘야 validate가 정상적인 로직으로 진행된다.
-      emit('update:modelValue', event.target.value)
+      const value =
+        props.field.type === 'number' ? +event.target.value : event.target.value
+      emit('update:modelValue', value)
       if (props.field?.errors) {
-        validate(event.target.value)
+        validate(value)
       }
     }
 
