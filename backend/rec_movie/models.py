@@ -17,11 +17,6 @@ class Genre(models.Model):
     genre_name = models.CharField(max_length=20)
 
 
-#class MovieGenre(models.Model):
-#    movie_idx = models.ForeignKey(Movie, on_delete=models.CASCADE)
-#    genre_idx = models.ForeignKey(Genre, on_delete=models.CASCADE)
-
-
 class Review(models.Model):
     user_id = models.CharField(max_length=100)
     movie_id = models.ForeignKey("Movie", related_name="review", on_delete=models.CASCADE, db_column="movie_id")
