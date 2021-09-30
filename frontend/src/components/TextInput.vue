@@ -6,6 +6,7 @@
         :type="field.type"
         :value="modelValue"
         :class="{ active: labelActive, isError: isError }"
+        :id="name"
         @blur="handleBlur"
         @focus="handleFocus"
         @input="handleInput"
@@ -14,6 +15,7 @@
       <label
         class="input-container__placeholder"
         :class="{ active: labelActive, isError: isError }"
+        :for="name"
       >
         <p v-if="labelActive">{{ field.label }}</p>
         <p v-else>{{ field.placeholder }}</p>
@@ -41,6 +43,7 @@ import {
   FormDataListItem,
   ValidateParam,
   ValidateData,
+  InputEvent,
 } from '@/libs/interface'
 
 export default defineComponent({
@@ -48,26 +51,32 @@ export default defineComponent({
   props: {
     field: {
       type: Object as PropType<FormDataListItem>,
+      required: true,
     },
     modelValue: {
       type: String,
+      required: true,
     },
     name: {
       type: String,
+      required: true,
     },
     formData: {
       type: Object as PropType<FormDataList>,
+      required: true,
     },
   },
   emits: ['update:modelValue', 'update:validate'],
   setup(props, { emit }) {
     const modelValue = computed(() => props.modelValue)
     const labelActive = ref<boolean>(Boolean(props.modelValue))
-    const isError = ref<boolean>(false)
+    const isError = computed(() =>
+      Object.keys(props.field.errors).length === 0 ? false : true
+    )
 
     const validate = (text: string) => {
       const name = props.name
-      const validator = props.field?.validator
+      const validator = props.field.validator
       const formData = props.formData
       if (validator && name && formData) {
         const validateParam: ValidateParam = {
@@ -88,7 +97,7 @@ export default defineComponent({
       }
     }
 
-    const handleBlur = (event: any) => {
+    const handleBlur = (event: InputEvent<HTMLInputElement>) => {
       if (event.target.value !== '') {
         validate(event.target.value)
       }
@@ -99,11 +108,10 @@ export default defineComponent({
       labelActive.value = true
     }
 
-    // any의 사용에 대한 확신이 없음. 수정 필요
-    const handleInput = (event: any) => {
+    const handleInput = (event: InputEvent<HTMLInputElement>) => {
       // modelValue를 먼저 업데이트 해 줘야 validate가 정상적인 로직으로 진행된다.
       emit('update:modelValue', event.target.value)
-      if (props.field?.errors) {
+      if (props.field.errors) {
         validate(event.target.value)
       }
     }
@@ -111,10 +119,6 @@ export default defineComponent({
     watch(modelValue, (value) => {
       // 입력값이 변할 때마다 에러 체크
       labelActive.value = Boolean(value)
-      if (props.field?.errors) {
-        isError.value =
-          Object.keys(props.field?.errors).length === 0 ? false : true
-      }
     })
 
     return {
@@ -133,7 +137,7 @@ export default defineComponent({
   @apply relative w-full;
 
   input {
-    @apply relative mb-1 text-sm outline-none px-4 py-3 z-10 rounded-md bg-transparent border border-gray-300 w-full py-2;
+    @apply relative mb-1 text-sm outline-none px-4 py-3 rounded-md bg-transparent border border-gray-300 w-full py-2;
 
     &.active {
       @apply border-indigo-900;
@@ -143,12 +147,12 @@ export default defineComponent({
     }
   }
   &__placeholder {
-    @apply absolute pl-1.5 top-3 left-3 text-sm text-gray-300 transition-all;
-    transform: translate(0);
+    @apply absolute top-2 left-4 p-1 text-sm text-gray-300 transition-all cursor-text bg-white rounded-md;
+    transform: translateY(0);
 
     &.active {
-      @apply bg-white rounded-md text-xs text-indigo-900 p-1 z-10;
-      transform: translate(0, -100%);
+      @apply text-xs text-indigo-900;
+      transform: translateY(-85%);
     }
     &.isError {
       @apply text-red-500;

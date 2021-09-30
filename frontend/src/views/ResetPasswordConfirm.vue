@@ -3,7 +3,7 @@
     <div class="body">
       <div class="input-container">
         <div class="input-container__info">
-          기존 비밀번호가 초기화 되었습니다.
+          비밀번호를 초기화 합니다.
           <br />
           로그인 할 새 비밀번호를 입력하세요.
         </div>
@@ -41,6 +41,7 @@ import {
 } from '@/libs/validator'
 import { FormDataList, ValidateData } from '@/libs/interface'
 import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'ChangePassword',
@@ -49,6 +50,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
+    const route = useRoute()
+    const router = useRouter()
     const resetPassword = computed(() => store.state.auth.resetPassword)
     const resetEmail = computed(() => store.state.auth.resetEmail)
     const isValidFormData = computed(() => {
@@ -91,15 +94,23 @@ export default defineComponent({
       if (isValidFormData.value) {
         const password = formData.value['password'].value
         const passwordConfirm = formData.value['passwordConfirm'].value
-        await store.dispatch('auth/changePassword', {
+        const uid = route.params.uid
+        const token = route.params.token
+        const response = await store.dispatch('auth/resetPasswordConfirm', {
+          uid,
+          token,
           password,
           passwordConfirm,
         })
+        if (response.status === 200) {
+          router.push({ name: 'Login' })
+        }
       }
     }
 
     return {
       store,
+      route,
       resetEmail,
       resetPassword,
       formData,
@@ -119,7 +130,7 @@ export default defineComponent({
     @apply grid gap-2 px-8 w-full sm:w-96;
 
     &__input-list {
-      @apply grid gap-2 w-full;
+      @apply grid gap-3 w-full;
     }
     &__info {
       @apply w-full rounded-md text-indigo-900 bg-indigo-50 px-4 py-4 mb-8 font-bold text-base text-center;

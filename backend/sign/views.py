@@ -16,5 +16,5 @@ def detail(request, pk):
   }
   return render(request, 'detail.html', context)
 
-def passwordResetConfirm(request, uid, token):
-  return redirect(f'http://localhost:8080/auth/change-password/{uid}/token/{token}/')
+def passwordResetRedirect(request, uid, token):
+  return redirect(f'http://localhost:8080/auth/reset-password-confirm/{uid}/token/{token}/')

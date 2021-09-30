@@ -27,16 +27,18 @@ export function register(
 }
 
 export function resetPassword(email: string): Promise<AxiosResponse> {
-  return http.post('account/password/reset/', {
-    email: email,
-  })
+  return http.post('account/password/reset/', { email: email })
 }
 
-export function changePassword(
+export function resetPasswordConfirm(
+  uid: string,
+  token: string,
   password1: string,
   password2: string
 ): Promise<AxiosResponse> {
-  return http.post('account/password/change/', {
+  return http.post('account/password/reset/confirm/', {
+    uid: uid,
+    token: token,
     new_password1: password1,
     new_password2: password2,
   })

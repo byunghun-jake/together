@@ -5,7 +5,6 @@ import { RootState } from '@/store/index'
 interface authModule {
   accessToken: string
   refreshToken: string
-  resetPassword: boolean
 }
 
 interface loginResponseData {
@@ -25,25 +24,12 @@ export const auth: Module<authModule, RootState> = {
   state: {
     accessToken: '',
     refreshToken: '',
-    resetPassword: false,
   },
   mutations: {
     setLoginData(state: authModule, loginData: loginResponseData): void {
       state.accessToken = loginData.access_token
       state.refreshToken = loginData.refresh_token
       console.log('auth modules: login mutation success')
-    },
-    setResetPassword(state: authModule): void {
-      state.resetPassword = true
-      console.log(
-        'auth modules: resetPassword state becomes true: 임시 비밀번호 발급 완료'
-      )
-    },
-    setChangePassword(state: authModule): void {
-      state.resetPassword = false
-      console.log(
-        'auth modules: resetPassword state becomes false: 비밀번호 변경 완료'
-      )
     },
   },
   actions: {
@@ -83,21 +69,25 @@ export const auth: Module<authModule, RootState> = {
       try {
         const response = await authApi.resetPassword(params.email)
         if (response.status === 200) {
-          commit('setResetPassword')
+          alert(response.data.detail)
         }
+        return response
       } catch (error: any) {
         alert(error.response.data)
       }
     },
-    async changePassword({ commit }, params) {
+    async resetPasswordConfirm({ commit }, params) {
       try {
-        const response = await authApi.changePassword(
+        const response = await authApi.resetPasswordConfirm(
+          params.uid,
+          params.token,
           params.password,
           params.passwordConfirm
         )
         if (response.status === 200) {
-          commit('setChangePassword')
+          alert(response.data.detail)
         }
+        return response
       } catch (error: any) {
         alert(error.response.data)
       }
