@@ -1,13 +1,13 @@
 <template>
   <nav class="profile-main__navbar__button">
     <router-link
-      :to="{ name: 'ProfileMain', params: { userId: 1 } }"
+      :to="{ name: 'ProfileMain', params: { userId: user.pk } }"
       :class="{ active: !partyactive }"
     >
       <span>프로필</span>
     </router-link>
     <router-link
-      :to="{ name: 'ProfileParty' }"
+      :to="{ name: 'ProfileParty', params: { userId: user.pk } }"
       :class="{ active: partyactive }"
       class="profile-main__navbar__button--space"
     >
@@ -17,24 +17,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
+    const store = useStore()
     // console.log(route.path)
 
-    const partyactive = ref<boolean>(route.path.includes('myparty'))
+    const partyactive = ref<boolean>(route.path.includes('party'))
+    const user = computed(() => store.state.auth.user)
 
     watch(
       () => route.path,
       (newroute) => {
         // console.log(newroute)
-        partyactive.value = newroute.includes('myparty')
+        partyactive.value = newroute.includes('party')
       }
     )
-    return { partyactive }
+    return { partyactive, user }
   },
 })
 </script>

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import store from '@/store'
 
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import ContentLayout from '@/layouts/ContentLayout.vue'
@@ -60,18 +61,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'create',
         name: 'PartyCreate',
         component: PartyCreate,
+        meta: { requiresAuth: true },
       },
       {
         path: ':partyId/join',
         name: 'PartyJoin',
         component: PartyJoin,
         props: true,
+        meta: { requiresAuth: true },
       },
       {
         path: ':partyId/join/confirm',
         name: 'PartyJoinConfirm',
         component: PartyJoinConfirm,
         props: true,
+        meta: { requiresAuth: true },
       },
     ],
   },
@@ -84,27 +88,26 @@ const routes: Array<RouteRecordRaw> = [
         path: 'login',
         name: 'Login',
         component: Login,
+        meta: { requiresNoAuth: true },
       },
       {
         path: 'reset-password',
         name: 'ResetPassword',
         component: ResetPassword,
+        meta: { requiresNoAuth: true },
       },
       {
         path: 'reset-password-confirm/:uid/token/:token/',
         name: 'ResetPasswordConfirm',
         component: ResetPasswordConfirm,
+        meta: { requiresNoAuth: true },
       },
       {
         path: 'register',
         name: 'Register',
         component: Register,
+        meta: { requiresNoAuth: true },
       },
-      // {
-      //   path: 'logout',
-      //   name: 'Logout',
-      //   component: Logout,
-      // },
     ],
   },
   {
@@ -123,14 +126,16 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ProfileEdit',
         component: ProfileEdit,
         props: true,
+        meta: { requiresMyAuth: true },
       },
       {
         path: 'changepassword',
         name: 'ProfileChangePassword',
         component: ProfileChangePassword,
+        meta: { requiresAuth: true },
       },
       {
-        path: 'myparty',
+        path: ':userId/party',
         name: 'ProfileParty',
         component: ProfileParty,
       },
@@ -141,6 +146,25 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.getters['auth/isLogin']) {
+    alert('로그인 해야 들어올 수 있음')
+    router.push({ name: 'Login' })
+  }
+  if (to.meta.requiresNoAuth && store.getters['auth/isLogin']) {
+    alert('로그인 상태에서는 들어올 수 없음')
+    router.push({ name: 'ContentList' })
+  }
+  if (
+    to.meta.requiresMyAuth &&
+    store.getters['auth/getUserPK'] != to?.params.userId
+  ) {
+    alert('내 정보만 수정할 수 있음')
+    router.push({ name: 'ContentList' })
+  }
+  next()
 })
 
 export default router

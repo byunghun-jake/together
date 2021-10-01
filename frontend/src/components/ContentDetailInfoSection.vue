@@ -21,7 +21,7 @@
     <div class="overview">
       {{ content.overview }}
     </div>
-    <fieldset class="rating-wrapper" @change="handleChange">
+    <fieldset class="rating-wrapper" @change="handleChange" v-if="isLogin">
       <template v-for="i in 5" :key="i">
         <input
           type="radio"
@@ -37,7 +37,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
+import { useStore } from 'vuex'
 
 type Content = {
   id: number
@@ -59,7 +60,9 @@ export default defineComponent({
     },
   },
   setup() {
+    const store = useStore()
     const rating = ref<number | null>(null)
+    const isLogin = computed(() => store.getters['auth/isLogin'])
 
     const handleChange = () => {
       const ok = confirm(`내가 매긴 점수: ${rating.value}점`)
@@ -72,6 +75,7 @@ export default defineComponent({
 
     return {
       rating,
+      isLogin,
       handleChange,
     }
   },

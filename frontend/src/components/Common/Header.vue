@@ -10,20 +10,39 @@
       <router-link :to="{ name: 'PartyList' }">OTT 파티</router-link>
     </nav>
     <div>
-      <router-link class="btn login" v-if="true" :to="{ name: 'Login' }">
+      <router-link class="btn login" v-if="!isLogin" :to="{ name: 'Login' }">
         로그인
       </router-link>
-      <div class="btn user" v-else>User NickName</div>
+      <div class="flex gap-2" v-else>
+        <router-link
+          class="btn"
+          :to="{ name: 'ProfileMain', params: { userId: user.pk } }"
+        >
+          {{ user.nickname }}
+        </router-link>
+        <button class="btn logout" @click="handleClickLogoutBtn">
+          로그아웃
+        </button>
+      </div>
     </div>
   </header>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
-    return {}
+    const store = useStore()
+    const isLogin = computed(() => store.getters['auth/isLogin'])
+    const user = computed(() => store.state.auth.user)
+
+    const handleClickLogoutBtn = () => {
+      store.dispatch('auth/logout')
+    }
+
+    return { user, isLogin, handleClickLogoutBtn }
   },
 })
 </script>
@@ -54,6 +73,14 @@ header {
 
   .btn {
     @apply text-sm text-white font-bold py-2 px-4 rounded-full bg-indigo-900;
+
+    &.logout {
+      @apply bg-white text-gray-700 rounded;
+
+      &:hover {
+        @apply bg-gray-100;
+      }
+    }
   }
 }
 </style>

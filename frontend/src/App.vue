@@ -1,18 +1,26 @@
 <template>
   <Header />
   <router-view />
-  <BottomNav />
+  <BottomNav v-if="showBottomNav" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import Header from '@/components/Common/Header.vue'
 import BottomNav from '@/components/Common/BottomNav.vue'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { Header, BottomNav },
   setup() {
-    return {}
+    const route = useRoute()
+    const showBottomNav = computed(() => {
+      return route.matched.length
+        ? route.matched[0].name !== 'AuthLayout'
+        : true
+    })
+
+    return { route, showBottomNav }
   },
 })
 </script>

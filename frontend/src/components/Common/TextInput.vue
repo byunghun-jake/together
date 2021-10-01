@@ -133,20 +133,18 @@ export default defineComponent({
         @apply border-indigo-900;
       }
 
-      /* &.active {
-        @apply border-indigo-900;
-      } */
       &.isError {
         @apply border-red-500;
       }
     }
 
     .placeholder {
-      @apply absolute top-1/2 left-4 text-sm font-medium text-gray-300 transition-all cursor-text;
-      transform: translateY(-50%);
+      @apply absolute top-3 left-4 p-1 text-sm font-medium text-gray-300 transition-all cursor-text bg-white rounded-md;
+      transform: translateY(0);
 
       &.active {
-        @apply bg-white top-0 rounded-md text-sm text-indigo-900 p-1 z-10;
+        @apply text-sm text-indigo-900;
+        transform: translateY(-100%);
       }
       &.isError {
         @apply text-red-500;

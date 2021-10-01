@@ -8,11 +8,15 @@
       <span class="material-icons">accessibility_new</span>
       <span class="label">파티</span>
     </router-link>
-    <router-link :to="{ name: 'Login' }" class="nav-link" v-if="true">
+    <router-link :to="{ name: 'Login' }" class="nav-link" v-if="!isLogin">
       <span class="material-icons">supervised_user_circle</span>
       <span class="label">로그인</span>
     </router-link>
-    <router-link :to="{ name: 'ProfileMain' }" class="nav-link" v-else>
+    <router-link
+      :to="{ name: 'ProfileMain', params: { userId: user.pk } }"
+      class="nav-link"
+      v-else
+    >
       <span class="material-icons">supervised_user_circle</span>
       <span class="label">내 정보</span>
     </router-link>
@@ -20,11 +24,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
-    return {}
+    const store = useStore()
+    const isLogin = computed(() => store.getters['auth/isLogin'])
+    const user = computed(() => store.state.auth.user)
+    return { isLogin, user }
   },
 })
 </script>

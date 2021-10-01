@@ -5,7 +5,9 @@
     <section class="party-section" v-else>
       <header class="section-header">
         <h1>파티에 참여하세요!</h1>
-        <router-link :to="{ name: 'PartyCreate' }">파티 만들기</router-link>
+        <router-link :to="{ name: 'PartyCreate' }" v-if="isLogin">
+          파티 만들기
+        </router-link>
       </header>
       <ul class="party-list">
         <PartyListItem
@@ -19,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import PartyListItem from '@/components/PartyListItem.vue'
 import { useStore } from 'vuex'
 import { Party } from '@/libs/interface'
@@ -30,13 +32,14 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const loading = ref(true)
+    const isLogin = computed(() => store.getters['auth/isLogin'])
     const parties = ref<Party[]>([])
 
     onMounted(async () => {
       parties.value = await store.dispatch('party/getAllParties')
       loading.value = false
     })
-    return { loading, parties }
+    return { loading, isLogin, parties }
   },
 })
 </script>
