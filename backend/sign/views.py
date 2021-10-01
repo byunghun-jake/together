@@ -1,20 +1,15 @@
-# from .serializers import SignupSerializer
 from django.shortcuts import redirect, render
-from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
-import requests
+from django.shortcuts import render
+from .models import User
+from .serializers import UserSerializer
+from rest_framework import viewsets
 
-def login(request):
-    print('여기로요청')
-    return render(request, 'login.html')
-
-def detail(request, pk):
-  User = get_user_model()
-  user = get_object_or_404(User, pk=pk)
-  context = {
-    'user': user
-  }
-  return render(request, 'detail.html', context)
-
+class UserMe(viewsets.ModelViewSet):
+  queryset = User.objects.all()
+  serializer_class = UserSerializer
+  def get_queryset(self):
+    user = self.request.user
+    return User.objects.get_queryset().filter(username=user)
+ 
 def passwordResetRedirect(request, uid, token):
   return redirect(f'http://localhost:8080/auth/reset-password-confirm/{uid}/token/{token}/')

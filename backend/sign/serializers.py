@@ -1,31 +1,66 @@
 from django.db import transaction
-from .models import CustomUser
+from django.db.models import fields
+from .models import User
 from rest_framework import serializers
-from rest_auth.registration.serializers import RegisterSerializer
-from rest_auth.serializers import UserDetailsSerializer
-from rest_auth.serializers import LoginSerializer
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import (
+  UserDetailsSerializer, LoginSerializer
+)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class CustomRegisterSerializer(RegisterSerializer):
-  phone_number = serializers.CharField(max_length=30)
-  nickname = serializers.CharField(max_length=100)
+class UserSerializer(serializers.ModelSerializer):
 
-  @transaction.atomic
+  class Meta:
+    model = User
+    fields = '__all__'
+
+class UserLoginSerializer(LoginSerializer):
+
+  class Meta:
+    model = User
+    fields = ['email', 'password',]
+
+
+class UserRegisterSerializer(RegisterSerializer):
+  phone_number = serializers.CharField(max_length=20)
+  nick_name = serializers.CharField(max_length=100)
+  password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+  class Meta:
+    model = User
+    fields = ['username', 'email', 'password', 'password2', 'phone_number', 'nick_name',]
+    extra_kwarge= {
+      'password': {
+        'write_only': True
+      }
+    }
   def save(self, request):
-    user = super().save(request)
-    user.phone_number = self.data.get('phone_number')
-    user.nickname = self.data.get('nickname')
+    user = User(
+      username = self.validated_data['username'],
+      email = self.validated_data['email'],
+      nick_name = self.validated_data['nick_name'],
+      phone_number = self.validated_data['phone_number'],
+    )
+    password1 = self.validated_data['password1']
+    password2 = self.validated_data['password2']
+
+    if password1 != password2:
+      raise serializers.ValidationError({'password': 'Passwords must match.'})
+    user.set_password(password1)
     user.save()
     return user
 
-class CustomUserDetailSerializer(UserDetailsSerializer):
+
+class UserDetailSerializer(UserDetailsSerializer):
   
   class Meta:
-    model = CustomUser
+    model = User
     fields = (
-      'pk',
+      'id',
       'email',
-      'nickname',
+      'nick_name',
       'username',
       'phone_number',
     )
-    read_only_fields = ('pk', 'email','username',)
+    read_only_fields = ('id', 'email','username',)
+
