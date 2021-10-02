@@ -1,16 +1,18 @@
 import json
 import pandas as pd
 from django.http import (HttpResponse, Http404)
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
-from rest_framework.decorators import renderer_classes, api_view
+from rest_framework.decorators import api_view
 from rest_framework.generics import GenericAPIView
-from rest_framework_swagger import renderers
 from rest_framework.response import Response
 
 from .models import (Movie, Review, Genre, Provider)
-from .serializers import (MovieSerializer, ReviewSerializer, GenreSerializer, ProviderSerializer)
+from .serializers import (MovieSerializer, ReviewSerializer, GenreSerializer)
+
+# recommend files
+from .rec_py import movie_rec_genre as rec_g
 
 
 # @api_view(['GET'])
@@ -67,7 +69,7 @@ def provider_list_to_set(p_set, p_list):
     for idx in range(0, size):
         p_set.add(p_list[idx]['provider_name'])
 
-
+# tmdb의 reviews.json을 model로 변환하고 db에 넣는다.
 def convert_review_data(request):
     Review.objects.all().delete()
 
@@ -177,3 +179,26 @@ def get_genre(self):
     genre = Genre.objects.all()
     serializer = GenreSerializer(genre, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_genre_rec_movies(self):
+    movie_ids = rec_g.recommend(16)
+    movies = []
+    for movie_id in movie_ids:
+        movie = get_object_or_404(Movie, movie_id=movie_id)
+        movies.append(movie)
+
+    # movie_ids = rec_g.recommend(35)
+    # for movie_id in movie_ids:
+    #     movie = get_object_or_404(Movie, movie_id=movie_id)
+    #     movies.append(movie)
+    #
+    # movie_ids = rec_g.recommend(28)
+    # for movie_id in movie_ids:
+    #     movie = get_object_or_404(Movie, movie_id=movie_id)
+    #     movies.append(movie)
+
+    serializer = MovieSerializer(movies, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+

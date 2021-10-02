@@ -42,7 +42,7 @@ schema_view_v1 = get_schema_view(
 )
 
 urlpatterns = [
-    path('', sign.views.login),
+    # path('', sign.views.login),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')), # SNS 
     path('account/', include('sign.urls')), # User

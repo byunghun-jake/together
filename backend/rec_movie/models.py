@@ -22,8 +22,8 @@ class Review(models.Model):
     user_id = models.CharField(max_length=100)
     movie_id = models.ForeignKey("Movie", related_name="review", on_delete=models.CASCADE, db_column="movie_id")
     rating = models.IntegerField()
-    content = models.TextField()
-    created_at = models.DateTimeField()
+    content = models.TextField(default='')
+    created_at = models.DateTimeField(auto_now=True)
 
 
 class Provider(models.Model):

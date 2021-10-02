@@ -11,6 +11,7 @@ urlpatterns = [
 
     # movie
     path('movie/<int:pk>/', views.get_movie),
+    path('', views.get_genre_rec_movies),
 
     # review
     path('review/', views.ReviewView.as_view()),
