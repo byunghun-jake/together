@@ -1,14 +1,9 @@
 import http from '@/api/http'
 import { keysToCamel } from '@/libs/func'
-import { Content, Genre } from '@/libs/interface'
-import { Movie } from '@/libs/interfaces/content'
-import axios from 'axios'
+import { Genre } from '@/libs/interface'
+import { Content } from '@/libs/interfaces/content'
 
-const http2 = axios.create({
-  baseURL: 'http://localhost:3000',
-})
-
-const getContentList = async (): Promise<Movie[]> => {
+const getMovieList = async (): Promise<Content[]> => {
   try {
     const res = await http.get(`/movies/`)
     return keysToCamel(res.data)
@@ -17,7 +12,7 @@ const getContentList = async (): Promise<Movie[]> => {
   }
 }
 
-const getContent = async (contentId: number): Promise<Movie> => {
+const getMovie = async (contentId: number): Promise<Content> => {
   try {
     const res = await http.get(`/movies/${contentId}/`)
     return keysToCamel(res.data)
@@ -26,7 +21,7 @@ const getContent = async (contentId: number): Promise<Movie> => {
   }
 }
 
-const getGenreList = async (): Promise<Genre[]> => {
+const getMovieGenreList = async (): Promise<Genre[]> => {
   try {
     const res = await http.get(`/movies/genre/`)
     return keysToCamel(res.data)
@@ -35,8 +30,38 @@ const getGenreList = async (): Promise<Genre[]> => {
   }
 }
 
+const getProgramList = async (): Promise<Content[]> => {
+  try {
+    const res = await http.get(`/programs/`)
+    return keysToCamel(res.data)
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
+const getProgram = async (contentId: number): Promise<Content> => {
+  try {
+    const res = await http.get(`/programs/${contentId}/`)
+    return keysToCamel(res.data)
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
+const getProgramGenreList = async (): Promise<Genre[]> => {
+  try {
+    const res = await http.get(`/programs/genre/`)
+    return keysToCamel(res.data)
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
 export default {
-  getContentList,
-  getContent,
-  getGenreList,
+  getMovieList,
+  getMovie,
+  getMovieGenreList,
+  getProgramList,
+  getProgram,
+  getProgramGenreList,
 }

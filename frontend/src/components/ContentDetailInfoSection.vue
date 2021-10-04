@@ -97,6 +97,10 @@ export default defineComponent({
 
   .overview {
     word-break: keep-all;
+    max-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: break-spaces;
     @apply text-sm;
   }
 

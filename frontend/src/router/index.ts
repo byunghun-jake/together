@@ -37,7 +37,7 @@ const routes: Array<RouteRecordRaw> = [
         component: ContentList,
       },
       {
-        path: ':contentId',
+        path: ':contentType/:contentId',
         name: 'ContentDetail',
         component: ContentDetail,
         props: true,

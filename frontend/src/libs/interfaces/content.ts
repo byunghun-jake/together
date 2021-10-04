@@ -1,14 +1,14 @@
-export interface Content {
-  id: number
-  title: string
-  posterPath: string
-  simRate: number
-  providers: string[]
-  firstAirYear: number
-  rated: string
-  seasons: number
-  overview: string
-}
+// export interface Content {
+//   id: number
+//   title: string
+//   posterPath: string
+//   simRate: number
+//   providers: string[]
+//   firstAirYear: number
+//   rated: string
+//   seasons: number
+//   overview: string
+// }
 
 export interface Youtube {
   id: {
@@ -67,7 +67,7 @@ interface Provider {
   pricePerDay: number
 }
 
-export interface Movie {
+export interface Content {
   id: number
   movieId: number
   originalTitle: string

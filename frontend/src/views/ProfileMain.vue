@@ -28,7 +28,7 @@
           </router-link>
         </div>
       </section>
-      <section class="profile-main__seen__section">
+      <section class="profile-main__seen__section" v-if="false">
         <header>
           <h3>내가 본 컨텐츠</h3>
           <router-link class="flex" to="/">
@@ -45,7 +45,7 @@
           </li>
         </ul>
       </section>
-      <section class="profile-main__rating__section">
+      <section class="profile-main__rating__section" v-if="false">
         <header>
           <h3>내가 평가한 콘텐츠</h3>
           <router-link class="flex" to="/">
@@ -72,7 +72,7 @@ import { OutputUser } from '@/libs/interfaces/auth'
 import ContentPosterLink from '@/components/ContentPosterLink.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { Movie } from '@/libs/interfaces/content'
+import { Content } from '@/libs/interfaces/content'
 
 export default defineComponent({
   name: 'ProfileMain',
@@ -89,7 +89,7 @@ export default defineComponent({
     const store = useStore()
     const loading = ref<boolean>(true)
     const account = ref<OutputUser>()
-    const contents = ref<Movie[]>([])
+    const contents = ref<Content[]>([])
 
     onMounted(async () => {
       try {
@@ -106,13 +106,13 @@ export default defineComponent({
           router.push({ name: 'ContentList' })
         }
       }
-      try {
-        // TODO: OutputUser 테이블에 내가 본 영화를 저장하는 필드가 필요함
-        // 우선순위 낮음
-        contents.value = await store.dispatch('content/getRecommendContent')
-      } catch (error) {
-        console.log(error)
-      }
+      // try {
+      //   // TODO: OutputUser 테이블에 내가 본 영화를 저장하는 필드가 필요함
+      //   // 우선순위 낮음
+      //   contents.value = await store.dispatch('content/getMovieList')
+      // } catch (error) {
+      //   console.log(error)
+      // }
       loading.value = false
     })
     return {

@@ -21,15 +21,29 @@
         </div>
       </section>
       <section class="contents-section">
-        <header class="section-header">추천 컨텐츠</header>
+        <header class="section-header">추천 컨텐츠 (영화)</header>
         <ul class="contents-list">
           <transition-group name="contents">
             <li
               class="contents-item"
-              v-for="content in displayedContentList"
+              v-for="content in displayedMovieList"
               :key="content.id"
             >
-              <ContentPosterLink :content="content" />
+              <ContentPosterLink :content="content" :contentType="'movies'" />
+            </li>
+          </transition-group>
+        </ul>
+      </section>
+      <section class="contents-section">
+        <header class="section-header">추천 컨텐츠 (TV)</header>
+        <ul class="contents-list">
+          <transition-group name="contents">
+            <li
+              class="contents-item"
+              v-for="content in displayedProgramList"
+              :key="content.id"
+            >
+              <ContentPosterLink :content="content" :contentType="'programs'" />
             </li>
           </transition-group>
         </ul>
@@ -43,7 +57,7 @@ import { useStore } from 'vuex'
 import { ProviderFilter, ProviderNameEn } from '@/libs/interfaces/content'
 import ContentPosterLink from '@/components/ContentPosterLink.vue'
 import LoadingSection from '@/components/Common/LoadingSection.vue'
-import { Movie } from '@/libs/interfaces/content'
+import { Content } from '@/libs/interfaces/content'
 
 export default defineComponent({
   name: 'ContentList',
@@ -51,7 +65,8 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const loading = ref<boolean>(true)
-    const contents = ref<Movie[]>([])
+    const movies = ref<Content[]>([])
+    const programs = ref<Content[]>([])
 
     const providers = ref<ProviderFilter>([
       { name: 'Netflix', active: true },
@@ -78,8 +93,16 @@ export default defineComponent({
       return res
     })
 
-    const displayedContentList = computed(() => {
-      return contents.value.filter((content) => {
+    const displayedMovieList = computed(() => {
+      return movies.value.filter((content) => {
+        return content.providers.some((p) =>
+          activeProviders.value.includes(p.name)
+        )
+      })
+    })
+
+    const displayedProgramList = computed(() => {
+      return programs.value.filter((content) => {
         return content.providers.some((p) =>
           activeProviders.value.includes(p.name)
         )
@@ -105,7 +128,8 @@ export default defineComponent({
       // Axios 에러인 상황과 알 수 없는 에러인 상황을 함께 다루려면?
       // 에러를 핸들링하는 부분이 컴포넌트쪽으로 올 필요가 있을까?
       try {
-        contents.value = await store.dispatch('content/getRecommendContent')
+        movies.value = await store.dispatch('content/getMovieList')
+        programs.value = await store.dispatch('content/getProgramList')
         loading.value = false
       } catch (error) {
         alert(error)
@@ -113,8 +137,8 @@ export default defineComponent({
     })
     return {
       loading,
-      contents,
-      displayedContentList,
+      displayedMovieList,
+      displayedProgramList,
       providers,
       handleFilterClick,
     }

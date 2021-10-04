@@ -1,6 +1,9 @@
 <template>
   <router-link
-    :to="{ name: 'ContentDetail', params: { contentId: content.id } }"
+    :to="{
+      name: 'ContentDetail',
+      params: { contentId: content.id, contentType },
+    }"
   >
     <div class="poster-wrapper">
       <img :src="posterPath" :alt="`${content.originalTitle}의 포스터`" />
@@ -9,14 +12,18 @@
 </template>
 
 <script lang="ts">
-import { Movie } from '@/libs/interfaces/content'
+import { Content } from '@/libs/interfaces/content'
 import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   name: 'ContentPosterLink',
   props: {
     content: {
-      type: Object as PropType<Movie>,
+      type: Object as PropType<Content>,
+      required: true,
+    },
+    contentType: {
+      type: String,
       required: true,
     },
   },

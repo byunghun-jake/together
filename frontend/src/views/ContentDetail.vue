@@ -94,7 +94,7 @@ import PartyListItem from '@/components/PartyListItem.vue'
 import LoadingSection from '@/components/Common/LoadingSection.vue'
 import { useStore } from 'vuex'
 import { Party } from '@/libs/interface'
-import { Youtube, Comment, Movie } from '@/libs/interfaces/content'
+import { Youtube, Comment, Content } from '@/libs/interfaces/content'
 
 const YOUTUBE_BASEURL = 'https://www.googleapis.com/youtube/v3/search'
 const YOUTUBE_KEY = 'AIzaSyA3BjU4BpGVhBFlvHsJHsTNRuLePCbaU1Q'
@@ -102,6 +102,10 @@ const YOUTUBE_KEY = 'AIzaSyA3BjU4BpGVhBFlvHsJHsTNRuLePCbaU1Q'
 export default defineComponent({
   name: 'ContentDetail',
   props: {
+    contentType: {
+      type: String,
+      required: true,
+    },
     contentId: {
       type: [String, Number],
       required: true,
@@ -112,7 +116,7 @@ export default defineComponent({
     const store = useStore()
     const loading = ref<boolean>(true)
     const posterPath = ref<string>('')
-    const content = ref<Movie>()
+    const content = ref<Content>()
     const youtubeReviews = ref<Youtube[]>()
     const parties = ref<Party[]>()
     const comments = ref<Comment[]>()
@@ -134,12 +138,11 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        // const res = await axios.get(
-        //   `http://localhost:3000/contents/${props.contentId}`
-        // )
-        const res = await store.dispatch('content/getContent', props.contentId)
-        console.log(res)
-        content.value = res
+        content.value =
+          props.contentType === 'movies'
+            ? await store.dispatch('content/getMovie', props.contentId)
+            : await store.dispatch('content/getProgram', props.contentId)
+
         posterPath.value = `https://image.tmdb.org/t/p/original${content.value?.posterPath}`
       } catch (error) {
         console.log(error)
