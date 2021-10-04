@@ -20,14 +20,21 @@ class ProviderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SubMovieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = '__all__'
+
+
 class MovieSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(read_only=True, many=True)
     providers = ProviderSerializer(read_only=True, many=True)
+    recommends = SubMovieSerializer(read_only=True, many=True)
 
     class Meta:
         model = Movie
         fields = '__all__'
-        read_only_fields = ('genres', 'providers')      # 장르 데이터도 함께 json으로 변환하여 제공한다.
+        read_only_fields = ('genres', 'providers', 'recommends')      # 장르 데이터도 함께 json으로 변환하여 제공한다.
 
 
 

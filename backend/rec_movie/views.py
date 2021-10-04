@@ -12,7 +12,7 @@ from .models import (Movie, Review, Genre, Provider)
 from .serializers import (MovieSerializer, ReviewSerializer, GenreSerializer)
 
 # recommend files
-from .rec_py import movie_rec_genre as rec_g
+from .rec_py import (movie_rec_genre as rec_g, movie_rec_cbf as rec_m)
 
 
 # @api_view(['GET'])
@@ -68,6 +68,7 @@ def provider_list_to_set(p_set, p_list):
     size = len(p_list)
     for idx in range(0, size):
         p_set.add(p_list[idx]['provider_name'])
+
 
 # tmdb의 reviews.json을 model로 변환하고 db에 넣는다.
 def convert_review_data(request):
@@ -169,13 +170,46 @@ class ReviewDetailView(GenericAPIView):
 
 @api_view(['GET'])
 def get_movie(request, pk):
+    """
+    영화 정보를 가져옵니다.
+    1. 영화의 정보
+    2. 장르, 공급자
+    3. 해당 영화와 관련있는 추천 영화들
+
+    ---
+
+    responseMessages:
+        - code: 201
+          message: Success Create Album
+
+    """
     movie = get_object_or_404(Movie, id=pk)
+    # 만약 추천된 영화가 없을 경우 수행한다.
+    # 이것은 차후, 업데이트 할 시에, 현재 추천된 영화를 제거하고 새롭게 추천하는 과정으로 바꾸어야한다.
+    if movie.recommends.count() == 0:
+        # 현재 영화와 관련있는 추천 영화들을 연결한다.
+        movie_ids = rec_m.recommend(movie.original_title)
+        for movie_id in movie_ids:
+            print(movie_id)
+            rec_movie = get_object_or_404(Movie, movie_id=movie_id)
+            movie.recommends.add(rec_movie)
+
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def get_genre(self):
+    """
+        모든 영화 장르를 가져옵니다.
+
+        ---
+
+        responseMessages:
+            - code: 201
+              message: Success Create Album
+
+        """
     genre = Genre.objects.all()
     serializer = GenreSerializer(genre, many=True)
     return Response(serializer.data)
@@ -183,21 +217,25 @@ def get_genre(self):
 
 @api_view(['GET'])
 def get_genre_rec_movies(self):
-    movie_ids = rec_g.recommend(16)
+    """
+        메인 페이지에서 장르를 기준으로 가장 인기있는 영화를 추천해 줍니다.
+        현재 임의로 3개의 장르를 설정하여 추천 알고리즘을 적용하였습니다.
+        차후 User와 연결하여, User의 선호 장르를 읽어와 제공하도록 합니다.
+
+        ---
+
+        responseMessages:
+            - code: 201
+              message: Success Get Movies
+
+        """
+
+    # 이후 유저의 정보를 받으면, 그 유저의 선호 장르 3개에 대한 추천 영화를 출력한다.
+    movie_ids = rec_g.recommend(16, 28, 35)
     movies = []
     for movie_id in movie_ids:
         movie = get_object_or_404(Movie, movie_id=movie_id)
         movies.append(movie)
-
-    # movie_ids = rec_g.recommend(35)
-    # for movie_id in movie_ids:
-    #     movie = get_object_or_404(Movie, movie_id=movie_id)
-    #     movies.append(movie)
-    #
-    # movie_ids = rec_g.recommend(28)
-    # for movie_id in movie_ids:
-    #     movie = get_object_or_404(Movie, movie_id=movie_id)
-    #     movies.append(movie)
 
     serializer = MovieSerializer(movies, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)

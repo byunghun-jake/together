@@ -5,13 +5,15 @@ import numpy as np
 import re
 import pandas as pd
 import time
+import os
 
 
 # 영화의 Overview(개요)의 연관성을 통해 영화를 추천해 준다.
 def recommend(movie_name):
     # -------- Load Dataset -----------
     # movie json을 dataframe으로 만들기
-    with open('data/movies_kr.json', 'r') as f:
+    dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '/'  # 절대 경로로 설정 함 -> 나중에 서버에 올리면 문제가 되지 않을까?
+    with open(dir + '../data/movies_kr.json', 'r') as f:
         data = json.loads(f.read())
     df_nested_list = pd.json_normalize(data)
 
@@ -51,6 +53,18 @@ def recommend(movie_name):
     # 1000개 미만 평가를 받은 영화는 제외한다.
     movies = movies[movies["vote_count"] >= 1000]
     print(movies.head(10))  # 유사도 상위 10개 영화 가져오기
+    result = []
+    cnt = 0
+    for movie_id in movies['movieId']:
+        if cnt == 0:    # 제일 처음 나오는 영화는 중복이므로 넘긴다.
+            cnt += 1
+            continue
+        if cnt == 11:   # 10개의 추천 영화를 제공한다.
+            break
+        result.append(movie_id)
+        cnt += 1
+
+    return result
 
 
 if __name__ == '__main__':

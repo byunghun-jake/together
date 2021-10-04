@@ -6,7 +6,7 @@ import time
 import os
 
 
-def recommend(movie_genre):
+def recommend(rec_g1, rec_g2, rec_g3):
     dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '/'  # 절대 경로로 설정 함 -> 나중에 서버에 올리면 문제가 되지 않을까?
     with open(dir + '../data/movies_kr.json', 'r') as f:
         data = json.loads(f.read())
@@ -29,7 +29,9 @@ def recommend(movie_genre):
     s.name = 'genre'
     gen_md = md.drop('genres', axis=1).join(s)
 
-    md = gen_md[gen_md['genre'] == movie_genre]  # 여기에 장르를 기입한다
+    # md = gen_md[gen_md['genre'] == movie_genre]  # 여기에 장르를 기입한다
+    # 여기에 입력받은 장르를 통해, 해당 받은 장르의 영화만 필터링 한다.
+    md = gen_md[(gen_md['genre'] == rec_g1) | (gen_md['genre'] == rec_g2) | (gen_md['genre'] == rec_g3)]
 
     vote_counts = md[md['vote_count'].notnull()]['vote_count'].astype('int')
     vote_averages = md[md['vote_average'].notnull()]['vote_average'].astype('int')
