@@ -39,6 +39,7 @@ import { useStore } from 'vuex'
 import { Content } from '@/libs/interface'
 import ContentPosterLink from '@/components/ContentPosterLink.vue'
 
+// TODO: interface exporting
 type Provider = 'netflix' | 'wavve' | 'watcha'
 
 interface Providers {

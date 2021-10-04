@@ -22,6 +22,8 @@ import Register from '@/views/Register.vue'
 import ResetPassword from '@/views/ResetPassword.vue'
 import ResetPasswordConfirm from '@/views/ResetPasswordConfirm.vue'
 
+import OauthCallback from '@/views/OauthCallback.vue'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -106,6 +108,19 @@ const routes: Array<RouteRecordRaw> = [
         path: 'register',
         name: 'Register',
         component: Register,
+        meta: { requiresNoAuth: true },
+      },
+      {
+        path: ':platform/callback',
+        name: 'OauthCallback',
+        component: OauthCallback,
+        props: true,
+        meta: { requiresNoAuth: true },
+      },
+      {
+        path: 'social-login-success',
+        name: 'SocialLoginSuccess',
+        redirect: { name: 'ContentList' },
         meta: { requiresNoAuth: true },
       },
     ],

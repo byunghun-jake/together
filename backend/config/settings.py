@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os, json
+import sys
 from pathlib import Path
 from datetime import timedelta
 from django.core.exceptions import ImproperlyConfigured
@@ -26,6 +27,9 @@ secret_file = os.path.join(BASE_DIR, 'secrets.json')
 with open(secret_file) as f:
     secrets = json.loads(f.read())
 
+for key, value in secrets.items():
+    setattr(sys.modules[__name__], key, value)
+
 def get_secret(setting, secrets=secrets):
     try:
         return secrets[setting]
@@ -35,14 +39,12 @@ def get_secret(setting, secrets=secrets):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,22 +55,19 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     # CORS
     'corsheaders',
-    #swagger
-    'drf_yasg', 
-    # allauth
+    # drf_yasg(swagger)
+    'drf_yasg',
+    # django-allauth, social OAuth
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
-
-    # provider
+    'allauth.socialaccount', # 소셜 가입계정 관리
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.naver',
     'allauth.socialaccount.providers.kakao',
-
+    'allauth.socialaccount.providers.github',
     # app
     'sign.apps.SignConfig',
     'rec_movie.apps.RecConfig',
-
     # DRF
     'rest_framework_simplejwt',
     'rest_framework',
