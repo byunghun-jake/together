@@ -5,6 +5,7 @@ from django.db import models
 class Movie(models.Model):
     movie_id = models.CharField(max_length=10, default='', unique=True)
     original_title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default='')
     overview = models.TextField()
     release_date = models.DateField()
     poster_path = models.CharField(max_length=40)    # https://image.tmdb.org/t/p/original/[poster_path]

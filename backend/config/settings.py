@@ -68,6 +68,8 @@ INSTALLED_APPS = [
     # app
     'sign.apps.SignConfig',
     'rec_movie.apps.RecConfig',
+    'rec_program.apps.RecProgramConfig',
+
     # DRF
     'rest_framework_simplejwt',
     'rest_framework',

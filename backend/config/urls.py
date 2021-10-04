@@ -27,6 +27,7 @@ schema_url_patterns = [
     path('account/', include('sign.urls')),
     path('accounts/', include('allauth.urls')),
     path('movies/', include('rec_movie.urls')),
+    path('programs/', include('rec_program.urls')),
     ]
 
 schema_view_v1 = get_schema_view(
@@ -48,6 +49,7 @@ urlpatterns = [
     path('accounts/', include('dj_rest_auth.urls')),
     path('account/', include('sign.urls')), # User
     path('movies/', include('rec_movie.urls')),  # Movie contents
+    path('programs/', include('rec_program.urls')),  # Program contents
 
     # Swagger 연동
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view_v1.without_ui(cache_timeout=0), name='schema-json'),

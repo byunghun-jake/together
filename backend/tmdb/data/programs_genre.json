@@ -126,5 +126,29 @@
       "name": "Western",
       "k-name": "서부"
     }
+  },
+  {
+    "model": "programs.genre",
+    "pk": 10749,
+    "fields": {
+      "name": "Romance",
+      "k-name": "로맨스"
+    }
+  },
+  {
+    "model": "programs.genre",
+    "pk": 10402,
+    "fields": {
+      "name": "Music",
+      "k-name": "음악"
+    }
+  },
+  {
+    "model": "programs.genre",
+    "pk": 36,
+    "fields": {
+      "name": "History",
+      "k-name": "역사"
+    }
   }
 ]
