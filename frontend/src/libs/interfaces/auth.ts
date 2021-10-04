@@ -9,11 +9,11 @@ export type InputUser = {
   nick_name?: string
   phone_number?: string
   email?: string
-  favorite_genres?: {
-    id: number
-    name: string
-    k_name: string
-  }[]
+  // favorite_genres?: {
+  //   id: number
+  //   name: string
+  //   k_name: string
+  // }[]
 }
 
 export type OutputUser = {
@@ -22,9 +22,9 @@ export type OutputUser = {
   nickName?: string
   phoneNumber?: string
   email?: string
-  favoriteGenres?: {
-    id: number
-    name: string
-    kName: string
-  }[]
+  // favoriteGenres?: {
+  //   id: number
+  //   name: string
+  //   kName: string
+  // }[]
 }

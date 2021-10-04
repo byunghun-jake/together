@@ -38,3 +38,51 @@ export interface Comment {
   like: number
   rating: number
 }
+
+export interface Genre {
+  id: number
+  name: string
+  kName: string
+  genreId: number
+}
+
+export type ProviderNameEn =
+  | 'Netflix'
+  | 'Watcha'
+  | 'Naver Store'
+  | 'wavve'
+  | 'Crunchyroll'
+  | 'Curiosity Stream'
+  | 'Hoichoi'
+  | 'Classix'
+  | 'BroadwayHD'
+  | 'Magellan TV'
+  | 'WOW Presents Plus'
+  | 'Amazon Prime Video'
+
+interface Provider {
+  id: number
+  logoUrl: string
+  name: ProviderNameEn
+  pricePerDay: number
+}
+
+export interface Movie {
+  id: number
+  movieId: number
+  originalTitle: string
+  title: string
+  overview: string
+  posterPath: string
+  releaseDate: string
+  providers: Provider[]
+  recommends: {
+    [key: string]: string
+  }[]
+  genres: Genre[]
+}
+
+export type ProviderFilter = {
+  name: ProviderNameEn
+  active: boolean
+}[]

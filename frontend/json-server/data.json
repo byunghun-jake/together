@@ -126,7 +126,7 @@
       "title": "ㅁㄴㅇㄹ",
       "service_id": "ㄴㅇㄹ",
       "service_password": "ㅁㄴㅇㄹ",
-      "member_limit": 17,
+      "member_limit": 5,
       "end_date": "2021-10-01",
       "price_per_day": 2000,
       "id": 3
@@ -156,7 +156,7 @@
       "title": "1",
       "service_Id": "1",
       "service_Password": "1",
-      "member_Limit": 134,
+      "member_Limit": 4,
       "end_Date": "2021-10-09",
       "price_Per_Day": 123,
       "id": 6

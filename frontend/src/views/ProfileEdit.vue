@@ -36,6 +36,7 @@ import Textinput from '@/components/Common/TextInput.vue'
 import { ValidateData, FormData } from '@/libs/interface'
 import { requiredValidator } from '@/libs/validator'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'ProfileEdit',
@@ -49,6 +50,7 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter()
+    const store = useStore()
     const loading = ref<boolean>(true)
     const formData = ref<FormData>({
       nickName: {
@@ -59,7 +61,7 @@ export default defineComponent({
         placeholder: '닉네임을 입력하세요',
         validators: [requiredValidator],
       },
-      name: {
+      username: {
         label: '이름',
         value: '',
         type: 'text',
@@ -87,23 +89,20 @@ export default defineComponent({
       event.preventDefault()
       console.log('submit')
       try {
-        const name = formData.value.name.value
+        const username = formData.value.username.value
         const nick_name = formData.value.nickName.value
         const phone_number = formData.value.phoneNumber.value
 
-        const res = await axios.put(
-          `http://localhost:3000/account/${props.userId}`,
-          {
-            name,
-            nick_name,
-            phone_number,
-          }
-        )
-        console.log(res)
+        const user = await store.dispatch('auth/updateUserData', {
+          username,
+          nick_name,
+          phone_number,
+        })
+        console.log(user)
       } catch (error) {
         console.log(error)
       }
-      router.push({ name: 'ProfileMain' })
+      // router.push({ name: 'ProfileMain' })
     }
 
     const handleUpdateValidate = (validateRes: ValidateData) => {
@@ -120,13 +119,12 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/account/${props.userId}`
+        const { nickName, username, phoneNumber } = await store.dispatch(
+          'auth/getUserData'
         )
-        const { nickName, name, phone_number } = res.data
         formData.value.nickName.value = nickName
-        formData.value.name.value = name
-        formData.value.phoneNumber.value = phone_number
+        formData.value.username.value = username
+        formData.value.phoneNumber.value = phoneNumber
       } catch (error) {
         console.log(error)
       }
@@ -146,7 +144,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .form-section {
-  @apply grid gap-6 py-10 px-4;
+  @apply grid gap-10 py-10 px-4;
 
   header h3 {
     @apply text-xl font-bold;

@@ -1,14 +1,14 @@
 <template>
-  <section v-if="loading">로딩 중</section>
+  <LoadingSection v-if="loading">로딩 중</LoadingSection>
   <template v-else>
     <section class="banner-section">
       <ContentDetailInfoSection v-if="!isMobile" :content="content" />
       <div class="img-wrapper">
         <div class="layer"></div>
-        <img :src="content.posterPath" alt="" />
+        <img :src="posterPath" alt="" />
       </div>
     </section>
-    <div class="container">
+    <div class="container py-4">
       <ContentDetailInfoSection v-if="isMobile" :content="content" />
       <section class="review-section">
         <header class="section-header">{{ content.title }} 리뷰</header>
@@ -37,7 +37,13 @@
         </ul>
       </section>
       <section class="party-section">
-        <header class="section-header">파티에 참여하세요!</header>
+        <header class="section-header">
+          <h3>파티에 참여하세요!</h3>
+          <router-link class="more-link" :to="{ name: 'ContentList' }">
+            <span class="label">더보기</span>
+            <span class="material-icons">chevron_right</span>
+          </router-link>
+        </header>
         <ul class="party-list">
           <PartyListItem
             v-for="party in parties"
@@ -45,12 +51,6 @@
             :party="party"
           />
         </ul>
-        <div class="flex">
-          <router-link class="more-link" :to="{ name: 'ContentList' }">
-            <span class="label">더보기</span>
-            <span class="material-icons">chevron_right</span>
-          </router-link>
-        </div>
       </section>
       <section class="community-section">
         <header class="section-header">
@@ -91,9 +91,10 @@ import axios from 'axios'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import ContentDetailInfoSection from '@/components/ContentDetailInfoSection.vue'
 import PartyListItem from '@/components/PartyListItem.vue'
+import LoadingSection from '@/components/Common/LoadingSection.vue'
 import { useStore } from 'vuex'
 import { Party } from '@/libs/interface'
-import { Content, Youtube, Comment } from '@/libs/interfaces/content'
+import { Youtube, Comment, Movie } from '@/libs/interfaces/content'
 
 const YOUTUBE_BASEURL = 'https://www.googleapis.com/youtube/v3/search'
 const YOUTUBE_KEY = 'AIzaSyA3BjU4BpGVhBFlvHsJHsTNRuLePCbaU1Q'
@@ -103,20 +104,21 @@ export default defineComponent({
   props: {
     contentId: {
       type: [String, Number],
+      required: true,
     },
   },
-  components: { ContentDetailInfoSection, PartyListItem },
+  components: { ContentDetailInfoSection, PartyListItem, LoadingSection },
   setup(props) {
     const store = useStore()
     const loading = ref<boolean>(true)
-    const content = ref<Content>()
+    const posterPath = ref<string>('')
+    const content = ref<Movie>()
     const youtubeReviews = ref<Youtube[]>()
     const parties = ref<Party[]>()
     const comments = ref<Comment[]>()
     const innerWidth = ref<number>(window.innerWidth)
 
     const isMobile = computed(() => {
-      console.log(innerWidth.value)
       return innerWidth.value < 768
     })
 
@@ -138,14 +140,14 @@ export default defineComponent({
         const res = await store.dispatch('content/getContent', props.contentId)
         console.log(res)
         content.value = res
+        posterPath.value = `https://image.tmdb.org/t/p/original${content.value?.posterPath}`
       } catch (error) {
         console.log(error)
         // 에러가 발생하는 경우 목록 페이지로 이동
       }
 
       try {
-        const res = await store.dispatch('party/getParties')
-        parties.value = res.data
+        parties.value = await store.dispatch('party/getParties')
       } catch (error) {
         console.log(error)
       }
@@ -183,6 +185,7 @@ export default defineComponent({
       loading,
       isMobile,
       content,
+      posterPath,
       displayedReviews,
       parties,
       comments,
@@ -202,8 +205,8 @@ export default defineComponent({
       @apply absolute top-0 left-0 w-full h-full z-10;
       background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.8),
-        rgba(0, 0, 0, 0)
+        rgba(0, 0, 0, 1),
+        rgba(0, 0, 0, 0.4)
       );
     }
 
@@ -218,7 +221,7 @@ export default defineComponent({
   @apply py-6 px-4;
 
   .section-header {
-    @apply text-2xl font-bold mb-4;
+    @apply flex justify-between items-center text-2xl font-bold mb-6;
   }
 
   .review-list {
@@ -256,23 +259,27 @@ export default defineComponent({
   @apply py-6 px-4;
 
   .section-header {
-    @apply text-2xl font-bold mb-4;
+    @apply flex items-center justify-between mb-6;
+
+    h3 {
+      @apply text-2xl font-bold;
+    }
+
+    .more-link {
+      @apply flex items-center px-2;
+
+      .label {
+        @apply text-sm font-medium text-gray-500;
+      }
+
+      .material-icons {
+        font-size: 1rem;
+      }
+    }
   }
 
   .party-list {
     @apply grid gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mb-1;
-  }
-
-  .more-link {
-    @apply flex items-center mx-auto;
-
-    .label {
-      @apply text-sm font-medium text-gray-500;
-    }
-
-    .material-icons {
-      font-size: 1rem;
-    }
   }
 }
 
@@ -280,7 +287,7 @@ export default defineComponent({
   @apply py-6 px-4;
 
   .section-header {
-    @apply flex items-center justify-between mb-4;
+    @apply flex items-center justify-between mb-6;
 
     h1 {
       @apply text-2xl font-bold;

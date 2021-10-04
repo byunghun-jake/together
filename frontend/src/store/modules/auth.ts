@@ -1,7 +1,7 @@
 import * as authApi from '@/api/auth'
 import { Module } from 'vuex'
 import { RootState } from '@/store/index'
-import { InputUser } from '@/libs/interfaces/auth'
+import { InputUser, OutputUser } from '@/libs/interfaces/auth'
 import { Token } from '@/libs/interfaces/auth'
 
 interface authModule {
@@ -112,6 +112,13 @@ export const auth: Module<authModule, RootState> = {
         return user
       } catch (error) {
         throw new Error('유저 데이터를 가져오던 중 문제가 생겼습니다')
+      }
+    },
+    async updateUserData(_, data: InputUser): Promise<OutputUser> {
+      try {
+        return await authApi.putUserData(data)
+      } catch (error: any) {
+        throw new Error(error)
       }
     },
     async oauthLogin({ commit }, params) {

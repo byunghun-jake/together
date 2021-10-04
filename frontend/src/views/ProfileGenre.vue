@@ -1,5 +1,5 @@
 <template>
-  <div class="container grid">
+  <div class="container grid gap-6 max-w-xl">
     <section class="noti-section">
       <div class="noti-box">
         <p>좋아하는 장르를 선택하면,</p>
@@ -17,7 +17,7 @@
               :key="genre.id"
               @click="handleRemoveFromFavGenreList(genre)"
             >
-              {{ genre.k_name }}
+              {{ genre.kName }}
             </button>
             <button
               class="genre-button"
@@ -25,7 +25,7 @@
               :key="genre.id"
               @click="handleAddToFavGenreList(genre)"
             >
-              {{ genre.k_name }}
+              {{ genre.kName }}
             </button>
           </transition-group>
         </div>

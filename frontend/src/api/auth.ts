@@ -52,10 +52,20 @@ export function resetPasswordConfirm(submitData: {
 export const getUserData = async (userId: number): Promise<OutputUser> => {
   try {
     // const res: AxiosResponse<InputUser> = await http.get(`account/${userId}/`)
-    const res: AxiosResponse<InputUser> = await axios.get(
-      `http://localhost:3000/account/${userId}/`
+    const res: AxiosResponse<InputUser[]> = await http.get(`account/me/`)
+    return keysToCamel(res.data[0])
+  } catch (error) {
+    throw new Error('에러 발생')
+  }
+}
+
+export const putUserData = async (data: InputUser): Promise<OutputUser> => {
+  try {
+    const res: AxiosResponse<InputUser[]> = await http.patch(
+      `account/me/`,
+      data
     )
-    return keysToCamel(res.data)
+    return keysToCamel(res.data[0])
   } catch (error) {
     throw new Error('에러 발생')
   }

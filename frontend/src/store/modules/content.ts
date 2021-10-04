@@ -1,3 +1,4 @@
+import { Movie } from '@/libs/interfaces/content'
 import { Content, Genre } from '@/libs/interface'
 import axios, { AxiosResponse } from 'axios'
 import { Module } from 'vuex'
@@ -8,10 +9,6 @@ interface ProfileState {
   data: string
 }
 
-const apiAxios = axios.create({
-  baseURL: 'http://localhost:3000',
-})
-
 export const content: Module<ProfileState, RootState> = {
   namespaced: true,
   state: {
@@ -19,7 +16,7 @@ export const content: Module<ProfileState, RootState> = {
   },
   mutations: {},
   actions: {
-    getRecommendContent: async (): Promise<Content[]> => {
+    getRecommendContent: async (): Promise<Movie[]> => {
       try {
         return await contentAxios.getContentList()
       } catch (error) {
@@ -32,7 +29,7 @@ export const content: Module<ProfileState, RootState> = {
         }
       }
     },
-    getContent: async (_, contentId: number | string): Promise<Content> => {
+    getContent: async (_, contentId: number | string): Promise<Movie> => {
       try {
         return await contentAxios.getContent(+contentId)
       } catch (error) {

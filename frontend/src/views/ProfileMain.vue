@@ -15,7 +15,7 @@
         </div>
         <div class="profile-main__info--array">
           <p class="text-gray-500">이름</p>
-          <p>{{ account.name }}</p>
+          <p>{{ account.username }}</p>
         </div>
         <div class="profile-main__info--array">
           <p class="text-gray-500">휴대폰 번호</p>
@@ -68,11 +68,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import { Content } from '@/libs/interface'
 import { OutputUser } from '@/libs/interfaces/auth'
 import ContentPosterLink from '@/components/ContentPosterLink.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { Movie } from '@/libs/interfaces/content'
 
 export default defineComponent({
   name: 'ProfileMain',
@@ -89,7 +89,7 @@ export default defineComponent({
     const store = useStore()
     const loading = ref<boolean>(true)
     const account = ref<OutputUser>()
-    const contents = ref<Content[]>([])
+    const contents = ref<Movie[]>([])
 
     onMounted(async () => {
       try {
