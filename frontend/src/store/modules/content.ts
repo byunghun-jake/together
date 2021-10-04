@@ -1,6 +1,6 @@
 import { Movie } from '@/libs/interfaces/content'
 import { Content, Genre } from '@/libs/interface'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { Module } from 'vuex'
 import { RootState } from '@/store/index'
 import contentAxios from '@/api/content'

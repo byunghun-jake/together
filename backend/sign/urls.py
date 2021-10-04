@@ -27,4 +27,13 @@ urlpatterns = [
   # google oauth
   path('google/callback/', views.google_callback, name='google_callback'),
   path('google/login/finish/', views.GoogleLogin.as_view(), name='google_login_to_django'),
+  # kakao oauth
+  path('kakao/callback/', views.kakao_callback, name='kakao_callback'),
+  path('kakao/login/finish/', views.KakaoLogin.as_view(), name='kakao_login_to_django'),
+  # github oauth
+#   path('github/callback/', views.github_callback, name='github_callback'),
+#   path('github/login/finish/', views.GithubLogin.as_view(), name='github_login_to_django'),
+#   # naver oauth
+#   path('naver/callback/', views.naver_callback, name='naver_callback'),
+#   path('naver/login/finish/', views.NaverLogin.as_view(), name='naver_login_to_django'),
 ]

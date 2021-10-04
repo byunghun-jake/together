@@ -100,7 +100,7 @@ export interface User {
   snsId: string | null
 }
 
-type SNSProvider = 'google' | 'naver' | 'kakao' | null
+type SNSProvider = 'google' | 'naver' | 'kakao' | 'github' | null
 
 export interface SNSProviders {
   [key: string]: {

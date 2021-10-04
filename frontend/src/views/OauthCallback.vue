@@ -20,13 +20,15 @@ export default defineComponent({
       const urlSearchParams = new URLSearchParams(window.location.search)
       const params = Object.fromEntries(urlSearchParams.entries())
       const code = params.code
-      const response = await store.dispatch('auth/oauthLogin', {
-        platform,
-        code,
-      })
-      // Loading spinner
-      if (response && response.data) {
+      try {
+        // Loading spinner
+        await store.dispatch('auth/oauthLogin', {
+          platform,
+          code,
+        })
         router.push({ name: 'ContentList' })
+      } catch (error) {
+        alert(error)
       }
     })
     return {
