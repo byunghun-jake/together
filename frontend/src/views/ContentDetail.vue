@@ -3,6 +3,10 @@
   <template v-else>
     <section class="banner-section">
       <ContentDetailInfoSection v-if="!isMobile" :content="content" />
+      <div class="img-wrapper">
+        <div class="layer"></div>
+        <img :src="content.posterPath" alt="" />
+      </div>
     </section>
     <div class="container">
       <ContentDetailInfoSection v-if="isMobile" :content="content" />
@@ -89,47 +93,7 @@ import ContentDetailInfoSection from '@/components/ContentDetailInfoSection.vue'
 import PartyListItem from '@/components/PartyListItem.vue'
 import { useStore } from 'vuex'
 import { Party } from '@/libs/interface'
-
-interface Content {
-  id: number
-  title: string
-  posterPath: string
-  simRate: number
-  providers: string[]
-  firstAirYear: number
-  rated: string
-  seasons: number
-  overview: string
-}
-
-interface Youtube {
-  id: {
-    kind: string
-    videoId: string
-  }
-  snippet: {
-    title: string
-    thumbnails: {
-      medium?: {
-        url: string
-      }
-      high?: {
-        url: string
-      }
-    }
-  }
-}
-
-interface Comment {
-  id: number
-  user: {
-    nickName: string
-    profileImg: string
-  }
-  comment: string
-  like: number
-  rating: number
-}
+import { Content, Youtube, Comment } from '@/libs/interfaces/content'
 
 const YOUTUBE_BASEURL = 'https://www.googleapis.com/youtube/v3/search'
 const YOUTUBE_KEY = 'AIzaSyA3BjU4BpGVhBFlvHsJHsTNRuLePCbaU1Q'
@@ -172,6 +136,7 @@ export default defineComponent({
         //   `http://localhost:3000/contents/${props.contentId}`
         // )
         const res = await store.dispatch('content/getContent', props.contentId)
+        console.log(res)
         content.value = res
       } catch (error) {
         console.log(error)
@@ -179,7 +144,7 @@ export default defineComponent({
       }
 
       try {
-        const res = await axios.get(`http://localhost:3000/parties`)
+        const res = await store.dispatch('party/getParties')
         parties.value = res.data
       } catch (error) {
         console.log(error)
@@ -228,7 +193,25 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .banner-section {
-  @apply grid place-items-center md:grid-cols-2 h-44 md:h-80 bg-purple-600;
+  @apply relative grid place-items-center overflow-hidden md:grid-cols-2 h-44 md:h-80 bg-purple-600;
+
+  .img-wrapper {
+    @apply absolute top-0 left-0 w-full h-full z-0;
+
+    .layer {
+      @apply absolute top-0 left-0 w-full h-full z-10;
+      background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.8),
+        rgba(0, 0, 0, 0)
+      );
+    }
+
+    img {
+      @apply absolute top-1/2 left-0 w-full;
+      transform: translateY(-50%);
+    }
+  }
 }
 
 .review-section {

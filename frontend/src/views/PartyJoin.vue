@@ -65,7 +65,8 @@
 
 <script lang="ts">
 import { getRestDays, toCurrency } from '@/libs/func'
-import { Party, User } from '@/libs/interface'
+import { Party } from '@/libs/interface'
+import { OutputUser } from '@/libs/interfaces/auth'
 import axios from 'axios'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -94,7 +95,7 @@ export default defineComponent({
         Math.floor(party.value.pricePerDay * restDays.value * 0.1)
     )
     // 임시
-    const me = ref<User>()
+    const me = ref<OutputUser>()
 
     const handleClick = () => {
       const ok = confirm('결제를 하시겠습니까?')

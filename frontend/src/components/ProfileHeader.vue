@@ -1,13 +1,13 @@
 <template>
   <nav class="profile-main__navbar__button">
     <router-link
-      :to="{ name: 'ProfileMain', params: { userId: user.pk } }"
+      :to="{ name: 'ProfileMain', params: { userId: user.id } }"
       :class="{ active: !partyactive }"
     >
       <span>프로필</span>
     </router-link>
     <router-link
-      :to="{ name: 'ProfileParty', params: { userId: user.pk } }"
+      :to="{ name: 'ProfileParty', params: { userId: user.id } }"
       :class="{ active: partyactive }"
       class="profile-main__navbar__button--space"
     >

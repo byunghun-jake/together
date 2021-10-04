@@ -152,12 +152,14 @@ export default defineComponent({
         const email = formData.value['email'].value
         const password = formData.value['password'].value
         // TODO: Add loading spinner
-        const response = await store.dispatch('auth/login', {
-          email,
-          password,
-        })
-        if (response && response.status === 200) {
+        try {
+          await store.dispatch('auth/login', {
+            email,
+            password,
+          })
           router.push({ name: 'ContentList' })
+        } catch (error) {
+          alert(error)
         }
       }
     }

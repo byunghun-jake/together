@@ -9,6 +9,7 @@ import ProfileMain from '@/views/ProfileMain.vue'
 import ProfileEdit from '@/views/ProfileEdit.vue'
 import ProfileChangePassword from '@/views/ProfileChangePassword.vue'
 import ProfileParty from '@/views/ProfileParty.vue'
+import ProfileGenre from '@/views/ProfileGenre.vue'
 import ContentList from '@/views/ContentList.vue'
 import ContentDetail from '@/views/ContentDetail.vue'
 import PartyList from '@/views/PartyList.vue'
@@ -153,6 +154,11 @@ const routes: Array<RouteRecordRaw> = [
         path: ':userId/party',
         name: 'ProfileParty',
         component: ProfileParty,
+      },
+      {
+        path: ':userId/genre',
+        name: 'ProfileGenre',
+        component: ProfileGenre,
       },
     ],
   },

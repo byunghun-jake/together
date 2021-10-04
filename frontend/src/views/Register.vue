@@ -143,22 +143,24 @@ export default defineComponent({
     const submit = async () => {
       if (isValidFormData.value && isValidInfoData.value) {
         const email = formData.value['email'].value
-        const password = formData.value['password'].value
-        const passwordConfirm = formData.value['passwordConfirm'].value
-        const nickName = infoData.value['nickName'].value
-        const name = infoData.value['name'].value
-        const phoneNumber = infoData.value['phoneNumber'].value
+        const password1 = formData.value['password'].value
+        const password2 = formData.value['passwordConfirm'].value
+        const nick_name = infoData.value['nickName'].value
+        const username = infoData.value['name'].value
+        const phone_number = infoData.value['phoneNumber'].value
         // TODO: Add loading spinner
-        const response = await store.dispatch('auth/register', {
-          name,
-          password,
-          email,
-          passwordConfirm,
-          phoneNumber,
-          nickName,
-        })
-        if (response && response.status === 201) {
-          router.push({ name: 'Login' })
+        try {
+          await store.dispatch('auth/register', {
+            email,
+            password1,
+            password2,
+            nick_name,
+            username,
+            phone_number,
+          })
+          router.push({ name: 'ContentList' })
+        } catch (error) {
+          alert(error)
         }
       }
     }

@@ -40,13 +40,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue'
-import { PartyForm, PartyFormField, InputEvent } from '@/libs/interface'
+import { FormData, FormField, InputEvent } from '@/libs/interface'
 
 export default defineComponent({
   name: 'TextInput',
   props: {
     field: {
-      type: Object as PropType<PartyFormField>,
+      type: Object as PropType<FormField>,
       required: true,
     },
     modelValue: {
@@ -58,7 +58,7 @@ export default defineComponent({
       required: true,
     },
     formData: {
-      type: Object as PropType<PartyForm>,
+      type: Object as PropType<FormData>,
       required: true,
     },
   },

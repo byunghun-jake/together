@@ -16,9 +16,9 @@
       <div class="flex gap-2" v-else>
         <router-link
           class="btn"
-          :to="{ name: 'ProfileMain', params: { userId: user.pk } }"
+          :to="{ name: 'ProfileMain', params: { userId: user.id } }"
         >
-          {{ user.nickname }}
+          {{ user.nickName }}
         </router-link>
         <button class="btn logout" @click="handleClickLogoutBtn">
           로그아웃
@@ -30,16 +30,19 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
     const store = useStore()
+    const route = useRouter()
     const isLogin = computed(() => store.getters['auth/isLogin'])
     const user = computed(() => store.state.auth.user)
 
     const handleClickLogoutBtn = () => {
       store.dispatch('auth/logout')
+      route.push({ name: 'ContentList' })
     }
 
     return { user, isLogin, handleClickLogoutBtn }

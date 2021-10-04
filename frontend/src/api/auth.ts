@@ -1,47 +1,64 @@
 import http from '@/api/http'
-import { AxiosResponse } from 'axios'
+import { keysToCamel } from '@/libs/func'
+import { OutputUser, InputUser } from '@/libs/interfaces/auth'
+import axios, { AxiosResponse } from 'axios'
 
-export function login(email: string, password: string): Promise<AxiosResponse> {
-  return http.post('account/login/', {
-    email: email,
-    password: password,
-  })
+interface AuthResponseData {
+  accessToken: string
+  refreshToken: string
+  user: OutputUser
 }
 
-export function register(
-  name: string,
+export const login = async (
   email: string,
-  password1: string,
-  password2: string,
-  phoneNumber: string,
-  nickName: string
-): Promise<AxiosResponse> {
-  return http.post('account/register/', {
-    username: name,
-    email: email,
-    password1: password1,
-    password2: password2,
-    phone_number: phoneNumber,
-    nick_name: nickName,
-  })
+  password: string
+): Promise<AuthResponseData> => {
+  try {
+    const res = await http.post('account/login/', {
+      email,
+      password,
+    })
+    return keysToCamel(res.data)
+  } catch (error) {
+    throw new Error('로그인 실패')
+  }
+}
+
+export const register = async (submitData: {
+  username: string
+  email: string
+  password1: string
+  password2: string
+  phone_number: string
+  nick_name: string
+}): Promise<AuthResponseData> => {
+  const res = await http.post('account/register/', submitData)
+  return keysToCamel(res.data)
 }
 
 export function resetPassword(email: string): Promise<AxiosResponse> {
   return http.post('account/password/reset/', { email: email })
 }
 
-export function resetPasswordConfirm(
-  uid: string,
-  token: string,
-  password1: string,
+export function resetPasswordConfirm(submitData: {
+  uid: string
+  token: string
+  password1: string
   password2: string
-): Promise<AxiosResponse> {
-  return http.post('account/password/reset/confirm/', {
-    uid: uid,
-    token: token,
-    new_password1: password1,
-    new_password2: password2,
-  })
+}): Promise<AxiosResponse> {
+  return http.post('account/password/reset/confirm/', submitData)
+}
+
+export const getUserData = async (userId: number): Promise<OutputUser> => {
+  try {
+    // const res: AxiosResponse<InputUser> = await http.get(`account/${userId}/`)
+    const res: AxiosResponse<InputUser> = await axios.get(
+      `http://localhost:3000/account/${userId}/`
+    )
+    return keysToCamel(res.data)
+  } catch (error) {
+    throw new Error('에러 발생')
+  }
 }
 
 export function oauthLogin(

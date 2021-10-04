@@ -28,26 +28,10 @@
 </template>
 
 <script lang="ts">
-import { ValidateData, Validator } from '@/libs/interface'
+import { FormData, ValidateData } from '@/libs/interface'
 import { requiredValidator } from '@/libs/validator'
 import { computed, defineComponent, ref } from 'vue'
 import TextInput from '@/components/Common/TextInput.vue'
-
-interface FormField {
-  label: string
-  type: 'text' | 'number' | 'date' | 'password'
-  value: string | number
-  placeholder?: string
-  errors: {
-    [key: string]: string
-  }
-  validators?: Validator[]
-  message?: string
-}
-
-interface FormData {
-  [key: string]: FormField
-}
 
 export default defineComponent({
   components: { TextInput },

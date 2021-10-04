@@ -13,7 +13,7 @@
       <span class="label">로그인</span>
     </router-link>
     <router-link
-      :to="{ name: 'ProfileMain', params: { userId: user.pk } }"
+      :to="{ name: 'ProfileMain', params: { userId: user.id } }"
       class="nav-link"
       v-else
     >

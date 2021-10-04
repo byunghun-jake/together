@@ -1,21 +1,11 @@
-import axios from 'axios'
+import { Content, Genre } from '@/libs/interface'
+import axios, { AxiosResponse } from 'axios'
 import { Module } from 'vuex'
 import { RootState } from '@/store/index'
+import contentAxios from '@/api/content'
 
 interface ProfileState {
   data: string
-}
-
-interface Content {
-  id: number
-  title: string
-  posterPath: string
-  simRate: number
-  providers: string[]
-  firstAirYear: number
-  rated: string
-  seasons: number
-  overview: string
 }
 
 const apiAxios = axios.create({
@@ -29,13 +19,9 @@ export const content: Module<ProfileState, RootState> = {
   },
   mutations: {},
   actions: {
-    getContent: async (
-      context,
-      contentId: number | string
-    ): Promise<Content | undefined> => {
+    getRecommendContent: async (): Promise<Content[]> => {
       try {
-        const res = await apiAxios.get(`/contents/${contentId}`)
-        return res.data
+        return await contentAxios.getContentList()
       } catch (error) {
         if (axios.isAxiosError(error)) {
           // Access to config, request, and response
@@ -46,10 +32,9 @@ export const content: Module<ProfileState, RootState> = {
         }
       }
     },
-    getRecommendContent: async (): Promise<Content[] | undefined> => {
+    getContent: async (_, contentId: number | string): Promise<Content> => {
       try {
-        const res = await apiAxios.get('/contents')
-        return res.data
+        return await contentAxios.getContent(+contentId)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           // Access to config, request, and response
@@ -58,6 +43,13 @@ export const content: Module<ProfileState, RootState> = {
           // Just a stock error
           throw new Error('알 수 없는 에러 발생')
         }
+      }
+    },
+    getGenreList: async (): Promise<Genre[]> => {
+      try {
+        return contentAxios.getGenreList()
+      } catch (error: any) {
+        throw new Error(error.response)
       }
     },
   },

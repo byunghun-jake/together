@@ -37,20 +37,9 @@
 </template>
 
 <script lang="ts">
+import { Content } from '@/libs/interfaces/content'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { useStore } from 'vuex'
-
-type Content = {
-  id: number
-  title: string
-  posterPath: string
-  simRate: number
-  providers: string[]
-  firstAirYear: number
-  rated: string
-  seasons: number
-  overview: string
-}
 
 export default defineComponent({
   name: 'ContentDetailInfoSection',
@@ -84,7 +73,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .info-section {
-  @apply p-4 grid gap-4;
+  @apply relative z-10 p-4 grid gap-4 md:text-white;
 
   .section-header {
     @apply flex justify-between items-center;

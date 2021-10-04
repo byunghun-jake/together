@@ -33,25 +33,9 @@
 import axios from 'axios'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import Textinput from '@/components/Common/TextInput.vue'
-import { ValidateData, Validator } from '@/libs/interface'
+import { ValidateData, FormData } from '@/libs/interface'
 import { requiredValidator } from '@/libs/validator'
 import { useRouter } from 'vue-router'
-
-interface FormField {
-  label: string
-  type: 'text' | 'number' | 'date'
-  value: string | number
-  placeholder?: string
-  errors: {
-    [key: string]: string
-  }
-  validators?: Validator[]
-  message?: string
-}
-
-interface FormData {
-  [key: string]: FormField
-}
 
 export default defineComponent({
   name: 'ProfileEdit',
@@ -104,15 +88,15 @@ export default defineComponent({
       console.log('submit')
       try {
         const name = formData.value.name.value
-        const nickName = formData.value.nickName.value
-        const phoneNumber = formData.value.phoneNumber.value
+        const nick_name = formData.value.nickName.value
+        const phone_number = formData.value.phoneNumber.value
 
         const res = await axios.put(
           `http://localhost:3000/account/${props.userId}`,
           {
             name,
-            nickName,
-            phoneNumber,
+            nick_name,
+            phone_number,
           }
         )
         console.log(res)
@@ -139,10 +123,10 @@ export default defineComponent({
         const res = await axios.get(
           `http://localhost:3000/account/${props.userId}`
         )
-        const { nickName, name, phoneNumber } = res.data
+        const { nickName, name, phone_number } = res.data
         formData.value.nickName.value = nickName
         formData.value.name.value = name
-        formData.value.phoneNumber.value = phoneNumber
+        formData.value.phoneNumber.value = phone_number
       } catch (error) {
         console.log(error)
       }

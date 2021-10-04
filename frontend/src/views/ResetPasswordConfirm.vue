@@ -92,15 +92,15 @@ export default defineComponent({
 
     const submit = async () => {
       if (isValidFormData.value) {
-        const password = formData.value['password'].value
-        const passwordConfirm = formData.value['passwordConfirm'].value
+        const new_password1 = formData.value['password'].value
+        const new_password2 = formData.value['passwordConfirm'].value
         const uid = route.params.uid
         const token = route.params.token
         const response = await store.dispatch('auth/resetPasswordConfirm', {
           uid,
           token,
-          password,
-          passwordConfirm,
+          new_password1,
+          new_password2,
         })
         if (response.status === 200) {
           router.push({ name: 'Login' })

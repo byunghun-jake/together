@@ -36,7 +36,7 @@ export default defineComponent({
     const parties = ref<Party[]>([])
 
     onMounted(async () => {
-      parties.value = await store.dispatch('party/getAllParties')
+      parties.value = await store.dispatch('party/getParties')
       loading.value = false
     })
     return { loading, isLogin, parties }

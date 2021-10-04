@@ -91,7 +91,12 @@
 import { computed, defineComponent, ref } from 'vue'
 import TextInput from '@/components/Common/TextInput.vue'
 import { requiredValidator } from '@/libs/validator'
-import { PartyForm, Provider, ValidateData } from '@/libs/interface'
+import {
+  FormData,
+  Provider,
+  ValidateData,
+  SubmitFormData,
+} from '@/libs/interface'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -102,7 +107,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const provider = ref<Provider>('')
-    const inputForm = ref<PartyForm>({
+    const inputForm = ref<FormData>({
       title: {
         label: '파티 이름',
         type: 'text',
@@ -186,7 +191,7 @@ export default defineComponent({
     }
 
     const handleSubmit = async () => {
-      const data: { [key: string]: Provider | string | number } = {
+      const data: SubmitFormData = {
         desc: desc.value,
         // 하드코딩
         providerName: provider.value,
@@ -202,7 +207,12 @@ export default defineComponent({
       const ok = confirm('생성하시겠습니까?')
       if (ok) {
         console.log(data)
-        await store.dispatch('party/postParty', data)
+        try {
+          const party = await store.dispatch('party/postParty', data)
+          router.push({ name: 'PartyDetail', params: { partyId: party.id } })
+        } catch (error) {
+          alert('문제가 생겼어요!')
+        }
       }
     }
 
