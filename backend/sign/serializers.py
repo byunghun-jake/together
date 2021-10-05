@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from django.db.models import fields
 from .models import User
@@ -13,6 +14,13 @@ class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = '__all__'
+
+class UserSmallSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = User
+    fields = ('id', 'nick_name')
+
 
 class UserLoginSerializer(LoginSerializer):
 

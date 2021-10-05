@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
     # app
     'sign.apps.SignConfig',
+    'party.apps.PartyConfig',
+    'billing',
     'rec_movie.apps.RecConfig',
     'rec_program.apps.RecProgramConfig',
 
@@ -110,10 +112,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES':[
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
@@ -129,12 +130,20 @@ SIMPLE_JWT = {
 }
 # SNS 로그인
 SOCIALACCOUNT_FORMS = {
-    'signup': 'allauth.socialaccount.forms.SignupForm',
+    'signup': 'allauth.socialaccount.forms.SignupForm', 
 }
+
 # Password Reset Email Host
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'joenjoy202@gmail.com'
+EMAIL_HOST_PASSWORD ='test1234!'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -233,7 +242,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
