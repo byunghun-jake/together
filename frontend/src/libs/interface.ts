@@ -47,19 +47,19 @@ export interface Content {
 }
 
 export type Provider = '넷플릭스' | '왓챠' | '웨이브' | ''
-export interface Party {
-  id: number
-  title: string
-  desc: string
-  memberLimit: number
-  endDate: string
-  pricePerDay: number
-  providerName: Provider
-  providerLogoUrl: string
-  providerPricePerDay: number
-  hostName: string
-  membersCount: number
-}
+// export interface Party {
+//   id: number
+//   title: string
+//   desc: string
+//   memberLimit: number
+//   endDate: string
+//   pricePerDay: number
+//   providerName: Provider
+//   providerLogoUrl: string
+//   providerPricePerDay: number
+//   hostName: string
+//   membersCount: number
+// }
 
 export type Validator = (key: string, value: string | number) => ValidateData
 

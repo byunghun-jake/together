@@ -4,20 +4,17 @@
       <div class="party">
         <div class="infos">
           <div class="text">
-            <h3>{{ party.providerName }} 프리미엄</h3>
+            <h3>{{ party.provider.name }}</h3>
             <p>{{ party.title }}</p>
           </div>
           <div class="logo-wrapper">
-            <img
-              :src="require(`@/assets/images/${provider}.png`)"
-              :alt="`${party.providerName} 로고`"
-            />
+            <img :src="providerLogoUrl" :alt="`${party.provider.name} 로고`" />
           </div>
         </div>
         <div class="members">
           <div
             class="image-wrapper"
-            v-for="i in party.membersCount"
+            v-for="i in membersCount"
             :key="`member${i}`"
           >
             <img
@@ -26,7 +23,7 @@
           </div>
           <div
             class="image-wrapper"
-            v-for="i in party.memberLimit - party.membersCount"
+            v-for="i in party.memberLimit - membersCount"
             :key="`empty${i}`"
           >
             <img
@@ -40,7 +37,7 @@
           </div>
           <div class="price-wrapper">
             <p class="original-price">
-              {{ toCurrency(party.providerPricePerDay * restDays) }}
+              {{ toCurrency(party.provider.pricePerDay * restDays) }}
             </p>
             <p class="price">
               {{ toCurrency(party.pricePerDay * restDays) }}
@@ -53,9 +50,9 @@
 </template>
 
 <script lang="ts">
-import { Party } from '@/libs/interface'
 import { getRestDays, toCurrency } from '@/libs/func'
-import { defineComponent, PropType } from 'vue'
+import { Party } from '@/libs/interfaces/party'
+import { defineComponent, PropType, ref } from 'vue'
 
 export default defineComponent({
   name: 'PartyListItem',
@@ -66,24 +63,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let provider = ''
-    switch (props.party.providerName) {
-      case '넷플릭스': {
-        provider = 'netflix'
-        break
-      }
-      case '왓챠': {
-        provider = 'watcha'
-        break
-      }
-      case '웨이브': {
-        provider = 'wavve'
-        break
-      }
-    }
+    const providerLogoUrl = `https://image.tmdb.org/t/p/w200${props.party.provider.logoUrl}`
+    const membersCount = ref(props.party.payments.length)
 
     const restDays: number = getRestDays(props.party.endDate)
-    return { toCurrency, provider, restDays }
+    return { toCurrency, providerLogoUrl, restDays, membersCount }
   },
 })
 </script>

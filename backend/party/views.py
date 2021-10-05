@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from .serializers import (
   PartySerializer, PartyCreateSerializer, 
-  PaymentsUserSerializer
+  PaymentsUserSerializer, ProviderSerializer
 )
-from .models import Party
+from .models import Party, Provider
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from django.shortcuts import get_object_or_404
@@ -23,10 +23,10 @@ class PartyView(generics.GenericAPIView):
  
   def post(self, request):
     user = request.user
+    provider = get_object_or_404(Provider, pk=request.data.get('provider_id'))
     serializer = PartyCreateSerializer(data=request.data)
     if serializer.is_valid():
-      party = serializer.save(host=user)
-      party.payments.add(user)
+      party = serializer.save(host=user, provider=provider)
       new = PartySerializer(party)
       return Response(new.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -82,4 +82,13 @@ class PartyJoinView(generics.GenericAPIView):
     new = PartySerializer(party)
     return Response(new.data, status=status.HTTP_201_CREATED)
 
+
+class ProviderView(generics.GenericAPIView):
+  queryset = Provider.objects.all()
+  serializer_class = ProviderSerializer
+
+  def get(self, request):
+    providers = Provider.objects.all()
+    serializer = ProviderSerializer(providers, many=True)
+    return Response(serializer.data)
 

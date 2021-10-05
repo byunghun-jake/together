@@ -4,7 +4,10 @@
     <section class="party-detail-section" v-else>
       <div class="party-info-container">
         <div class="logo-wrapper">
-          <img src="@/assets/images/netflix.png" alt="로고" />
+          <img
+            :src="`https://image.tmdb.org/t/p/w200${party.provider.logoUrl}`"
+            alt="로고"
+          />
         </div>
         <h1 class="title">{{ party.title }}</h1>
         <div class="infos">
@@ -12,12 +15,12 @@
           <p class="endDate">{{ party.endDate }} 까지 ({{ restDays }}일)</p>
           <div class="price-wrapper">
             <p class="original-price">
-              {{ toCurrency(party.providerPricePerDay * restDays) }}
+              {{ toCurrency(party.provider.pricePerDay * restDays) }}
             </p>
             <div class="price_per-day">
-              <span class="price">{{
-                toCurrency(party.pricePerDay * restDays)
-              }}</span>
+              <span class="price">
+                {{ toCurrency(party.pricePerDay * restDays) }}
+              </span>
             </div>
           </div>
         </div>
@@ -25,7 +28,7 @@
       <div class="remain-container">
         <h3>남은 자리</h3>
         <ul class="member-list">
-          <li v-for="i in party.memberLimit - party.membersCount" :key="i">
+          <li v-for="i in party.memberLimit - membersCount" :key="i">
             <div class="image-wrapper">
               <img
                 class="member-icon"
@@ -39,7 +42,7 @@
       <div class="members-container">
         <h3>파티원</h3>
         <ul class="member-list">
-          <li v-for="i in party.membersCount" :key="i">
+          <li v-for="i in membersCount" :key="i">
             <div class="image-wrapper">
               <img
                 class="member-icon"
@@ -67,9 +70,9 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { Party } from '@/libs/interface'
 import { useStore } from 'vuex'
 import { getRestDays, toCurrency } from '@/libs/func'
+import { Party } from '@/libs/interfaces/party'
 
 export default defineComponent({
   name: 'PartyDetail',
@@ -84,6 +87,7 @@ export default defineComponent({
     const loading = ref(true)
     const party = ref<Party>()
     const restDays = ref<number>(0)
+    const membersCount = ref<number>(0)
 
     onMounted(async () => {
       try {
@@ -93,13 +97,14 @@ export default defineComponent({
         )
         party.value = _party
         restDays.value = getRestDays(_party.endDate)
+        membersCount.value = _party.payments.length
       } catch (error) {
         console.log(error.response)
       }
       loading.value = false
     })
 
-    return { loading, party, restDays, toCurrency }
+    return { loading, party, restDays, membersCount, toCurrency }
   },
 })
 </script>

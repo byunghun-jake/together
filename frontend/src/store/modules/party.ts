@@ -1,12 +1,8 @@
 import { Module } from 'vuex'
 import { RootState } from '@/store/index'
-import axios from 'axios'
-import { Party, SubmitFormData } from '@/libs/interface'
+import { SubmitFormData } from '@/libs/interface'
 import partyAxios from '@/api/party'
-
-const http = axios.create({
-  baseURL: 'http://localhost:3000',
-})
+import { Party } from '@/libs/interfaces/party'
 
 interface PartyModule {
   data: string
@@ -43,6 +39,13 @@ export const party: Module<PartyModule, RootState> = {
       } catch (error: any) {
         console.log(error)
         throw new Error(error)
+      }
+    },
+    async getProviders() {
+      try {
+        return await partyAxios.getProviders()
+      } catch (error) {
+        console.log(error)
       }
     },
   },

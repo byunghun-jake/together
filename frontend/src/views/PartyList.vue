@@ -24,7 +24,7 @@
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import PartyListItem from '@/components/PartyListItem.vue'
 import { useStore } from 'vuex'
-import { Party } from '@/libs/interface'
+import { Party } from '@/libs/interfaces/party'
 
 export default defineComponent({
   name: 'PartyList',
