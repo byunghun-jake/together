@@ -65,8 +65,8 @@
 
 <script lang="ts">
 import { getRestDays, toCurrency } from '@/libs/func'
-import { Party } from '@/libs/interface'
 import { OutputUser } from '@/libs/interfaces/auth'
+import { Party } from '@/libs/interfaces/party'
 import axios from 'axios'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'

@@ -4,7 +4,7 @@
       <div class="profile-party__box__text--array">
         <p class="font-semibold">{{ party.providerName }}</p>
         <img
-          :src="require(`@/assets/images/${provider}.png`)"
+          :src="providerLogoUrl"
           class="profile-party__box__image--size"
           alt="이미지"
         />
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Party } from '@/libs/interface'
+import { Party } from '@/libs/interfaces/party'
 import { defineComponent, onBeforeUnmount, onMounted, PropType, ref } from 'vue'
 
 export default defineComponent({
@@ -58,24 +58,9 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(prop) {
-    const provider = ref<string>('netflix')
+  setup(props) {
+    const providerLogoUrl = `https://image.tmdb.org/t/p/w200${props.party.provider.logoUrl}`
     const isExpanded = ref<boolean>(false)
-
-    switch (prop.party.providerName) {
-      case '넷플릭스': {
-        provider.value = 'netflix'
-        break
-      }
-      case '왓챠': {
-        provider.value = 'watcha'
-        break
-      }
-      case '웨이브': {
-        provider.value = 'wavve'
-        break
-      }
-    }
 
     const setIsExpanded = () => {
       console.log(window.innerWidth)
@@ -96,7 +81,7 @@ export default defineComponent({
     }
 
     return {
-      provider,
+      providerLogoUrl,
       isExpanded,
       handleToggleClick,
     }

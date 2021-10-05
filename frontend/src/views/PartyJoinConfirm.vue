@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { getRestDays, toCurrency } from '@/libs/func'
-import { Party } from '@/libs/interface'
+import { Party } from '@/libs/interfaces/party'
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'

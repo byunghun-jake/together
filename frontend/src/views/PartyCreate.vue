@@ -8,13 +8,13 @@
     </section>
     <section class="service-section">
       <header class="section-header">
-        <h1 class="section-title" :class="{ selected: provider }">
+        <h1 class="section-title" :class="{ selected: selectedProvider }">
           서비스 선택
         </h1>
         <button
           class="reset-service-btn"
           @click="handleResetProvider()"
-          v-if="provider"
+          v-if="selectedProvider"
         >
           다시 선택
         </button>
@@ -22,36 +22,22 @@
       <div class="service-list">
         <button
           class="service"
-          :class="{ selected: provider === '넷플릭스' }"
-          v-if="!provider || provider === '넷플릭스'"
-          @click="handleSelectProvider('넷플릭스')"
+          :class="{
+            selected: selectedProvider && selectedProvider.id === p.id,
+          }"
+          v-for="p in providers"
+          :key="p.id"
+          v-show="!selectedProvider || selectedProvider.id === p.id"
+          @click="handleSelectProvider(p)"
+          :disabled="selectedProvider"
         >
           <div class="logo-wrapper">
-            <img src="@/assets/images/netflix.png" alt="넷플릭스" />
+            <img
+              :src="`https://image.tmdb.org/t/p/w200${p.logoUrl}`"
+              :alt="p.name"
+            />
           </div>
-          <p class="service-name">넷플릭스</p>
-        </button>
-        <button
-          class="service"
-          :class="{ selected: provider === '왓챠' }"
-          v-if="!provider || provider === '왓챠'"
-          @click="handleSelectProvider('왓챠')"
-        >
-          <div class="logo-wrapper">
-            <img src="@/assets/images/watcha.png" alt="왓챠" />
-          </div>
-          <p class="service-name">왓챠</p>
-        </button>
-        <button
-          class="service"
-          :class="{ selected: provider === '웨이브' }"
-          v-if="!provider || provider === '웨이브'"
-          @click="handleSelectProvider('웨이브')"
-        >
-          <div class="logo-wrapper">
-            <img src="@/assets/images/wavve.png" alt="웨이브" />
-          </div>
-          <p class="service-name">웨이브</p>
+          <p class="service-name">{{ p.name }}</p>
         </button>
       </div>
     </section>
@@ -59,7 +45,7 @@
       <header class="section-header">
         <h1 class="section-title">파티 정보</h1>
       </header>
-      <template v-if="provider">
+      <template v-if="selectedProvider">
         <form class="grid gap-4">
           <TextInput
             v-for="(field, key) in inputForm"
@@ -88,17 +74,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import TextInput from '@/components/Common/TextInput.vue'
 import { requiredValidator } from '@/libs/validator'
-import {
-  FormData,
-  Provider,
-  ValidateData,
-  SubmitFormData,
-} from '@/libs/interface'
+import { FormData, ValidateData, SubmitFormData } from '@/libs/interface'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { PartyProvider } from '@/libs/interfaces/party'
 
 export default defineComponent({
   name: 'PartyCreate',
@@ -106,7 +88,8 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const store = useStore()
-    const provider = ref<Provider>('')
+    const providers = ref<PartyProvider[]>([])
+    const selectedProvider = ref<PartyProvider>()
     const inputForm = ref<FormData>({
       title: {
         label: '파티 이름',
@@ -156,6 +139,19 @@ export default defineComponent({
     })
     const desc = ref<string>('')
 
+    const submitData = computed(() => {
+      return {
+        title: inputForm.value.title.value,
+        service_id: inputForm.value.serviceId.value,
+        service_password: inputForm.value.servicePassword.value,
+        member_limit: inputForm.value.memberLimit.value,
+        end_date: inputForm.value.endDate.value,
+        price_per_day: inputForm.value.pricePerDay.value,
+        desc: desc.value,
+        provider_id: selectedProvider.value && selectedProvider.value.id,
+      }
+    })
+
     const checkErrorFromInputForm = computed(() => {
       return Object.keys(inputForm.value).every((fieldKey) => {
         return (
@@ -168,8 +164,7 @@ export default defineComponent({
     const formIsValid = computed(() => {
       return (
         checkErrorFromInputForm.value &&
-        provider.value.length !== 0 &&
-        desc.value.length !== 0
+        Object.values(submitData.value).every((v) => v)
       )
     })
 
@@ -182,33 +177,34 @@ export default defineComponent({
       }
     }
 
-    const handleSelectProvider = (p: Provider) => {
-      provider.value = p
+    const handleSelectProvider = (p: PartyProvider) => {
+      selectedProvider.value = p
     }
 
     const handleResetProvider = () => {
-      provider.value = ''
+      selectedProvider.value = undefined
     }
 
     const handleSubmit = async () => {
       const data: SubmitFormData = {
+        title: inputForm.value.title.value,
+        service_id: inputForm.value.serviceId.value,
+        service_password: inputForm.value.servicePassword.value,
+        member_limit: inputForm.value.memberLimit.value,
+        end_date: inputForm.value.endDate.value,
+        price_per_day: inputForm.value.pricePerDay.value,
         desc: desc.value,
-        // 하드코딩
-        providerName: provider.value,
-        providerLogoUrl: '@/assets/images/netflix.png',
-        providerPricePerDay: 300,
-        hostName: '김병훈',
-        membersCount: 3,
       }
-      Object.keys(inputForm.value).forEach((fieldKey) => {
-        console.log(fieldKey, typeof inputForm.value[fieldKey].value)
-        data[fieldKey] = inputForm.value[fieldKey].value
-      })
+      if (selectedProvider.value?.id) {
+        data.provider_id = selectedProvider.value.id
+      }
+
       const ok = confirm('생성하시겠습니까?')
       if (ok) {
         console.log(data)
         try {
           const party = await store.dispatch('party/postParty', data)
+          console.log(party)
           router.push({ name: 'PartyDetail', params: { partyId: party.id } })
         } catch (error) {
           alert('문제가 생겼어요!')
@@ -216,9 +212,14 @@ export default defineComponent({
       }
     }
 
+    onMounted(async () => {
+      providers.value = await store.dispatch('party/getProviders')
+    })
+
     return {
       desc,
-      provider,
+      selectedProvider,
+      providers,
       inputForm,
       formIsValid,
       handleSelectProvider,
