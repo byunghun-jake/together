@@ -1,41 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
-
-@Gomyo
-Gomyo
-/
-NETFLIX_TINDER
-1
-0
-0
-Code
-Issues
-5
-Pull requests
-Discussions
-Actions
-Projects
-1
-Wiki
-Security
-3
-Insights
-More
-NETFLIX_TINDER/.gitignore
-@Gomyo
-Gomyo project finish
-Latest commit f9df94f on 30 May
- History
- 1 contributor
-450 lines (333 sloc)  7 KB
-
-# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,django,python,venv,node,vuejs,vue,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,django,python,venv,node,vuejs,vue,visualstudiocode
-
 ### Django ###
 *.log
 *.pot
@@ -161,6 +123,11 @@ ENV/
 env.bak/
 venv.bak/
 pythonenv*
+backend/venv/
+backend/.idea/
+backend/*.ipynb
+0*.py
+backend/secrets.json
 
 # Spyder project settings
 .spyderproject
@@ -482,17 +449,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/windows,macos,django,python,venv,node,vuejs,vue,visualstudiocode
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Loading complete
+# End of https://www.toptal.com/developers/gitignore/api/windows,macos,django,python,venv,node,vuejs,vue,visualstudiocode© 2021 GitHub, Inc.
