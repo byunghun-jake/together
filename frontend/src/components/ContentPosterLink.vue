@@ -28,7 +28,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const posterPath = `https://image.tmdb.org/t/p/w500${props.content.posterPath}`
+    const posterPath = `https://image.tmdb.org/t/p/w200${props.content.posterPath}`
     return { posterPath }
   },
 })

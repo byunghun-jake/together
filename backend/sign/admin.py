@@ -12,9 +12,26 @@ class UserAdmin(BaseUserAdmin):
   list_display = ('email', 'nick_name', 'phone_number', 'is_admin')
   list_filter = ('is_admin',)
   fieldsets = (
-    (None,{'fields':('email','password')}),
-    ("Personal info",{'fields':('nick_name','phone_number')}),
-    ("Permissions",{'fields':('is_admin',)})
+    ('Email & Password',
+      {'fields':
+        ('email','password')
+      }
+    ),
+    ("Personal info",
+      {'fields':
+        ('nick_name','phone_number')
+      }
+    ),
+    ("Permissions",
+      {'fields':
+        ('is_admin',)
+      }
+    ),
+    ("FavGenres",
+      {'fields':
+        ('fav_movie_genres', 'fav_program_genres')
+      }
+    ),
   )
   add_fieldsets = (
     (None, {

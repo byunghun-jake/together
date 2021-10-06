@@ -21,7 +21,11 @@
     <div class="overview">
       {{ content.overview }}
     </div>
-    <fieldset class="rating-wrapper" @change="handleChange" v-if="isLogin">
+    <fieldset
+      class="rating-wrapper"
+      @change="handleClickRatingBtn"
+      v-if="isLogin"
+    >
       <template v-for="i in 5" :key="i">
         <input
           type="radio"
@@ -46,26 +50,46 @@ export default defineComponent({
   props: {
     content: {
       type: Object as PropType<Content>,
+      required: true,
+    },
+    contentType: {
+      type: String,
+      required: true,
     },
   },
-  setup() {
+  setup(props) {
     const store = useStore()
-    const rating = ref<number | null>(null)
+    const rating = ref<number>(0)
     const isLogin = computed(() => store.getters['auth/isLogin'])
 
-    const handleChange = () => {
-      const ok = confirm(`내가 매긴 점수: ${rating.value}점`)
-      if (ok) {
-        console.log(rating.value)
+    const handleClickRatingBtn = async () => {
+      const score = rating.value * 2
+      const submitData: {
+        [key: string]: string | number
+      } = {
+        user_id: store.getters['auth/getUserNickName'],
+        rating: score,
+      }
+      if (props.contentType === 'movies') {
+        submitData.movie_id = props.content.id
       } else {
-        rating.value = null
+        submitData.program_id = props.content.id
+      }
+      const ok = confirm(`내가 매긴 점수: ${score}점`)
+      if (ok) {
+        store.dispatch('content/postReview', {
+          submitData,
+          contentType: props.contentType,
+        })
+      } else {
+        rating.value = 0
       }
     }
 
     return {
       rating,
       isLogin,
-      handleChange,
+      handleClickRatingBtn,
     }
   },
 })
@@ -73,7 +97,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .info-section {
-  @apply relative z-10 p-4 grid gap-4 md:text-white;
+  @apply relative z-10 p-4 grid gap-2 select-none md:text-white;
 
   .section-header {
     @apply flex justify-between items-center;
@@ -89,6 +113,10 @@ export default defineComponent({
 
   .provider-list {
     @apply flex flex-wrap gap-2;
+
+    .provider-item {
+      @apply hover:text-red-400;
+    }
   }
 
   .details {
@@ -111,7 +139,7 @@ export default defineComponent({
       @apply hidden;
     }
     .star {
-      @apply text-gray-200;
+      @apply text-gray-200 cursor-pointer;
     }
 
     input:checked ~ label, /* show gold star when clicked */

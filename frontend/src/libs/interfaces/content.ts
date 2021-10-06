@@ -51,14 +51,9 @@ export type ProviderNameEn =
   | 'Watcha'
   | 'Naver Store'
   | 'wavve'
-  | 'Crunchyroll'
-  | 'Curiosity Stream'
-  | 'Hoichoi'
-  | 'Classix'
-  | 'BroadwayHD'
-  | 'Magellan TV'
-  | 'WOW Presents Plus'
   | 'Amazon Prime Video'
+  | 'Disney Plus'
+  | 'Google Play Movies'
 
 interface Provider {
   id: number
@@ -80,9 +75,19 @@ export interface Content {
     [key: string]: string
   }[]
   genres: Genre[]
+  reviews: Review[]
 }
 
 export type ProviderFilter = {
   name: ProviderNameEn
   active: boolean
 }[]
+
+export interface Review {
+  id: number
+  userId: string
+  rating: number
+  content: string
+  programId?: number
+  movieId?: number
+}

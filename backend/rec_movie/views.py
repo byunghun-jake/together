@@ -120,8 +120,10 @@ class ReviewView(GenericAPIView):
               message: Success Create Album
 
         """
-
+        review = get_object_or_404(Review, user_id=request.data.get('user_id'), movie_id=request.data.get('movie_id'))
         serializer = ReviewSerializer(data=request.data)
+        if review:
+            return Response({"message": "이미 평가가 존재합니다."}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -3,11 +3,12 @@ import { Module } from 'vuex'
 import { RootState } from '@/store/index'
 import { InputUser, OutputUser } from '@/libs/interfaces/auth'
 import { Token } from '@/libs/interfaces/auth'
+import { Genre } from '@/libs/interfaces/content'
 
 interface authModule {
   accessToken: string
   refreshToken: string
-  user?: InputUser
+  user?: OutputUser
 }
 
 export const auth: Module<authModule, RootState> = {
@@ -25,7 +26,7 @@ export const auth: Module<authModule, RootState> = {
       state.accessToken = ''
       state.refreshToken = ''
     },
-    SET_USER(state: authModule, user: InputUser) {
+    SET_USER(state: authModule, user: OutputUser) {
       state.user = user
     },
     REMOVE_USER(state: authModule) {
@@ -97,18 +98,32 @@ export const auth: Module<authModule, RootState> = {
       }
     },
     // TODO: 임시
-    async getUserData(context, userId: string | number) {
+    async getUserData() {
       try {
-        console.log(userId)
-        const user = await authApi.getUserData(+userId)
+        const user = await authApi.getUserData()
         return user
       } catch (error) {
         throw new Error('유저 데이터를 가져오던 중 문제가 생겼습니다')
       }
     },
-    async updateUserData(_, data: InputUser): Promise<OutputUser> {
+    async updateUserData({ commit }, submitData: InputUser) {
       try {
-        return await authApi.putUserData(data)
+        const user: OutputUser = await authApi.putUserData(submitData)
+        commit('SET_USER', user)
+      } catch (error: any) {
+        throw new Error(error)
+      }
+    },
+    async updateFavGenres(
+      { commit },
+      submitData: {
+        fav_movie_genres: Genre[]
+        fav_program_genres: Genre[]
+      }
+    ) {
+      try {
+        const user: OutputUser = await authApi.putUserFavGenres(submitData)
+        commit('SET_USER', user)
       } catch (error: any) {
         throw new Error(error)
       }
@@ -140,6 +155,27 @@ export const auth: Module<authModule, RootState> = {
     },
     getToken(state) {
       return state.accessToken
+    },
+    getUserNickName(state) {
+      return state.user?.nickName
+    },
+    getUserFavMovieGenres(state) {
+      return state.user?.favMovieGenres
+    },
+    getUserFavMovieGenreIds(state) {
+      return (
+        state.user?.favMovieGenres &&
+        state.user.favMovieGenres.map((genre) => genre.id)
+      )
+    },
+    getUserFavProgramGenres(state) {
+      return state.user?.favProgramGenres
+    },
+    getUserFavProgramGenreIds(state) {
+      return (
+        state.user?.favProgramGenres &&
+        state.user.favProgramGenres.map((genre) => genre.id)
+      )
     },
   },
 }

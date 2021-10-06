@@ -2,35 +2,43 @@
   <LoadingSection v-if="loading">로딩 중</LoadingSection>
   <template v-else>
     <section class="banner-section">
-      <ContentDetailInfoSection v-if="!isMobile" :content="content" />
+      <ContentDetailInfoSection
+        v-if="!isMobile"
+        :content="content"
+        :contentType="contentType"
+      />
       <div class="img-wrapper">
         <div class="layer"></div>
         <img :src="posterPath" alt="" />
       </div>
     </section>
     <div class="container py-4">
-      <ContentDetailInfoSection v-if="isMobile" :content="content" />
-      <section class="review-section">
+      <ContentDetailInfoSection
+        v-if="isMobile"
+        :content="content"
+        :contentType="contentType"
+      />
+      <section class="youtube-section">
         <header class="section-header">{{ content.title }} 리뷰</header>
-        <ul class="review-list">
+        <ul class="youtube-list">
           <li
-            class="review-item"
-            v-for="review in displayedReviews"
-            :key="review.id.videoId"
+            class="youtube-item"
+            v-for="youtube in displayedReviews"
+            :key="youtube.id.videoId"
           >
             <a
-              :href="`https://youtube.com/watch?v=${review.id.videoId}`"
+              :href="`https://youtube.com/watch?v=${youtube.id.videoId}`"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div class="review">
+              <div class="youtube">
                 <div class="thumbnail-wrapper">
                   <img
-                    :src="review.snippet.thumbnails.high.url"
-                    :alt="`${review.snippet.title} 썸네일`"
+                    :src="youtube.snippet.thumbnails.high.url"
+                    :alt="`${youtube.snippet.title} 썸네일`"
                   />
                 </div>
-                <span class="title" v-html="review.snippet.title" />
+                <span class="title" v-html="youtube.snippet.title" />
               </div>
             </a>
           </li>
@@ -39,14 +47,14 @@
       <section class="party-section">
         <header class="section-header">
           <h3>파티에 참여하세요!</h3>
-          <router-link class="more-link" :to="{ name: 'ContentList' }">
+          <router-link class="more-link" :to="{ name: 'PartyList' }">
             <span class="label">더보기</span>
             <span class="material-icons">chevron_right</span>
           </router-link>
         </header>
         <ul class="party-list">
           <PartyListItem
-            v-for="party in parties"
+            v-for="party in displayedParties"
             :key="party.id"
             :party="party"
           />
@@ -54,36 +62,32 @@
       </section>
       <section class="community-section">
         <header class="section-header">
-          <h1>커뮤니티</h1>
-          <p>댓글 12</p>
+          <h1>리뷰</h1>
+          <p>{{ content.reviews.length }} 개</p>
         </header>
-        <ul class="comment-list">
+        <ul class="review-list">
           <li
-            class="comment-item"
-            v-for="comment in comments"
-            :key="comment.id"
+            class="review-item"
+            v-for="review in content.reviews"
+            :key="review.id"
           >
             <div class="left">
-              <img class="profile-img" :src="comment.user.profileImg" />
-              <div class="rating">{{ comment.rating }}</div>
+              <img
+                class="profile-img"
+                src="https://cdn-icons-png.flaticon.com/512/1864/1864513.png"
+              />
             </div>
             <div class="right">
+              <div class="rating">{{ review.rating }}</div>
               <div class="upper">
-                <span>{{ comment.user.nickName }}</span>
-                <span>2시간 전</span>
+                <span>{{ review.userId }}</span>
               </div>
-              <div class="comment">종이로 집을 지으면 전부 타버릴거야!</div>
-              <button class="btn-like">
-                <span class="material-icons text-gray-400">favorite</span>
-                <span class="like-count">{{ comment.like }}</span>
-              </button>
             </div>
           </li>
         </ul>
       </section>
     </div>
   </template>
-  <div class="py-40"></div>
 </template>
 
 <script lang="ts">
@@ -128,13 +132,19 @@ export default defineComponent({
 
     const displayedReviews = computed(() => {
       // 화면 사이즈에 따라 end index가 달라진다.
-      return youtubeReviews.value?.slice(0, isMobile.value ? 3 : 12)
+      return youtubeReviews.value?.slice(0, isMobile.value ? 3 : 6)
     })
 
-    addEventListener('resize', (e) => {
+    const displayedParties = computed(() => {
+      return parties.value?.slice(0, Math.min(parties.value.length, 6))
+    })
+
+    const handleResize = (e: Event) => {
       const w = e.target as Window
       innerWidth.value = w.innerWidth
-    })
+    }
+
+    addEventListener('resize', handleResize)
 
     onMounted(async () => {
       try {
@@ -162,12 +172,13 @@ export default defineComponent({
         console.log(error)
       }
 
+      let youtubeQuery = props.contentType === 'movies' ? '영화' : '드라마'
       try {
         const res = await axios.get(YOUTUBE_BASEURL, {
           params: {
             key: YOUTUBE_KEY,
             part: 'snippet',
-            q: `${content.value?.title} 리뷰`,
+            q: `${youtubeQuery} ${content.value?.title} 리뷰`,
             maxResults: 20,
             type: 'video',
             regionCode: 'KR',
@@ -180,9 +191,7 @@ export default defineComponent({
       loading.value = false
     })
     onBeforeUnmount(() => {
-      removeEventListener('resize', () => {
-        console.log('Remove')
-      })
+      removeEventListener('resize', handleResize)
     })
     return {
       loading,
@@ -191,6 +200,7 @@ export default defineComponent({
       posterPath,
       displayedReviews,
       parties,
+      displayedParties,
       comments,
     }
   },
@@ -220,18 +230,18 @@ export default defineComponent({
   }
 }
 
-.review-section {
+.youtube-section {
   @apply py-6 px-4;
 
   .section-header {
     @apply flex justify-between items-center text-2xl font-bold mb-6;
   }
 
-  .review-list {
+  .youtube-list {
     @apply grid md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6;
 
-    .review-item {
-      .review {
+    .youtube-item {
+      .youtube {
         @apply grid grid-cols-2 md:grid-cols-1 gap-2 p-2;
 
         &:hover {
@@ -272,7 +282,7 @@ export default defineComponent({
       @apply flex items-center px-2;
 
       .label {
-        @apply text-sm font-medium text-gray-500;
+        @apply font-medium text-gray-700;
       }
 
       .material-icons {
@@ -297,15 +307,19 @@ export default defineComponent({
     }
 
     p {
-      @apply text-sm font-medium text-gray-400;
+      @apply font-medium text-gray-700;
     }
   }
 
-  .comment-list {
-    @apply grid gap-2;
+  .review-list {
+    @apply flex gap-2 flex-wrap;
 
-    .comment-item {
-      @apply flex gap-2 p-2;
+    .review-item {
+      @apply flex gap-2 items-center p-2 cursor-pointer;
+
+      &:hover {
+        @apply bg-yellow-50;
+      }
 
       .left {
         @apply flex flex-col gap-1;
@@ -313,32 +327,18 @@ export default defineComponent({
         .profile-img {
           @apply w-8 h-8 rounded-md;
         }
+      }
+
+      .upper {
+        @apply mb-1 flex gap-2 text-xs text-gray-400;
 
         .rating {
           @apply text-center bg-gray-900 rounded-md text-xs text-yellow-400;
         }
       }
 
-      .right {
-        .upper {
-          @apply mb-1 flex gap-2 text-xs text-gray-400;
-        }
-
-        .comment {
-          @apply text-sm mb-2;
-        }
-        .btn-like {
-          @apply flex items-center gap-2;
-
-          .material-icons {
-            font-size: 1rem;
-            @apply text-gray-400;
-          }
-
-          .like-count {
-            @apply text-xs text-gray-400;
-          }
-        }
+      .review {
+        @apply text-sm mb-2;
       }
     }
   }

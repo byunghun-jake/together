@@ -1,7 +1,7 @@
 import http from '@/api/http'
 import { keysToCamel } from '@/libs/func'
 import { Genre } from '@/libs/interface'
-import { Content } from '@/libs/interfaces/content'
+import { Content, Review } from '@/libs/interfaces/content'
 
 const getMovieList = async (): Promise<Content[]> => {
   try {
@@ -57,6 +57,20 @@ const getProgramGenreList = async (): Promise<Genre[]> => {
   }
 }
 
+const postReview = async (
+  submitData: {
+    [key: string]: string | number
+  },
+  contentType: 'movies' | 'programs'
+): Promise<Review> => {
+  try {
+    const res = await http.post(`/${contentType}/review/`, submitData)
+    return keysToCamel(res.data)
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
 export default {
   getMovieList,
   getMovie,
@@ -64,4 +78,5 @@ export default {
   getProgramList,
   getProgram,
   getProgramGenreList,
+  postReview,
 }

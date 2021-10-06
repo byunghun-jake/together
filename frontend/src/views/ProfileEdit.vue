@@ -37,6 +37,7 @@ import { ValidateData, FormData } from '@/libs/interface'
 import { requiredValidator } from '@/libs/validator'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { OutputUser } from '@/libs/interfaces/auth'
 
 export default defineComponent({
   name: 'ProfileEdit',
@@ -52,10 +53,11 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const loading = ref<boolean>(true)
+    const user = computed<OutputUser>(() => store.state.auth.user)
     const formData = ref<FormData>({
       nickName: {
         label: '닉네임',
-        value: '',
+        value: user.value.nickName,
         type: 'text',
         errors: {},
         placeholder: '닉네임을 입력하세요',
@@ -63,7 +65,7 @@ export default defineComponent({
       },
       username: {
         label: '이름',
-        value: '',
+        value: user.value.username,
         type: 'text',
         errors: {},
         placeholder: '이름을 입력하세요',
@@ -71,7 +73,7 @@ export default defineComponent({
       },
       phoneNumber: {
         label: '휴대폰 번호',
-        value: '',
+        value: user.value.phoneNumber,
         type: 'text',
         errors: {},
         placeholder: '휴대폰 번호는 "-"를 포함하여 입력하세요',
@@ -93,16 +95,15 @@ export default defineComponent({
         const nick_name = formData.value.nickName.value
         const phone_number = formData.value.phoneNumber.value
 
-        const user = await store.dispatch('auth/updateUserData', {
+        await store.dispatch('auth/updateUserData', {
           username,
           nick_name,
           phone_number,
         })
-        console.log(user)
       } catch (error) {
         console.log(error)
       }
-      // router.push({ name: 'ProfileMain' })
+      router.push({ name: 'ProfileMain' })
     }
 
     const handleUpdateValidate = (validateRes: ValidateData) => {
@@ -117,19 +118,19 @@ export default defineComponent({
       }
     }
 
-    onMounted(async () => {
-      try {
-        const { nickName, username, phoneNumber } = await store.dispatch(
-          'auth/getUserData'
-        )
-        formData.value.nickName.value = nickName
-        formData.value.username.value = username
-        formData.value.phoneNumber.value = phoneNumber
-      } catch (error) {
-        console.log(error)
-      }
-      loading.value = false
-    })
+    // onMounted(async () => {
+    //   try {
+    //     const { nickName, username, phoneNumber } = await store.dispatch(
+    //       'auth/getUserData'
+    //     )
+    //     formData.value.nickName.value = nickName
+    //     formData.value.username.value = username
+    //     formData.value.phoneNumber.value = phoneNumber
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    //   loading.value = false
+    // })
 
     return {
       loading,

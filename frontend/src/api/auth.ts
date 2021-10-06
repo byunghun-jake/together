@@ -1,6 +1,7 @@
 import http from '@/api/http'
 import { keysToCamel } from '@/libs/func'
 import { OutputUser, InputUser } from '@/libs/interfaces/auth'
+import { Genre } from '@/libs/interfaces/content'
 import axios, { AxiosResponse } from 'axios'
 
 interface AuthResponseData {
@@ -59,24 +60,39 @@ export function resetPasswordConfirm(submitData: {
   return http.post('account/password/reset/confirm/', submitData)
 }
 
-export const getUserData = async (userId: number): Promise<OutputUser> => {
+export const getUserData = async (): Promise<OutputUser> => {
   try {
-    // const res: AxiosResponse<InputUser> = await http.get(`account/${userId}/`)
-    const res: AxiosResponse<InputUser[]> = await http.get(`account/me/`)
-    return keysToCamel(res.data[0])
+    const res: AxiosResponse<InputUser> = await http.get(`account/profile/`)
+    return keysToCamel(res.data)
   } catch (error) {
     throw new Error('에러 발생')
   }
 }
 
-export const putUserData = async (data: InputUser): Promise<OutputUser> => {
+export const putUserData = async (
+  submitData: InputUser
+): Promise<OutputUser> => {
   try {
     const res: AxiosResponse<InputUser[]> = await http.patch(
-      `account/me/`,
-      data
+      `account/profile/`,
+      submitData
     )
-    return keysToCamel(res.data[0])
+    return keysToCamel(res.data)
   } catch (error) {
     throw new Error('에러 발생')
+  }
+}
+
+export const putUserFavGenres = async (submitData: {
+  fav_movie_genres: Genre[]
+  fav_program_genres: Genre[]
+}): Promise<OutputUser> => {
+  try {
+    const res = await http.put('account/profile/genres/', submitData)
+    console.log(res)
+    return keysToCamel(res.data)
+  } catch (error: any) {
+    console.log(error)
+    throw new Error(error)
   }
 }

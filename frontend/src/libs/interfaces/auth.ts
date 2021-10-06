@@ -5,26 +5,36 @@ export interface Token {
 
 export type InputUser = {
   id: number
-  username?: string
-  nick_name?: string
-  phone_number?: string
-  email?: string
-  // favorite_genres?: {
-  //   id: number
-  //   name: string
-  //   k_name: string
-  // }[]
+  username: string
+  nick_name: string
+  phone_number: string
+  email: string
+  fav_movie_genres?: {
+    id: number
+    name: string
+    k_name: string
+  }[]
+  fav_program_genres?: {
+    id: number
+    name: string
+    k_name: string
+  }[]
 }
 
 export type OutputUser = {
   id: number
-  username?: string
-  nickName?: string
-  phoneNumber?: string
-  email?: string
-  // favoriteGenres?: {
-  //   id: number
-  //   name: string
-  //   kName: string
-  // }[]
+  username: string
+  nickName: string
+  phoneNumber: string
+  email: string
+  favMovieGenres?: {
+    id: number
+    name: string
+    kName: string
+  }[]
+  favProgramGenres?: {
+    id: number
+    number: string
+    kName: string
+  }[]
 }

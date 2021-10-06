@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.db import transaction
 from django.db.models import fields
+
+from rec_movie.serializers import GenreSerializer as MovieGenreSerializer
+from rec_program.serializers import GenreSerializerP as ProgramGenreSerializer
 from .models import User
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
@@ -11,9 +14,19 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(serializers.ModelSerializer):
 
+  fav_movie_genres = serializers.SerializerMethodField('get_movie_genres')
+  fav_program_genres = serializers.SerializerMethodField('get_program_genres')
   class Meta:
     model = User
-    fields = '__all__'
+    exclude = ('password', 'last_login', 'is_active', 'is_admin')
+
+  def get_movie_genres(self, user):
+    genres = user.fav_movie_genres.all()
+    return MovieGenreSerializer(genres, many=True).data
+
+  def get_program_genres(self, user):
+    genres = user.fav_program_genres.all()
+    return ProgramGenreSerializer(genres, many=True).data
 
 class UserSmallSerializer(serializers.ModelSerializer):
 
@@ -60,6 +73,8 @@ class UserRegisterSerializer(RegisterSerializer):
 
 
 class UserDetailSerializer(UserDetailsSerializer):
+  fav_movie_genres = serializers.SerializerMethodField('get_movie_genres')
+  fav_program_genres = serializers.SerializerMethodField('get_program_genres')
   
   class Meta:
     model = User
@@ -69,6 +84,32 @@ class UserDetailSerializer(UserDetailsSerializer):
       'nick_name',
       'username',
       'phone_number',
+      'fav_movie_genres',
+      'fav_program_genres',
     )
     read_only_fields = ('id', 'email','username',)
 
+  def get_movie_genres(self, user):
+    genres = user.fav_movie_genres.all()
+    return MovieGenreSerializer(genres, many=True).data
+
+  def get_program_genres(self, user):
+    genres = user.fav_program_genres.all()
+    return ProgramGenreSerializer(genres, many=True).data
+
+
+class UserGenreSerializer(serializers.ModelSerializer):
+  fav_movie_genres = serializers.SerializerMethodField('get_movie_genres')
+  fav_program_genres = serializers.SerializerMethodField('get_program_genres')
+
+  class Meta:
+    model = User
+    fields = ( 'fav_movie_genres', 'fav_program_genres' )
+
+  def get_movie_genres(self, user):
+    genres = user.fav_movie_genres.all()
+    return MovieGenreSerializer(genres, many=True).data
+
+  def get_program_genres(self, user):
+    genres = user.fav_program_genres.all()
+    return ProgramGenreSerializer(genres, many=True).data

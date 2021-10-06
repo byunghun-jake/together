@@ -73,13 +73,8 @@ export default defineComponent({
       { name: 'Watcha', active: true },
       { name: 'Naver Store', active: true },
       { name: 'wavve', active: true },
-      { name: 'Crunchyroll', active: true },
-      { name: 'Curiosity Stream', active: true },
-      { name: 'Hoichoi', active: true },
-      { name: 'Classix', active: true },
-      { name: 'BroadwayHD', active: true },
-      { name: 'Magellan TV', active: true },
-      { name: 'WOW Presents Plus', active: true },
+      { name: 'Disney Plus', active: true },
+      { name: 'Google Play Movies', active: true },
       { name: 'Amazon Prime Video', active: true },
     ])
 
