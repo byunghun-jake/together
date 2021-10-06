@@ -138,11 +138,10 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
       },
       {
-        path: ':userId/edit',
+        path: 'edit',
         name: 'ProfileEdit',
         component: ProfileEdit,
-        props: true,
-        meta: { requiresMyAuth: true },
+        meta: { requiresAuth: true },
       },
       {
         path: 'changepassword',
@@ -176,13 +175,6 @@ router.beforeEach((to, from, next) => {
   }
   if (to.meta.requiresNoAuth && store.getters['auth/isLogin']) {
     alert('로그인 상태에서는 들어올 수 없음')
-    router.push({ name: 'ContentList' })
-  }
-  if (
-    to.meta.requiresMyAuth &&
-    store.getters['auth/getUserPK'] != to?.params.userId
-  ) {
-    alert('내 정보만 수정할 수 있음')
     router.push({ name: 'ContentList' })
   }
   next()

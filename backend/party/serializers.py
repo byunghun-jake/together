@@ -8,6 +8,12 @@ from django.contrib.auth import get_user_model
 
 
 # 
+class MyPartySerializer(serializers.ModelSerializer):
+  
+  class Meta:
+    model = Party
+    fields = ('id',)
+
 class PartySmallSerializer(serializers.ModelSerializer):
   payments = UserSerializer()
 
@@ -52,3 +58,5 @@ class ProviderSerializer(serializers.ModelSerializer):
   class Meta:
     model = Provider
     fields = '__all__'
+
+

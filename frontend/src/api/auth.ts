@@ -69,13 +69,14 @@ export const getUserData = async (): Promise<OutputUser> => {
   }
 }
 
-export const putUserData = async (
+export const putUserData = async (payload: {
   submitData: InputUser
-): Promise<OutputUser> => {
+  userId: number
+}): Promise<OutputUser> => {
   try {
-    const res: AxiosResponse<InputUser[]> = await http.patch(
-      `account/profile/`,
-      submitData
+    const res: AxiosResponse<InputUser[]> = await http.put(
+      `account/profile/${payload.userId}/`,
+      payload.submitData
     )
     return keysToCamel(res.data)
   } catch (error) {

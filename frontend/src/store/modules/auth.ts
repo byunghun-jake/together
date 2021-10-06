@@ -106,9 +106,15 @@ export const auth: Module<authModule, RootState> = {
         throw new Error('유저 데이터를 가져오던 중 문제가 생겼습니다')
       }
     },
-    async updateUserData({ commit }, submitData: InputUser) {
+    async updateUserData(
+      { commit },
+      payload: {
+        submitData: InputUser
+        userId: number
+      }
+    ) {
       try {
-        const user: OutputUser = await authApi.putUserData(submitData)
+        const user: OutputUser = await authApi.putUserData(payload)
         commit('SET_USER', user)
       } catch (error: any) {
         throw new Error(error)

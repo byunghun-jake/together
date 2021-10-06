@@ -123,7 +123,6 @@ export default defineComponent({
     const content = ref<Content>()
     const youtubeReviews = ref<Youtube[]>()
     const parties = ref<Party[]>()
-    const comments = ref<Comment[]>()
     const innerWidth = ref<number>(window.innerWidth)
 
     const isMobile = computed(() => {
@@ -165,13 +164,6 @@ export default defineComponent({
         console.log(error)
       }
 
-      try {
-        const res = await axios.get(`http://localhost:3000/comments`)
-        comments.value = res.data
-      } catch (error) {
-        console.log(error)
-      }
-
       let youtubeQuery = props.contentType === 'movies' ? '영화' : '드라마'
       try {
         const res = await axios.get(YOUTUBE_BASEURL, {
@@ -201,7 +193,6 @@ export default defineComponent({
       displayedReviews,
       parties,
       displayedParties,
-      comments,
     }
   },
 })

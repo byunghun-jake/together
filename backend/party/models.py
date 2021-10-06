@@ -18,6 +18,7 @@ class Party(models.Model):
   def __str__(self):
     return self.title
 
+
 class Provider(models.Model):
   name = models.CharField(max_length=20, unique=True)
   price_per_day = models.PositiveIntegerField(default=0)

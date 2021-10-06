@@ -94,16 +94,16 @@ export default defineComponent({
         const username = formData.value.username.value
         const nick_name = formData.value.nickName.value
         const phone_number = formData.value.phoneNumber.value
+        const userId = user.value.id
 
         await store.dispatch('auth/updateUserData', {
-          username,
-          nick_name,
-          phone_number,
+          submitData: { username, nick_name, phone_number },
+          userId,
         })
       } catch (error) {
         console.log(error)
       }
-      router.push({ name: 'ProfileMain' })
+      router.push({ name: 'ProfileMain', params: { userId: user.value.id } })
     }
 
     const handleUpdateValidate = (validateRes: ValidateData) => {
@@ -117,20 +117,6 @@ export default defineComponent({
         throw new Error('망했어요')
       }
     }
-
-    // onMounted(async () => {
-    //   try {
-    //     const { nickName, username, phoneNumber } = await store.dispatch(
-    //       'auth/getUserData'
-    //     )
-    //     formData.value.nickName.value = nickName
-    //     formData.value.username.value = username
-    //     formData.value.phoneNumber.value = phoneNumber
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    //   loading.value = false
-    // })
 
     return {
       loading,

@@ -40,9 +40,19 @@ const getProviders = async (): Promise<Party> => {
   }
 }
 
+const postJoinParty = async (partyId: number) => {
+  try {
+    const res = await http.post(`/party/${partyId}/payments/`)
+    console.log(res)
+  } catch (error: any) {
+    throw new Error(error.response.data.message)
+  }
+}
+
 export default {
   getParties,
   getParty,
   postParty,
   getProviders,
+  postJoinParty,
 }

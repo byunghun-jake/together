@@ -25,10 +25,10 @@
           </div>
         </div>
       </div>
-      <div class="remain-container">
+      <div class="remain-container" v-if="remainingCount">
         <h3>남은 자리</h3>
         <ul class="member-list">
-          <li v-for="i in party.memberLimit - membersCount" :key="i">
+          <li v-for="i in remainingCount" :key="i">
             <div class="image-wrapper">
               <img
                 class="member-icon"
@@ -39,7 +39,7 @@
           </li>
         </ul>
       </div>
-      <div class="members-container">
+      <div class="members-container" v-if="membersCount">
         <h3>파티원</h3>
         <ul class="member-list">
           <li v-for="i in membersCount" :key="i">
@@ -60,6 +60,7 @@
       </div>
       <router-link
         class="join-link"
+        v-if="!isHost && !isMember"
         :to="{ name: 'PartyJoin', params: { partyId } }"
       >
         파티 참가하기
@@ -69,10 +70,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { getRestDays, toCurrency } from '@/libs/func'
 import { Party } from '@/libs/interfaces/party'
+import { OutputUser } from '@/libs/interfaces/auth'
 
 export default defineComponent({
   name: 'PartyDetail',
@@ -88,6 +90,28 @@ export default defineComponent({
     const party = ref<Party>()
     const restDays = ref<number>(0)
     const membersCount = ref<number>(0)
+    const remainingCount = computed(() =>
+      party.value ? party.value?.memberLimit - membersCount.value : 0
+    )
+    const user = computed<OutputUser>(() => store.state.auth.user)
+    const isHost = computed(() => {
+      const isLogin = store.getters['auth/isLogin']
+      const userId = store.getters['auth/getUserPK']
+      return isLogin && party.value?.host.id === userId
+    })
+    const isMember = ref<boolean>(false)
+
+    const checkIamMember = (
+      partyMembers: {
+        id: number
+        nickName: string
+      }[]
+    ) => {
+      const ids = partyMembers.map((m) => m.id)
+      if (ids.includes(user.value.id)) {
+        isMember.value = true
+      }
+    }
 
     onMounted(async () => {
       try {
@@ -98,13 +122,23 @@ export default defineComponent({
         party.value = _party
         restDays.value = getRestDays(_party.endDate)
         membersCount.value = _party.payments.length
+        checkIamMember(_party.payments)
       } catch (error) {
         console.log(error.response)
       }
       loading.value = false
     })
 
-    return { loading, party, restDays, membersCount, toCurrency }
+    return {
+      loading,
+      party,
+      isHost,
+      isMember,
+      restDays,
+      membersCount,
+      remainingCount,
+      toCurrency,
+    }
   },
 })
 </script>

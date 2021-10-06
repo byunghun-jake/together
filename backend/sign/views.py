@@ -206,22 +206,6 @@ class KakaoLogin(SocialLoginView):
     client_class = OAuth2Client
     callback_url = KAKAO_CALLBACK_URI
 
-
-@csrf_exempt
-@authentication_classes([JSONWebTokenAuthentication])
-@permission_classes([IsAuthenticated])
-def update_fav_genre(request):
-    print(request.user)
-    user = get_object_or_404(get_user_model(), pk=request.user.id)
-
-    serializer = UserSerializer(user, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        print(serializer)
-        serializer.save()
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 class FavGenreView(GenericAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserGenreSerializer

@@ -7,7 +7,7 @@
         <div class="info-container">
           <div class="info">
             <span class="label">서비스</span>
-            <span class="value">{{ party.providerName }}</span>
+            <span class="value">{{ party.provider.name }}</span>
           </div>
           <div class="info">
             <span class="label">파티 이름</span>
@@ -15,7 +15,7 @@
           </div>
           <div class="info">
             <span class="label">파티장</span>
-            <span class="value">{{ party.hostName }}</span>
+            <span class="value">{{ party.host.nickName }}</span>
           </div>
           <div class="info">
             <span class="label">파티 종료일</span>
@@ -34,7 +34,7 @@
         <div class="info-container">
           <div class="info">
             <span class="label">이름</span>
-            <span class="value">{{ me.name }}</span>
+            <span class="value">{{ me.nickName }}</span>
           </div>
           <div class="info">
             <span class="label">참가비</span>
@@ -67,7 +67,6 @@
 import { getRestDays, toCurrency } from '@/libs/func'
 import { OutputUser } from '@/libs/interfaces/auth'
 import { Party } from '@/libs/interfaces/party'
-import axios from 'axios'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -94,12 +93,21 @@ export default defineComponent({
         party.value &&
         Math.floor(party.value.pricePerDay * restDays.value * 0.1)
     )
-    // 임시
-    const me = ref<OutputUser>()
+    const me = computed<OutputUser>(() => store.state.auth.user)
 
-    const handleClick = () => {
+    const handleClick = async () => {
       const ok = confirm('결제를 하시겠습니까?')
       if (ok) {
+        try {
+          await store.dispatch('party/postJoinParty', +props.partyId)
+        } catch (error) {
+          console.log('gg')
+          router.push({
+            name: 'PartyDetail',
+            params: { partyId: props.partyId },
+          })
+          return
+        }
         router.push({
           name: 'PartyJoinConfirm',
           params: { partyId: props.partyId },
@@ -107,14 +115,14 @@ export default defineComponent({
       }
     }
 
-    onMounted(async () => {
-      try {
-        const res = await axios.get('http://localhost:3000/me')
-        me.value = res.data
-      } catch (error) {
-        console.log(error)
+    const checkHost = (hostId: number) => {
+      if (hostId === me.value.id) {
+        alert('호스트는 자신의 파티에 참가할 수 없습니다')
+        router.push({ name: 'PartyDetail', params: { partyId: props.partyId } })
       }
+    }
 
+    onMounted(async () => {
       try {
         const _party: Party = await store.dispatch(
           'party/getParty',
@@ -125,6 +133,11 @@ export default defineComponent({
       } catch (error) {
         console.log(error)
       }
+
+      if (party.value) {
+        checkHost(party.value.host.id)
+      }
+
       loading.value = false
     })
 

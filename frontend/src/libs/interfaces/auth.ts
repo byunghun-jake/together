@@ -1,3 +1,5 @@
+import { Party } from '@/libs/interfaces/party'
+
 export interface Token {
   accessToken: string
   refreshToken: string
@@ -19,6 +21,7 @@ export type InputUser = {
     name: string
     k_name: string
   }[]
+  payments?: Party[]
 }
 
 export type OutputUser = {
@@ -37,4 +40,5 @@ export type OutputUser = {
     number: string
     kName: string
   }[]
+  payments?: Party[]
 }

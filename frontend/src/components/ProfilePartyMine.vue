@@ -1,8 +1,8 @@
 <template>
-  <div class="profile-party__box" :class="provider">
+  <div class="profile-party__box" :class="party.provider.name">
     <header>
       <div class="profile-party__box__text--array">
-        <p class="font-semibold">{{ party.providerName }}</p>
+        <p class="font-semibold">{{ party.provider.name }}</p>
         <img
           :src="providerLogoUrl"
           class="profile-party__box__image--size"
@@ -10,7 +10,7 @@
         />
       </div>
       <div class="profile-party__box__text--array2">
-        <p>21.12.25까지 (109일)</p>
+        <p>{{ party.endDate }} 까지 ({{ restDays }}일)</p>
         <p class="font-bold">10,900원</p>
       </div>
     </header>
@@ -20,22 +20,30 @@
         <h4>계정 정보</h4>
         <div class="info-wrapper">
           <p>아이디</p>
-          <p>northKing@NK.com</p>
+          <p>{{ party.serviceId }}</p>
         </div>
         <div class="info-wrapper">
           <p>비밀번호</p>
-          <input type="password" value="12335" style="text-align: right" />
+          <input
+            class="select-none cursor-pointer ml-auto"
+            type="password"
+            :value="party.servicePassword"
+            @mouseenter="handleMouseEnter"
+            @mouseleave="handleMouseLeave"
+            style="text-align: right"
+            readonly
+          />
         </div>
       </div>
       <div class="host-info">
         <h4>파티장 정보</h4>
         <div class="info-wrapper">
           <p>이름</p>
-          <p>김일성</p>
+          <p>{{ party.host.nickName }}</p>
         </div>
         <div class="info-wrapper">
           <p>휴대폰 번호</p>
-          <p>011-247-1001</p>
+          <p>{{ party.host.phoneNumber }}</p>
         </div>
       </div>
     </div>
@@ -47,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import { getRestDays } from '@/libs/func'
 import { Party } from '@/libs/interfaces/party'
 import { defineComponent, onBeforeUnmount, onMounted, PropType, ref } from 'vue'
 
@@ -61,10 +70,21 @@ export default defineComponent({
   setup(props) {
     const providerLogoUrl = `https://image.tmdb.org/t/p/w200${props.party.provider.logoUrl}`
     const isExpanded = ref<boolean>(false)
+    const restDays = ref<number>(getRestDays(props.party.endDate))
 
     const setIsExpanded = () => {
       console.log(window.innerWidth)
       isExpanded.value = window.innerWidth >= 768 ? true : false
+    }
+
+    const handleMouseEnter = (event: Event) => {
+      const target = event.target as HTMLInputElement
+      target.type = 'text'
+    }
+
+    const handleMouseLeave = (event: Event) => {
+      const target = event.target as HTMLInputElement
+      target.type = 'password'
     }
 
     onMounted(() => {
@@ -83,7 +103,10 @@ export default defineComponent({
     return {
       providerLogoUrl,
       isExpanded,
+      restDays,
       handleToggleClick,
+      handleMouseEnter,
+      handleMouseLeave,
     }
   },
 })
@@ -91,10 +114,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .profile-party__box {
-  &.netflix {
+  &.Netflix {
     @apply border-red-500;
   }
-  &.watcha {
+  &.Watcha {
     @apply border-pink-500;
   }
   &.wavve {

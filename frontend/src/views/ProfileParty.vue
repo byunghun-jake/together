@@ -1,21 +1,31 @@
 <template>
-  <div class="container max-w-screen-md px-4 pt-6">
+  <div class="container grid max-w-3xl px-4 pt-6">
     <p class="profile-party__text--array">내 파티</p>
-    <div class="profile-party__box--array">
+    <div
+      class="profile-party__box--array"
+      v-if="user.payments && user.payments.length"
+    >
       <ProfilePartyMine
-        v-for="party in parties"
+        v-for="party in user.payments"
         :key="party.id"
         :party="party"
       />
     </div>
+    <section class="no-content-section" v-else>
+      <div class="no-content-info-container">
+        <p>아직 참가중인 파티가 없어요</p>
+        <p>다른 사람들과 함께 즐겨볼까요?</p>
+      </div>
+      <router-link :to="{ name: 'PartyList' }"> Together! </router-link>
+    </section>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import axios from 'axios'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import ProfilePartyMine from '@/components/ProfilePartyMine.vue'
-import { Party } from '@/libs/interfaces/party'
+import { useStore } from 'vuex'
+import { OutputUser } from '@/libs/interfaces/auth'
 
 export default defineComponent({
   name: 'ProfileParty',
@@ -23,18 +33,20 @@ export default defineComponent({
     ProfilePartyMine,
   },
   setup() {
-    const parties = ref<Party[]>()
+    const store = useStore()
+    const user = computed<OutputUser[]>(() => store.state.auth.user)
 
     onMounted(async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/myparty`)
-        parties.value = res.data
-      } catch (error) {
-        console.log(error)
-      }
+      // TODO: 내가 속한 파티 가져오기
+      // try {
+      //   const res = await axios.get(`http://localhost:3000/myparty`)
+      //   parties.value = res.data
+      // } catch (error) {
+      //   console.log(error)
+      // }
     })
     return {
-      parties,
+      user,
     }
   },
 })
@@ -55,6 +67,22 @@ export default defineComponent({
 
 .profile-party__text--array {
   @apply text-2xl font-bold mb-4;
+}
+
+.no-content-section {
+  @apply grid max-w-sm w-full mx-auto;
+
+  .no-content-info-container {
+    @apply p-4 bg-indigo-500 text-center font-medium text-white rounded-md mb-4;
+  }
+
+  a {
+    @apply w-full inline-block py-4 text-center font-bold bg-teal-400 rounded transition-colors;
+
+    &:hover {
+      @apply bg-teal-300;
+    }
+  }
 }
 
 @media (min-width: 768px) {

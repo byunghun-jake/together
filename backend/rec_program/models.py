@@ -14,7 +14,7 @@ class Program(models.Model):
     providers = models.ManyToManyField('Provider')  # many to many로 provider와 연결하였다. related_name은 자동으로 'provider'
     # 자기 참조 외래키로, 추천 영화를 해당 영화 내부에 기입한다.
     # https://himanmengit.github.io/django/2018/02/06/DjangoModels-07-ManyToMany-Self-Symmetrical.html
-    recommends = models.ManyToManyField('self', symmetrical=False, null=True)
+    recommends = models.ManyToManyField('self', symmetrical=False, blank=True)
 
 
 class Genre(models.Model):

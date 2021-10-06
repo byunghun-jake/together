@@ -2,10 +2,15 @@ export type Provider = '넷플릭스' | '왓챠' | '웨이브' | ''
 
 export interface Party {
   id: number
-  payments: number[]
+  payments: {
+    id: number
+    nickName: string
+  }[]
   host: {
     id: number
     nickName: string
+    username: string
+    phoneNumber: string
   }
   title: string
   desc: string
