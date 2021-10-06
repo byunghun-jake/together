@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.fields import related
@@ -43,7 +44,6 @@ class User(AbstractBaseUser):
   is_admin = models.BooleanField(default=False)
   
   objects = UserManager()
-
   USERNAME_FIELD  = 'email'
   REQUIRED_FIELDS = ['username','nick_name', 'phone_number']
 

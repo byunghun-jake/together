@@ -50,6 +50,7 @@ class PartyDetailView(generics.GenericAPIView):
     party = self.get_object(party_idx)
     serializer = PartySerializer(party)
     return Response(serializer.data)
+   
 
   def delete(self, request, party_idx):
     """

@@ -1,3 +1,6 @@
+from rec_movie.serializers import GenreSerializer
+from rec_movie.views import get_genre
+from rec_movie.models import Genre
 import requests
 import hashlib, os
 from django.shortcuts import get_object_or_404, redirect, render
@@ -26,6 +29,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+
 FRONT_BASE_URL = "http://localhost:8080"
 BASE_URL = "http://localhost:8000"
 GOOGLE_CALLBACK_URI = f"{FRONT_BASE_URL}/auth/google/callback"
@@ -42,6 +46,26 @@ class UserMe(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return User.objects.get_queryset().filter(username=user)
+
+class UserProfileView(GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
+
+    def get_object(self, pk):
+      return get_object_or_404(User,pk=pk)
+
+    def get(self, request, pk):
+      user = self.get_object(pk)
+      serializer = UserDetailSerializer(user)
+      return Response(serializer.data)
+
+    def put(self, request, pk):
+      user = self.get_object(pk)
+      serializer = UserDetailSerializer(user, data=request.data)
+      if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def passwordResetRedirect(request, uid, token):
