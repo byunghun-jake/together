@@ -1,5 +1,13 @@
 <template>
-  <section class="banner-section"></section>
+  <section class="banner-section">
+    <div class="container p-0 flex">
+      <img
+        class="w-full object-cover object-top"
+        :src="require(`@/assets/images/ott_party_banner.jpg`)"
+        alt=""
+      />
+    </div>
+  </section>
   <div class="container">
     <section class="loading-section" v-if="loading">로딩중이다!</section>
     <section class="party-section" v-else>
@@ -46,7 +54,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .banner-section {
-  @apply h-44 bg-blue-500;
+  @apply flex h-44 md:h-80 bg-indigo-500;
 }
 
 .party-section {

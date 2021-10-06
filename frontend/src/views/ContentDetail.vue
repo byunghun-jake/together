@@ -44,6 +44,19 @@
           </li>
         </ul>
       </section>
+      <section>
+        <header class="section-header">
+          <h3>이 콘텐츠는 어때요?</h3>
+        </header>
+        <ul class="related-content-list">
+          <ContentPosterLink
+            v-for="c in content.recommends"
+            :key="c.id"
+            :content="c"
+            :contentType="contentType"
+          />
+        </ul>
+      </section>
       <section class="party-section">
         <header class="section-header">
           <h3>파티에 참여하세요!</h3>
@@ -71,18 +84,10 @@
             v-for="review in content.reviews"
             :key="review.id"
           >
-            <div class="left">
-              <img
-                class="profile-img"
-                src="https://cdn-icons-png.flaticon.com/512/1864/1864513.png"
-              />
+            <div class="user">
+              {{ review.userId }}
             </div>
-            <div class="right">
-              <div class="rating">{{ review.rating }}</div>
-              <div class="upper">
-                <span>{{ review.userId }}</span>
-              </div>
-            </div>
+            <div class="rating">{{ review.rating }}</div>
           </li>
         </ul>
       </section>
@@ -96,8 +101,9 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import ContentDetailInfoSection from '@/components/ContentDetailInfoSection.vue'
 import PartyListItem from '@/components/PartyListItem.vue'
 import LoadingSection from '@/components/Common/LoadingSection.vue'
+import ContentPosterLink from '@/components/ContentPosterLink.vue'
 import { useStore } from 'vuex'
-import { Youtube, Comment, Content } from '@/libs/interfaces/content'
+import { Youtube, Content } from '@/libs/interfaces/content'
 import { Party } from '@/libs/interfaces/party'
 
 const YOUTUBE_BASEURL = 'https://www.googleapis.com/youtube/v3/search'
@@ -115,13 +121,18 @@ export default defineComponent({
       required: true,
     },
   },
-  components: { ContentDetailInfoSection, PartyListItem, LoadingSection },
+  components: {
+    ContentDetailInfoSection,
+    PartyListItem,
+    LoadingSection,
+    ContentPosterLink,
+  },
   setup(props) {
     const store = useStore()
     const loading = ref<boolean>(true)
     const posterPath = ref<string>('')
     const content = ref<Content>()
-    const youtubeReviews = ref<Youtube[]>()
+    const youtubeReviews = ref<Youtube[]>([])
     const parties = ref<Party[]>()
     const innerWidth = ref<number>(window.innerWidth)
 
@@ -131,7 +142,17 @@ export default defineComponent({
 
     const displayedReviews = computed(() => {
       // 화면 사이즈에 따라 end index가 달라진다.
-      return youtubeReviews.value?.slice(0, isMobile.value ? 3 : 6)
+      let endIndex = 0
+      if (innerWidth.value < 768) {
+        endIndex = 3
+      } else if (innerWidth.value < 1024) {
+        endIndex = 6
+      } else if (innerWidth.value < 1536) {
+        endIndex = 8
+      } else {
+        endIndex = 12
+      }
+      return youtubeReviews.value.slice(0, endIndex)
     })
 
     const displayedParties = computed(() => {
@@ -218,6 +239,22 @@ export default defineComponent({
       @apply absolute top-1/2 left-0 w-full;
       transform: translateY(-50%);
     }
+  }
+}
+
+section {
+  @apply py-6 px-4;
+
+  .section-header {
+    @apply flex items-center justify-between mb-6;
+
+    h3 {
+      @apply text-2xl font-bold;
+    }
+  }
+
+  .related-content-list {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4;
   }
 }
 
@@ -312,20 +349,8 @@ export default defineComponent({
         @apply bg-yellow-50;
       }
 
-      .left {
-        @apply flex flex-col gap-1;
-
-        .profile-img {
-          @apply w-8 h-8 rounded-md;
-        }
-      }
-
-      .upper {
-        @apply mb-1 flex gap-2 text-xs text-gray-400;
-
-        .rating {
-          @apply text-center bg-gray-900 rounded-md text-xs text-yellow-400;
-        }
+      .rating {
+        @apply bg-gray-900 rounded-md text-xs px-2 py-1 text-yellow-400;
       }
 
       .review {
