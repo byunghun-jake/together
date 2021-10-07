@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from silk.profiling.profiler import silk_profile
+import pickle
 
 from .models import (Movie, Review, Genre, Provider)
 from .serializers import (MovieSerializer, ReviewSerializer, GenreSerializer)
@@ -171,6 +173,7 @@ class ReviewDetailView(GenericAPIView):
 
 
 @api_view(['GET'])
+@silk_profile(name='Get Movie data')
 def get_movie(request, pk):
     """
     영화 정보를 가져옵니다.
@@ -218,6 +221,7 @@ def get_genre(self):
 
 
 @api_view(['GET'])
+@silk_profile(name='Get Main data')
 def get_genre_rec_movies(self):
     """
         메인 페이지에서 장르를 기준으로 가장 인기있는 영화를 추천해 줍니다.
@@ -241,4 +245,19 @@ def get_genre_rec_movies(self):
 
     serializer = MovieSerializer(movies, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def testPickle(self):
+    try:
+        df = pickle.load(open("test.pickle", "rb"))
+    except (OSError, IOError) as e:
+        with open('./rec_movie/data/movies_kr.json', 'r') as f:
+            data = json.loads(f.read())
+        df = pd.json_normalize(data)
+        pickle.dump(df, open("test.pickle", "wb"))
+    result = 0
+    for idx, row in df.iterrows():
+        result = row['pk']
+        break
+    return HttpResponse(result)
 

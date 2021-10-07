@@ -19,6 +19,10 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET 정보 저장
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
+# silk 설정
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_PYTHON_PROFILER_RESULT_PATH = os.path.join(BASE_DIR, 'profiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -65,6 +69,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.naver',
     'allauth.socialaccount.providers.kakao',
     'allauth.socialaccount.providers.github',
+
     # app
     'sign.apps.SignConfig',
     'party.apps.PartyConfig',
@@ -77,6 +82,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+
+    # silk
+    'silk',
 ]
 
 # 디폴트 SITE의 id / 등록을 하지 않으면, 각 요청 시에 host명의 Site 인스턴스를 찾는다 .
@@ -160,6 +168,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    # silk middleware
+    'silk.middleware.SilkyMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS  = [
@@ -258,3 +268,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 IAMPORT_KEY = get_secret("IAMPORT_KEY")
 IAMPORT_SECRET = get_secret("IAMPORT_SECRET")
+

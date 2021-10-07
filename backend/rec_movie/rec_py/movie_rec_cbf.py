@@ -6,30 +6,35 @@ import re
 import pandas as pd
 import time
 import os
-
+import pickle
 
 # 영화의 Overview(개요)의 연관성을 통해 영화를 추천해 준다.
 def recommend(movie_name):
     # -------- Load Dataset -----------
-    # movie json을 dataframe으로 만들기
-    dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '/'  # 절대 경로로 설정 함 -> 나중에 서버에 올리면 문제가 되지 않을까?
-    with open(dir + '../data/movies_kr.json', 'r') as f:
-        data = json.loads(f.read())
-    df_nested_list = pd.json_normalize(data)
+    try:
+        movies = pickle.load(open("movie_cbf_rec_df.pickle", "rb"))
+    except (OSError, IOError) as e:
+        # movie json을 dataframe으로 만들기
+        dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '/'  # 절대 경로로 설정 함 -> 나중에 서버에 올리면 문제가 되지 않을까?
+        with open(dir + '../data/movies_kr.json', 'r') as f:
+            data = json.loads(f.read())
+        df_nested_list = pd.json_normalize(data)
 
-    # 필요한 필드
-    movies = df_nested_list[["pk", "fields.original_title", "fields.overview", "fields.vote_count"]]
-    movies = movies.rename(columns={'pk': 'movieId'})
-    movies = movies.rename(columns={'fields.original_title': 'original_title'})
-    movies = movies.rename(columns={'fields.overview': 'overview'})
-    movies = movies.rename(columns={'fields.vote_count': 'vote_count'})
+        # 필요한 필드
+        movies = df_nested_list[["pk", "fields.original_title", "fields.overview", "fields.vote_count"]]
+        movies = movies.rename(columns={'pk': 'movieId'})
+        movies = movies.rename(columns={'fields.original_title': 'original_title'})
+        movies = movies.rename(columns={'fields.overview': 'overview'})
+        movies = movies.rename(columns={'fields.vote_count': 'vote_count'})
 
-    movies["overview"] = movies["overview"].astype("str")
-    # 줄거리가 NaN인 영화 drop
-    movies.dropna()
+        movies["overview"] = movies["overview"].astype("str")
+        # 줄거리가 NaN인 영화 drop
+        movies.dropna()
 
-    # "overview" column 모두 소문자로, 문자+숫자만 남기고 나머지는 띄어쓰기로 대체
-    movies["overview"] = movies["overview"].apply(lambda x : re.sub("\W", " ", x.lower()))
+        # "overview" column 모두 소문자로, 문자+숫자만 남기고 나머지는 띄어쓰기로 대체
+        movies["overview"] = movies["overview"].apply(lambda x : re.sub("\W", " ", x.lower()))
+        pickle.dump(movies, open("movie_cbf_rec_df.pickle", "wb"))
+
 
     # TF-IDF 기반으로 단어 벡터화
     tfidf_vec = TfidfVectorizer(ngram_range=(1, 2)) # Vectorizer생성   # ngram_range=(1, 2)는 단어를 1개 혹은 2개 연속으로 보겠다는 뜻

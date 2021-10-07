@@ -46,6 +46,9 @@ schema_view_v1 = get_schema_view(
 )
 
 urlpatterns = [
+    # silk 적용
+    path('silk/', include('silk.urls')),
+
     path('admin/', admin.site.urls),
     path('party/', include('party.urls')), # Party
     path('accounts/', include('allauth.urls')), # SNS
