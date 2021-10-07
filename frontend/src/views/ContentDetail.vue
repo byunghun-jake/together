@@ -1,5 +1,5 @@
 <template>
-  <LoadingSection v-if="loading">로딩 중</LoadingSection>
+  <LoadingSection v-if="loading" />
   <template v-else>
     <section class="banner-section">
       <ContentDetailInfoSection
@@ -73,10 +73,10 @@
           />
         </ul>
       </section>
-      <section class="community-section">
+      <section class="community-section" v-if="content.reviews">
         <header class="section-header">
           <h1>리뷰</h1>
-          <p>{{ content.reviews.length }} 개</p>
+          <p>{{ content.reviews && content.reviews.length }} 개</p>
         </header>
         <ul class="review-list">
           <li

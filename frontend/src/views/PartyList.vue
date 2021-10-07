@@ -9,7 +9,7 @@
     </div>
   </section>
   <div class="container">
-    <section class="loading-section" v-if="loading">로딩중이다!</section>
+    <LoadingSection v-if="loading" />
     <section class="party-section" v-else>
       <header class="section-header">
         <h1>파티에 참여하세요!</h1>
@@ -30,13 +30,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue'
-import PartyListItem from '@/components/PartyListItem.vue'
 import { useStore } from 'vuex'
 import { Party } from '@/libs/interfaces/party'
+import PartyListItem from '@/components/PartyListItem.vue'
+import LoadingSection from '@/components/Common/LoadingSection.vue'
 
 export default defineComponent({
   name: 'PartyList',
-  components: { PartyListItem },
+  components: { PartyListItem, LoadingSection },
   setup() {
     const store = useStore()
     const loading = ref(true)

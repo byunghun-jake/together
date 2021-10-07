@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <section class="loading-section" v-if="loading">로딩!</section>
+    <LoadingSection v-if="loading" />
     <div v-else class="py-10 px-4 grid gap-10">
       <section class="partyinfo-section">
         <h3>파티 정보</h3>
@@ -70,9 +70,11 @@ import { Party } from '@/libs/interfaces/party'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import LoadingSection from '@/components/Common/LoadingSection.vue'
 
 export default defineComponent({
   name: 'PartyJoin',
+  components: { LoadingSection },
   props: {
     partyId: {
       type: [String, Number],

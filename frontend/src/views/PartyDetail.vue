@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <section class="loading-section" v-if="loading">로딩 중</section>
+    <LoadingSection v-if="loading" />
     <section class="party-detail-section" v-else>
       <div class="party-info-container">
         <div class="logo-wrapper">
@@ -75,9 +75,11 @@ import { useStore } from 'vuex'
 import { getRestDays, toCurrency } from '@/libs/func'
 import { Party } from '@/libs/interfaces/party'
 import { OutputUser } from '@/libs/interfaces/auth'
+import LoadingSection from '@/components/Common/LoadingSection.vue'
 
 export default defineComponent({
   name: 'PartyDetail',
+  components: { LoadingSection },
   props: {
     partyId: {
       type: [String, Number],

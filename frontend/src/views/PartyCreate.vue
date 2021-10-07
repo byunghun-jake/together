@@ -47,15 +47,15 @@
       </header>
       <template v-if="selectedProvider">
         <form class="grid gap-4">
-          <TextInput
-            v-for="(field, key) in inputForm"
-            :key="key"
-            v-model="field.value"
-            :name="key"
-            :field="field"
-            :formData="inputForm"
-            @update:validate="handleUpdateValidate($event)"
-          />
+          <template v-for="(field, key) in inputForm" :key="key">
+            <TextInput
+              v-model="field.value"
+              :name="key"
+              :field="field"
+              :formData="inputForm"
+              @update:validate="handleUpdateValidate($event)"
+            />
+          </template>
           <textarea v-model="desc" placeholder="상세 정보"></textarea>
         </form>
       </template>
@@ -76,7 +76,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import TextInput from '@/components/Common/TextInput.vue'
-import { requiredValidator } from '@/libs/validator'
+import { requiredValidator, simpleEmailValidator } from '@/libs/validator'
 import { FormData, ValidateData, SubmitFormData } from '@/libs/interface'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -105,7 +105,7 @@ export default defineComponent({
         value: '',
         placeholder: '공유할 서비스 계정을 입력하세요',
         errors: {},
-        validators: [requiredValidator],
+        validators: [requiredValidator, simpleEmailValidator],
       },
       servicePassword: {
         label: '비밀번호',
@@ -113,7 +113,7 @@ export default defineComponent({
         value: '',
         placeholder: '공유할 서비스 비밀번호를 입력하세요',
         errors: {},
-        validators: [],
+        validators: [requiredValidator],
       },
       memberLimit: {
         label: '모집인원',
@@ -159,6 +159,10 @@ export default defineComponent({
           Object.keys(inputForm.value[fieldKey].errors).length === 0
         )
       })
+    })
+
+    const checkEndDateIsValid = computed(() => {
+      return Date.now() < new Date(inputForm.value.endDate.value).getTime()
     })
 
     const formIsValid = computed(() => {
@@ -222,6 +226,7 @@ export default defineComponent({
       providers,
       inputForm,
       formIsValid,
+      checkEndDateIsValid,
       handleSelectProvider,
       handleResetProvider,
       handleUpdateValidate,

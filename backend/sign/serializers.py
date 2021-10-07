@@ -93,13 +93,12 @@ class UserDetailSerializer(UserDetailsSerializer):
       'username',
       'email',
       'nick_name',
-      'username',
       'phone_number',
       'fav_movie_genres',
       'fav_program_genres',
       'payments',
     )
-    read_only_fields = ('id', 'email')
+    read_only_fields = ('id', 'email', 'username')
 
 class UserGenreSerializer(serializers.ModelSerializer):
   fav_movie_genres = MovieGenreSerializer(required=False, many=True)

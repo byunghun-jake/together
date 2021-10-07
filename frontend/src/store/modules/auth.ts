@@ -21,36 +21,35 @@ export const auth: Module<authModule, RootState> = {
     SET_TOKEN(state: authModule, { accessToken, refreshToken }: Token) {
       state.accessToken = accessToken
       state.refreshToken = refreshToken
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
     },
     REMOVE_TOKEN(state: authModule) {
       state.accessToken = ''
       state.refreshToken = ''
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
     },
     SET_USER(state: authModule, user: OutputUser) {
       state.user = user
+      localStorage.setItem('user', JSON.stringify(user))
     },
     REMOVE_USER(state: authModule) {
       delete state.user
+      localStorage.removeItem('user')
     },
   },
   actions: {
     async login({ commit }, params) {
       const data = await authApi.login(params.email, params.password)
-      alert('auth modules: login success')
+      alert('안녕하세요!')
       commit('SET_TOKEN', {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       })
       commit('SET_USER', data.user)
-      localStorage.setItem('accessToken', data.accessToken)
-      localStorage.setItem('refreshToken', data.refreshToken)
-      // 임시
-      localStorage.setItem('user', JSON.stringify(data.user))
     },
     logout({ commit }) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      localStorage.removeItem('user')
       commit('REMOVE_TOKEN')
       commit('REMOVE_USER')
     },

@@ -18,7 +18,7 @@
           class="btn"
           :to="{ name: 'ProfileMain', params: { userId: user.id } }"
         >
-          {{ user.nickName }}
+          {{ user.username }}
         </router-link>
         <button class="btn logout" @click="handleClickLogoutBtn">
           로그아웃

@@ -23,6 +23,7 @@ secret_file = os.path.join(BASE_DIR, 'secrets.json')
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_PYTHON_PROFILER_RESULT_PATH = os.path.join(BASE_DIR, 'profiles')
+SILKY_INTERCEPT_PERCENT = 0
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

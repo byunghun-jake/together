@@ -6,47 +6,49 @@
         <p>다른 사람들과 함께 하세요 🎉</p>
       </div>
     </section>
-    <section class="loading-section" v-if="loading">로딩 중</section>
-    <section class="confirm-section" v-else>
-      <h3>파티 참가 정보</h3>
-      <div class="info-container">
-        <div class="info">
-          <span class="label">서비스</span>
-          <span class="value">{{ party.provider.name }}</span>
+    <LoadingSection v-if="loading" />
+    <template v-else>
+      <section class="confirm-section">
+        <h3>파티 참가 정보</h3>
+        <div class="info-container">
+          <div class="info">
+            <span class="label">서비스</span>
+            <span class="value">{{ party.provider.name }}</span>
+          </div>
+          <div class="info">
+            <span class="label">파티 이름</span>
+            <span class="value">{{ party.title }}</span>
+          </div>
+          <div class="info">
+            <span class="label">파티장</span>
+            <span class="value">{{ party.host.nickName }}</span>
+          </div>
+          <div class="info">
+            <span class="label">파티 종료일</span>
+            <span class="value"> {{ party.endDate }} ({{ restDays }}일) </span>
+          </div>
+          <div class="info">
+            <span class="label">참가비</span>
+            <span class="value">
+              {{ toCurrency(cost) }}
+            </span>
+          </div>
+          <div class="info">
+            <span class="label">수수료</span>
+            <span class="value">
+              {{ toCurrency(fee) }}
+            </span>
+          </div>
+          <div class="total-cost">
+            <span class="label">결제 금액</span>
+            <span class="value">
+              {{ toCurrency(cost + fee) }}
+            </span>
+          </div>
         </div>
-        <div class="info">
-          <span class="label">파티 이름</span>
-          <span class="value">{{ party.title }}</span>
-        </div>
-        <div class="info">
-          <span class="label">파티장</span>
-          <span class="value">{{ party.host.nickName }}</span>
-        </div>
-        <div class="info">
-          <span class="label">파티 종료일</span>
-          <span class="value"> {{ party.endDate }} ({{ restDays }}일) </span>
-        </div>
-        <div class="info">
-          <span class="label">참가비</span>
-          <span class="value">
-            {{ toCurrency(cost) }}
-          </span>
-        </div>
-        <div class="info">
-          <span class="label">수수료</span>
-          <span class="value">
-            {{ toCurrency(fee) }}
-          </span>
-        </div>
-        <div class="total-cost">
-          <span class="label">결제 금액</span>
-          <span class="value">
-            {{ toCurrency(cost + fee) }}
-          </span>
-        </div>
-      </div>
-    </section>
-    <button class="confirm-button" @click="handleClick">확인</button>
+      </section>
+      <button class="confirm-button" @click="handleClick">확인</button>
+    </template>
   </div>
 </template>
 
@@ -56,9 +58,11 @@ import { Party } from '@/libs/interfaces/party'
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import LoadingSection from '@/components/Common/LoadingSection.vue'
 
 export default defineComponent({
   name: 'PartyJoinConfirm',
+  components: { LoadingSection },
   props: {
     partyId: {
       type: [Number, String],

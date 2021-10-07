@@ -1,3 +1,4 @@
+import router from '@/router'
 import store from '@/store'
 import axios from 'axios'
 
@@ -19,7 +20,11 @@ http.interceptors.response.use(
   },
   (error) => {
     if (error?.response?.data?.code === 'token_not_valid') {
-      alert('토큰이 만료되었습니다')
+      store.dispatch('auth/logout')
+      router.push({
+        name: 'Login',
+      })
+      alert('로그인이 필요합니다')
     }
     console.dir(error)
   }

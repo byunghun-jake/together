@@ -20,9 +20,9 @@
           <button :class="{ valid: formIsValid }" :disabled="!formIsValid">
             확인
           </button>
-          <router-link :to="{ name: 'ProfileChangePassword' }">
+          <!-- <router-link :to="{ name: 'ProfileChangePassword' }">
             비밀번호 변경
-          </router-link>
+          </router-link> -->
         </div>
       </form>
     </section>
@@ -63,14 +63,6 @@ export default defineComponent({
         placeholder: '닉네임을 입력하세요',
         validators: [requiredValidator],
       },
-      username: {
-        label: '이름',
-        value: user.value.username,
-        type: 'text',
-        errors: {},
-        placeholder: '이름을 입력하세요',
-        validators: [requiredValidator],
-      },
       phoneNumber: {
         label: '휴대폰 번호',
         value: user.value.phoneNumber,
@@ -89,15 +81,13 @@ export default defineComponent({
 
     const handleSubmit = async (event: Event) => {
       event.preventDefault()
-      console.log('submit')
       try {
-        const username = formData.value.username.value
         const nick_name = formData.value.nickName.value
         const phone_number = formData.value.phoneNumber.value
         const userId = user.value.id
 
         await store.dispatch('auth/updateUserData', {
-          submitData: { username, nick_name, phone_number },
+          submitData: { nick_name, phone_number },
           userId,
         })
       } catch (error) {
