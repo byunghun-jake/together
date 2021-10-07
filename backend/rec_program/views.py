@@ -13,7 +13,7 @@ from .models import (Program, Review, Genre, Provider)
 from .serializers import (ProviderSerializerP, ReviewSerializerP, GenreSerializerP, ProgramSerializer)
 
 # recommend files
-from .rec_py import (program_rec_genre as rec_g, program_rec_cbf as rec_m)
+from .rec_py import (program_rec_genre as rec_g, program_rec_cbf as rec_m, program_rec_top as rec_t)
 
 # Create your views here.
 def convert_program_data(self):
@@ -234,7 +234,7 @@ def get_program(request, pk):
 
 
 @api_view(['GET'])
-def get_genre_rec_programs(self):
+def get_genre_rec_programs(request):
     """
         메인 페이지에서 장르를 기준으로 가장 인기있는 영화를 추천해 줍니다.
         현재 임의로 3개의 장르를 설정하여 추천 알고리즘을 적용하였습니다.
@@ -247,9 +247,22 @@ def get_genre_rec_programs(self):
               message: Success Get programs
 
         """
+    if request.user.username == '':
+        program_ids = rec_t.recommend()
+    else:
+        # 이후 유저의 정보를 받으면, 그 유저의 선호 장르 3개에 대한 추천 영화를 출력한다.
+        genres = request.user.fav_program_genres.all()
+        genre_id = []
+        for genre_name in genres:
+            genre = Genre.objects.get(k_name=genre_name)
+            # print(genre.genre_id)
+            genre_id.append(genre.genre_id)
+        # 사용자가 선호하는 장르가 3개 미만일 때
+        if len(genre_id) < 3:
+            program_ids = rec_t.recommend()
+        else:
+            program_ids = rec_g.recommend(genre_id[0], genre_id[1], genre_id[2])
 
-    # 이후 유저의 정보를 받으면, 그 유저의 선호 장르 3개에 대한 추천 영화를 출력한다.
-    program_ids = rec_g.recommend(16, 28, 35)
     programs = []
     for program_id in program_ids:
         program = get_object_or_404(Program, program_id=program_id)
