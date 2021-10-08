@@ -166,7 +166,7 @@ export default defineComponent({
 
     const handleSocialLoginClick = async (platform: string) => {
       if (platform === 'google') {
-        const REDIRECT_URI = `http://localhost:8080/auth/${platform}/callback`
+        const REDIRECT_URI = `https://j5d202.p.ssafy.io/auth/${platform}/callback`
         const CLIENT_ID =
           '819701037998-q2ascolrbjsmiqnq5tj3q7ifmk0sv5oh.apps.googleusercontent.com'
         const SCOPE = 'https://www.googleapis.com/auth/userinfo.email'
@@ -174,20 +174,20 @@ export default defineComponent({
         const link = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPE}&client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}`
         location.href = link
       } else if (platform === 'kakao') {
-        const REDIRECT_URI = `http://localhost:8080/auth/${platform}/callback`
+        const REDIRECT_URI = `https://j5d202.p.ssafy.io/auth/${platform}/callback`
         const REST_API_KEY = 'd7ddc4b6ec233d4fc10dd21de17d8c63'
 
         const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`
         location.href = link
       } else if (platform === 'github') {
-        const REDIRECT_URI = `http://localhost:8080/auth/${platform}/callback`
+        const REDIRECT_URI = `https://j5d202.p.ssafy.io/auth/${platform}/callback`
         const CLIENT_ID =
           '819701037998-q2ascolrbjsmiqnq5tj3q7ifmk0sv5oh.apps.googleusercontent.com'
 
         // const link = `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}`
         // location.href = link
       } else {
-        const REDIRECT_URI = `http://localhost:8080/auth/${platform}/callback`
+        const REDIRECT_URI = `https://j5d202.p.ssafy.io/auth/${platform}/callback`
         const client_id =
           '819701037998-q2ascolrbjsmiqnq5tj3q7ifmk0sv5oh.apps.googleusercontent.com'
         const scope = 'https://www.googleapis.com/auth/userinfo.email'
@@ -214,7 +214,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .body {
-  @apply flex flex-col justify-center items-center w-full h-screen sm:-mt-16 sm:-mb-20 -mt-6 -mb-12;
+  @apply flex flex-col justify-center items-center w-full h-screen sm:-mt-20 -mt-16 -mb-20;
 
   .logo {
     @apply mb-4;

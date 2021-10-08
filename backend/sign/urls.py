@@ -16,8 +16,10 @@ urlpatterns = [
   path('login/', LoginView.as_view(), name='rest_login'),
   path('logout/', LogoutView.as_view(), name='rest_logout'),
   path('register/', RegisterView.as_view(), name='rest_register'),
-  path('profile/', UserDetailsView.as_view(), name='detail'),
+  # path('profile/', UserDetailsView.as_view(), name='detail'),
   path('me/', include(router.urls), name='me'),
+  path('profile/<int:pk>/', views.UserProfileView.as_view(), name='profile'),
+  path('profile/genres/', views.FavGenreView.as_view()),
 
   # 회원가입, 비밀번호 변경
   path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),

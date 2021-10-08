@@ -1,12 +1,18 @@
 <template>
   <router-link
+    class="card"
     :to="{
       name: 'ContentDetail',
       params: { contentId: content.id, contentType },
     }"
   >
-    <div class="poster-wrapper">
-      <img :src="posterPath" :alt="`${content.originalTitle}의 포스터`" />
+    <div class="wrap">
+      <div class="front">
+        <img :src="posterPath" :alt="`${content.originalTitle}의 포스터`" />
+      </div>
+      <div class="back">
+        <h3 class="title">{{ content.title }}</h3>
+      </div>
     </div>
   </router-link>
 </template>
@@ -28,19 +34,53 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const posterPath = `https://image.tmdb.org/t/p/w500${props.content.posterPath}`
+    const posterPath = `https://image.tmdb.org/t/p/w200${props.content.posterPath}`
     return { posterPath }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.poster-wrapper {
-  padding-top: 142.1686747%;
-  @apply relative flex overflow-hidden rounded-md;
+.card,
+.wrap {
+  perspective: 500px;
+}
 
-  img {
-    @apply absolute inset-0 w-full;
+.card {
+  @apply cursor-pointer;
+
+  .wrap {
+    transform-style: preserve-3d;
+    @apply transition-all duration-500;
+  }
+
+  &:hover .wrap {
+    transform: rotateY(180deg);
+  }
+
+  .front,
+  .back {
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    @apply overflow-hidden rounded-md;
+  }
+
+  .front {
+    padding-top: 142.1686747%;
+    @apply relative flex;
+
+    img {
+      @apply absolute inset-0 w-full;
+    }
+  }
+
+  .back {
+    transform: rotateY(180deg);
+    @apply absolute inset-0 p-4 bg-indigo-800 text-white flex items-center justify-center;
+
+    .title {
+      @apply text-lg text-indigo-100 font-medium text-center;
+    }
   }
 }
 </style>

@@ -85,3 +85,20 @@ export const requiredValidator: Validator = (key, value) => {
     status: true,
   }
 }
+
+export const simpleEmailValidator: Validator = (key, value) => {
+  const regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+  if (!regex.test(String(value))) {
+    return {
+      key,
+      type: 'invalidEmail',
+      status: false,
+      message: '이메일 형식이 유효하지 않습니다',
+    }
+  }
+  return {
+    key,
+    type: 'invalidEmail',
+    status: true,
+  }
+}

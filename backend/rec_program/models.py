@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 # Create your models here.
@@ -13,7 +14,7 @@ class Program(models.Model):
     providers = models.ManyToManyField('Provider')  # many to many로 provider와 연결하였다. related_name은 자동으로 'provider'
     # 자기 참조 외래키로, 추천 영화를 해당 영화 내부에 기입한다.
     # https://himanmengit.github.io/django/2018/02/06/DjangoModels-07-ManyToMany-Self-Symmetrical.html
-    recommends = models.ManyToManyField('self', symmetrical=False, null=True)
+    recommends = models.ManyToManyField('self', symmetrical=False, blank=True)
 
 
 class Genre(models.Model):
@@ -21,13 +22,17 @@ class Genre(models.Model):
     name = models.CharField(max_length=20)
     k_name = models.CharField(max_length=20, default='')
 
+    def __str__(self):
+        return self.k_name
+
 
 class Review(models.Model):
     user_id = models.CharField(max_length=100)
-    program_id = models.ForeignKey("Program", related_name="review", on_delete=models.CASCADE, db_column="program_id")
-    rating = models.IntegerField()
+    program_id = models.ForeignKey("Program", related_name="reviews", on_delete=models.CASCADE, db_column="program_id")
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     content = models.TextField(default='')
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Provider(models.Model):

@@ -48,6 +48,14 @@ export const party: Module<PartyModule, RootState> = {
         console.log(error)
       }
     },
+    async postJoinParty(_, partyId: number) {
+      try {
+        await partyAxios.postJoinParty(partyId)
+      } catch (error) {
+        alert(error)
+        throw new Error()
+      }
+    },
   },
   getters: {},
 }

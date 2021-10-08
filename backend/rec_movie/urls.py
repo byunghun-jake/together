@@ -18,4 +18,7 @@ urlpatterns = [
 
     # genre
     path('genre/', views.get_genre),
+
+    # test
+    path('test/', views.testPickle),
 ]

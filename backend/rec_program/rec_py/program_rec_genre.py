@@ -4,25 +4,30 @@ import numpy as np
 import json
 import time
 import os
+import pickle
 
 
 def recommend(rec_g1, rec_g2, rec_g3):
-    dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '/'  # 절대 경로로 설정 함 -> 나중에 서버에 올리면 문제가 되지 않을까?
-    with open(dir + '../data/programs.json', 'r') as f:
-        data = json.loads(f.read())
+    try:
+        md = pickle.load(open("program_genre_rec_df.pickle", "rb"))
+    except (OSError, IOError) as e:
+        dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '/'  # 절대 경로로 설정 함 -> 나중에 서버에 올리면 문제가 되지 않을까?
+        with open(dir + '../data/programs.json', 'r') as f:
+            data = json.loads(f.read())
 
-    md = pd.json_normalize(data)
-    md = md.rename(columns={'pk': 'programId'})
-    md = md.rename(columns={'fields.original_title': 'original_title'})
-    md = md.rename(columns={'fields.overview': 'overview'})
-    md = md.rename(columns={'fields.vote_count': 'vote_count'})
-    md = md.rename(columns={'fields.vote_average': 'vote_average'})
-    md = md.rename(columns={'fields.genre_ids': 'genres'})
-    md = md.rename(columns={'fields.release_date': 'release_date'})
-    md = md.rename(columns={'fields.popularity': 'popularity'})
+        md = pd.json_normalize(data)
+        md = md.rename(columns={'pk': 'programId'})
+        md = md.rename(columns={'fields.original_title': 'original_title'})
+        md = md.rename(columns={'fields.overview': 'overview'})
+        md = md.rename(columns={'fields.vote_count': 'vote_count'})
+        md = md.rename(columns={'fields.vote_average': 'vote_average'})
+        md = md.rename(columns={'fields.genre_ids': 'genres'})
+        md = md.rename(columns={'fields.release_date': 'release_date'})
+        md = md.rename(columns={'fields.popularity': 'popularity'})
 
-    # errors='coerce' : 문자열이 속해있어서 오류가 날 경우 강제로 NaT으로 출력
-    md['year'] = pd.to_datetime(md['release_date'], errors='coerce').apply(lambda x: str(x).split('-')[0] if not(pd.isnull(x)) else np.nan)
+        # errors='coerce' : 문자열이 속해있어서 오류가 날 경우 강제로 NaT으로 출력
+        md['year'] = pd.to_datetime(md['release_date'], errors='coerce').apply(lambda x: str(x).split('-')[0] if not(pd.isnull(x)) else np.nan)
+        pickle.dump(md, open("program_genre_rec_df.pickle", "wb"))
 
     # stack : 들어온 것 부터 쌓음
     s = md.apply(lambda x: pd.Series(x['genres']), axis=1).stack().reset_index(level=1, drop=True)

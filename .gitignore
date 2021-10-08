@@ -450,3 +450,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,django,python,venv,node,vuejs,vue,visualstudiocode© 2021 GitHub, Inc.
+
+# Django silk
+profile/

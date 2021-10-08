@@ -1,5 +1,12 @@
 <template>
-  <section class="banner-section">배너</section>
+  <section class="banner-section">
+    <div class="absolute inset-0 bg-black opacity-60"></div>
+    <img
+      class="w-full h-full object-cover"
+      :src="require(`@/assets/images/ott_banner.jpg`)"
+      alt=""
+    />
+  </section>
   <div class="container">
     <LoadingSection v-if="loading" />
     <template v-else>
@@ -73,13 +80,8 @@ export default defineComponent({
       { name: 'Watcha', active: true },
       { name: 'Naver Store', active: true },
       { name: 'wavve', active: true },
-      { name: 'Crunchyroll', active: true },
-      { name: 'Curiosity Stream', active: true },
-      { name: 'Hoichoi', active: true },
-      { name: 'Classix', active: true },
-      { name: 'BroadwayHD', active: true },
-      { name: 'Magellan TV', active: true },
-      { name: 'WOW Presents Plus', active: true },
+      { name: 'Disney Plus', active: true },
+      { name: 'Google Play Movies', active: true },
       { name: 'Amazon Prime Video', active: true },
     ])
 
@@ -148,7 +150,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .banner-section {
-  @apply h-44 md:h-80 bg-gray-200;
+  @apply relative flex h-44 md:h-80 bg-gray-200;
 }
 .filter-section {
   @apply py-6 px-4;

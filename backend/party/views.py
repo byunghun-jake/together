@@ -20,7 +20,7 @@ class PartyView(generics.GenericAPIView):
     partys = Party.objects.all()
     serializer = PartySerializer(partys, many=True)
     return Response(serializer.data)
- 
+
   def post(self, request):
     user = request.user
     provider = get_object_or_404(Provider, pk=request.data.get('provider_id'))
@@ -50,6 +50,7 @@ class PartyDetailView(generics.GenericAPIView):
     party = self.get_object(party_idx)
     serializer = PartySerializer(party)
     return Response(serializer.data)
+   
 
   def delete(self, request, party_idx):
     """
@@ -75,7 +76,10 @@ class PartyJoinView(generics.GenericAPIView):
     party = self.get_object(party_idx)
     user = request.user
     if party.payments.filter(pk=user.pk).exists():
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response(
+        { "message": "이미 가입된 파티입니다" },
+        status=status.HTTP_400_BAD_REQUEST
+      )
     else:
       party.payments.add(user)
       party.save()

@@ -20,9 +20,9 @@
           <button :class="{ valid: formIsValid }" :disabled="!formIsValid">
             확인
           </button>
-          <router-link :to="{ name: 'ProfileChangePassword' }">
+          <!-- <router-link :to="{ name: 'ProfileChangePassword' }">
             비밀번호 변경
-          </router-link>
+          </router-link> -->
         </div>
       </form>
     </section>
@@ -37,6 +37,7 @@ import { ValidateData, FormData } from '@/libs/interface'
 import { requiredValidator } from '@/libs/validator'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { OutputUser } from '@/libs/interfaces/auth'
 
 export default defineComponent({
   name: 'ProfileEdit',
@@ -52,26 +53,19 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const loading = ref<boolean>(true)
+    const user = computed<OutputUser>(() => store.state.auth.user)
     const formData = ref<FormData>({
       nickName: {
         label: '닉네임',
-        value: '',
+        value: user.value.nickName,
         type: 'text',
         errors: {},
         placeholder: '닉네임을 입력하세요',
         validators: [requiredValidator],
       },
-      username: {
-        label: '이름',
-        value: '',
-        type: 'text',
-        errors: {},
-        placeholder: '이름을 입력하세요',
-        validators: [requiredValidator],
-      },
       phoneNumber: {
         label: '휴대폰 번호',
-        value: '',
+        value: user.value.phoneNumber,
         type: 'text',
         errors: {},
         placeholder: '휴대폰 번호는 "-"를 포함하여 입력하세요',
@@ -87,22 +81,19 @@ export default defineComponent({
 
     const handleSubmit = async (event: Event) => {
       event.preventDefault()
-      console.log('submit')
       try {
-        const username = formData.value.username.value
         const nick_name = formData.value.nickName.value
         const phone_number = formData.value.phoneNumber.value
+        const userId = user.value.id
 
-        const user = await store.dispatch('auth/updateUserData', {
-          username,
-          nick_name,
-          phone_number,
+        await store.dispatch('auth/updateUserData', {
+          submitData: { nick_name, phone_number },
+          userId,
         })
-        console.log(user)
       } catch (error) {
         console.log(error)
       }
-      // router.push({ name: 'ProfileMain' })
+      router.push({ name: 'ProfileMain', params: { userId: user.value.id } })
     }
 
     const handleUpdateValidate = (validateRes: ValidateData) => {
@@ -116,20 +107,6 @@ export default defineComponent({
         throw new Error('망했어요')
       }
     }
-
-    onMounted(async () => {
-      try {
-        const { nickName, username, phoneNumber } = await store.dispatch(
-          'auth/getUserData'
-        )
-        formData.value.nickName.value = nickName
-        formData.value.username.value = username
-        formData.value.phoneNumber.value = phoneNumber
-      } catch (error) {
-        console.log(error)
-      }
-      loading.value = false
-    })
 
     return {
       loading,

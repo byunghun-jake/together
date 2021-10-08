@@ -1,12 +1,17 @@
+from rec_movie.serializers import GenreSerializer
+from rec_movie.views import get_genre
+from rec_movie.models import Genre
 import requests
 import hashlib, os
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.shortcuts import render
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 from json.decoder import JSONDecodeError
 from rest_framework import status, viewsets
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.google import views as google_view
@@ -15,13 +20,18 @@ from allauth.socialaccount.providers.github import views as github_view
 from allauth.socialaccount.providers.naver import views as naver_view
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.models import SocialAccount
-from .serializers import UserSerializer
+from .serializers import UserDetailSerializer, UserGenreSerializer, UserSerializer
 from .models import User
 import json
 from django.views.decorators.csrf import csrf_exempt
+#
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
-FRONT_BASE_URL = "http://localhost:8080"
-BASE_URL = "http://localhost:8000"
+
+FRONT_BASE_URL = "https://j5d202.p.ssafy.io"
+BASE_URL = "https://j5d202.p.ssafy.io/api/v1"
 GOOGLE_CALLBACK_URI = f"{FRONT_BASE_URL}/auth/google/callback"
 KAKAO_CALLBACK_URI = f"{FRONT_BASE_URL}/auth/kakao/callback"
 GITHUB_CALLBACK_URI = f"{FRONT_BASE_URL}/auth/github/callback"
@@ -31,11 +41,31 @@ GITHUB_CALLBACK_URI = f"{FRONT_BASE_URL}/auth/github/callback"
 state = hashlib.sha256(os.urandom(1024)).hexdigest()
 
 class UserMe(viewsets.ModelViewSet):
-  queryset = User.objects.all()
-  serializer_class = UserSerializer
-  def get_queryset(self):
-    user = self.request.user
-    return User.objects.get_queryset().filter(username=user)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        user = self.request.user
+        return User.objects.get_queryset().filter(username=user)
+
+class UserProfileView(GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
+
+    def get_object(self, pk):
+      return get_object_or_404(User,pk=pk)
+
+    def get(self, request, pk):
+      user = self.get_object(pk)
+      serializer = UserDetailSerializer(user)
+      return Response(serializer.data)
+
+    def put(self, request, pk):
+      user = self.get_object(pk)
+      serializer = UserDetailSerializer(user, data=request.data)
+      if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def passwordResetRedirect(request, uid, token):
@@ -175,3 +205,20 @@ class KakaoLogin(SocialLoginView):
     adapter_class = kakao_view.KakaoOAuth2Adapter
     client_class = OAuth2Client
     callback_url = KAKAO_CALLBACK_URI
+
+class FavGenreView(GenericAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserGenreSerializer
+
+    def put(self, request):
+        user = get_object_or_404(get_user_model(), pk=request.user.id)
+        fav_movie_genres = request.data.get('fav_movie_genres')
+        fav_program_genres = request.data.get('fav_program_genres')
+        user.fav_movie_genres.clear()
+        user.fav_program_genres.clear()
+        for g in fav_movie_genres:
+            user.fav_movie_genres.add(g.get('id'))
+        for g in fav_program_genres:
+            user.fav_program_genres.add(g.get('id'))
+        serializer = UserDetailSerializer(user)
+        return Response(serializer.data)

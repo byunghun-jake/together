@@ -69,12 +69,14 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import LoadingSection from '@/components/Common/LoadingSection.vue'
 import SubmitButton from '@/components/Common/SubmitButton.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'ProfileGenre',
   components: { LoadingSection, SubmitButton },
   setup() {
     const store = useStore()
+    const router = useRouter()
     const loading = ref<boolean>(true)
     const movieGenreList = ref<Genre[]>([])
     const favMovieGenreList = ref<Genre[]>([])
@@ -110,22 +112,60 @@ export default defineComponent({
       ProgramGenreList.value.push(selectedGenre)
     }
 
-    const handleClick = () => {
+    const handleClick = async () => {
       if (confirm('선호 장르를 저장하시겠습니까?')) {
         console.log(favMovieGenreList.value)
         console.log(favProgramGenreList.value)
+        try {
+          await store.dispatch('auth/updateFavGenres', {
+            fav_movie_genres: favMovieGenreList.value,
+            fav_program_genres: favProgramGenreList.value,
+          })
+        } catch (error) {
+          alert(error)
+        }
+        router.push({
+          name: 'ProfileMain',
+          params: { userId: store.getters['auth/getUserPK'] },
+        })
       }
     }
 
     onMounted(async () => {
       try {
-        movieGenreList.value = await store.dispatch('content/getMovieGenreList')
-        ProgramGenreList.value = await store.dispatch(
+        const movieGenres: Genre[] = await store.dispatch(
+          'content/getMovieGenreList'
+        )
+        const favMovieGenreIds: number[] =
+          store.getters['auth/getUserFavMovieGenreIds']
+        movieGenres.forEach((genre) => {
+          if (favMovieGenreIds.includes(genre.id)) {
+            favMovieGenreList.value.push(genre)
+          } else {
+            movieGenreList.value.push(genre)
+          }
+        })
+
+        const programGenres: Genre[] = await store.dispatch(
           'content/getProgramGenreList'
         )
+        const favProgramGenreIds: number[] =
+          store.getters['auth/getUserFavProgramGenreIds']
+        programGenres.forEach((genre) => {
+          if (favProgramGenreIds.includes(genre.id)) {
+            favProgramGenreList.value.push(genre)
+          } else {
+            ProgramGenreList.value.push(genre)
+          }
+        })
       } catch (error) {
-        console.log(error)
+        alert(error)
+        router.push({
+          name: 'ProfileMain',
+          params: { userId: store.getters['auth/getUserPK'] },
+        })
       }
+
       loading.value = false
     })
     return {

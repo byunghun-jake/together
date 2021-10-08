@@ -3,11 +3,12 @@ import { Module } from 'vuex'
 import { RootState } from '@/store/index'
 import { InputUser, OutputUser } from '@/libs/interfaces/auth'
 import { Token } from '@/libs/interfaces/auth'
+import { Genre } from '@/libs/interfaces/content'
 
 interface authModule {
   accessToken: string
   refreshToken: string
-  user?: InputUser
+  user?: OutputUser
 }
 
 export const auth: Module<authModule, RootState> = {
@@ -20,36 +21,35 @@ export const auth: Module<authModule, RootState> = {
     SET_TOKEN(state: authModule, { accessToken, refreshToken }: Token) {
       state.accessToken = accessToken
       state.refreshToken = refreshToken
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
     },
     REMOVE_TOKEN(state: authModule) {
       state.accessToken = ''
       state.refreshToken = ''
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
     },
-    SET_USER(state: authModule, user: InputUser) {
+    SET_USER(state: authModule, user: OutputUser) {
       state.user = user
+      localStorage.setItem('user', JSON.stringify(user))
     },
     REMOVE_USER(state: authModule) {
       delete state.user
+      localStorage.removeItem('user')
     },
   },
   actions: {
     async login({ commit }, params) {
       const data = await authApi.login(params.email, params.password)
-      alert('auth modules: login success')
+      alert('안녕하세요!')
       commit('SET_TOKEN', {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       })
       commit('SET_USER', data.user)
-      localStorage.setItem('accessToken', data.accessToken)
-      localStorage.setItem('refreshToken', data.refreshToken)
-      // 임시
-      localStorage.setItem('user', JSON.stringify(data.user))
     },
     logout({ commit }) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      localStorage.removeItem('user')
       commit('REMOVE_TOKEN')
       commit('REMOVE_USER')
     },
@@ -97,18 +97,38 @@ export const auth: Module<authModule, RootState> = {
       }
     },
     // TODO: 임시
-    async getUserData(context, userId: string | number) {
+    async getUserData() {
       try {
-        console.log(userId)
-        const user = await authApi.getUserData(+userId)
+        const user = await authApi.getUserData()
         return user
       } catch (error) {
         throw new Error('유저 데이터를 가져오던 중 문제가 생겼습니다')
       }
     },
-    async updateUserData(_, data: InputUser): Promise<OutputUser> {
+    async updateUserData(
+      { commit },
+      payload: {
+        submitData: InputUser
+        userId: number
+      }
+    ) {
       try {
-        return await authApi.putUserData(data)
+        const user: OutputUser = await authApi.putUserData(payload)
+        commit('SET_USER', user)
+      } catch (error: any) {
+        throw new Error(error)
+      }
+    },
+    async updateFavGenres(
+      { commit },
+      submitData: {
+        fav_movie_genres: Genre[]
+        fav_program_genres: Genre[]
+      }
+    ) {
+      try {
+        const user: OutputUser = await authApi.putUserFavGenres(submitData)
+        commit('SET_USER', user)
       } catch (error: any) {
         throw new Error(error)
       }
@@ -140,6 +160,27 @@ export const auth: Module<authModule, RootState> = {
     },
     getToken(state) {
       return state.accessToken
+    },
+    getUserNickName(state) {
+      return state.user?.nickName
+    },
+    getUserFavMovieGenres(state) {
+      return state.user?.favMovieGenres
+    },
+    getUserFavMovieGenreIds(state) {
+      return (
+        state.user?.favMovieGenres &&
+        state.user.favMovieGenres.map((genre) => genre.id)
+      )
+    },
+    getUserFavProgramGenres(state) {
+      return state.user?.favProgramGenres
+    },
+    getUserFavProgramGenreIds(state) {
+      return (
+        state.user?.favProgramGenres &&
+        state.user.favProgramGenres.map((genre) => genre.id)
+      )
     },
   },
 }
