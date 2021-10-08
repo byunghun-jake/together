@@ -60,6 +60,7 @@ def recommend():
     qualified = qualified.sort_values('wr', ascending = False).head(250)
 
     print(qualified.head(15))
+    qualified = qualified.head(15)
     result = []
     for program_id in qualified['programId']:
         result.append(program_id)
